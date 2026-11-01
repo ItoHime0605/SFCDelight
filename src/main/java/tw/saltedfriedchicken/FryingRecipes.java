@@ -1,0 +1,59 @@
+package tw.saltedfriedchicken;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import java.util.ArrayList;
+import java.util.List;
+
+/** Fixed server-side recipes. Optional mod recipes can be added after validating IDs. */
+public final class FryingRecipes {
+    private FryingRecipes() {}
+    public static Item output(ItemStack input) {
+        if (input == null || input.isEmpty()) return null;
+        if (input.is(SaltedFriedChickenDelight.BATTERED_SQUID_TENTACLES.get())) return SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_TEMPURA_FISH_CAKE.get())) return SaltedFriedChickenDelight.FRIED_TEMPURA_FISH_CAKE.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_SQUID_BALL.get())) return SaltedFriedChickenDelight.FRIED_SQUID_BALL.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_FRIES.get())) return SaltedFriedChickenDelight.FRIED_FRIES.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_SWEET_POTATO_FRIES.get())) return SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get();
+        return null;
+    }
+    public static boolean isCookedOutput(ItemStack food) {
+        if (food == null || food.isEmpty()) return false;
+        return food.is(SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_TEMPURA_FISH_CAKE.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_SQUID_BALL.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_FRIES.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get());
+    }
+    public static boolean isValidCookedBatch(List<ItemStack> foods, int maxPortions) {
+        if (foods == null || foods.isEmpty() || foods.size() > 64 || maxPortions <= 0) return false;
+        int portions = FriedBatchData.countPortions(foods);
+        return portions > 0 && portions <= maxPortions
+            && foods.stream().allMatch(food -> isCookedOutput(food)
+                && food.getCount() > 0 && food.getCount() <= food.getMaxStackSize());
+    }
+    public static List<ItemStack> cook(List<ItemStack> raw) {
+        List<ItemStack> cooked = new ArrayList<>();
+        if (raw == null || raw.isEmpty() || FriedBatchData.countPortions(raw) > FryingBasketBlockEntity.MAX_PIECES) return List.of();
+        for (ItemStack stack : raw) {
+            if (stack == null || stack.isEmpty() || stack.getCount() <= 0
+                    || stack.getCount() > stack.getMaxStackSize()) return List.of();
+            Item item = output(stack);
+            if (item == null) return List.of();
+            ItemStack result = new ItemStack(item, stack.getCount());
+            if (result.getCount() > result.getMaxStackSize()) return List.of();
+            boolean merged = false;
+            for (ItemStack existing : cooked) {
+                if (ItemStack.isSameItemSameComponents(existing, result)) {
+                    if (existing.getCount() + result.getCount() <= existing.getMaxStackSize()) {
+                        existing.grow(result.getCount());
+                        merged = true;
+                    }
+                    break;
+                }
+            }
+            if (!merged) cooked.add(result);
+        }
+        return cooked;
+    }
+}

@@ -1,6 +1,10 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,6 +20,11 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Bag holds five total portions; box holds ten, regardless of varieties. */
 public class FriedPackagingBlock extends BaseEntityBlock {
+    public static final MapCodec<FriedPackagingBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BlockBehaviour.propertiesCodec(),
+            Codec.intRange(1, 64).fieldOf("capacity").forGetter(block -> block.capacity)
+    ).apply(instance, FriedPackagingBlock::new));
+    @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
     private final int capacity;
     public FriedPackagingBlock(Properties properties, int capacity) { super(properties); this.capacity = capacity; }
     @Override public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new FriedPackagingBlockEntity(pos, state); }

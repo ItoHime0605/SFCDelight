@@ -1,6 +1,7 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -19,6 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** First playable interaction slice: one physical stack of up to eight baskets. */
 public class FriedFoodCartBlock extends BaseEntityBlock {
+    public static final MapCodec<FriedFoodCartBlock> CODEC = simpleCodec(FriedFoodCartBlock::new);
+    @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
     public FriedFoodCartBlock(Properties properties) { super(properties); }
 
     @Override

@@ -26,12 +26,13 @@ jobs:
           java-version: '21'
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.5'
       - name: Build NeoForge mod
         shell: bash
         run: |
-          chmod +x ./gradlew
           set -o pipefail
-          ./gradlew --no-daemon --stacktrace build 2>&1 | tee gradle-build.log
+          gradle --no-daemon --stacktrace build 2>&1 | tee gradle-build.log
       - name: Upload build diagnostics
         if: always()
         uses: actions/upload-artifact@v4

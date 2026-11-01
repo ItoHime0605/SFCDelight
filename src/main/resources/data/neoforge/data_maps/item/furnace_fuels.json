@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "sfcdelight:oily_waste_paper_bag",
+      "burn_time": 1600
+    },
+    {
+      "id": "sfcdelight:oily_waste_paper_box",
+      "burn_time": 1600
+    }
+  ]
+}

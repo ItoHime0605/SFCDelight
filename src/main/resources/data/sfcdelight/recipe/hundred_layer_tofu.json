@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "vegandelight:silken_tofu",
+    "vegandelight:silken_tofu",
+    "sfcdelight:wheat_flour",
+    "culturaldelights:cooking_oil"
+  ],
+  "result": {
+    "id": "sfcdelight:hundred_layer_tofu",
+    "count": 4
+  }
+}

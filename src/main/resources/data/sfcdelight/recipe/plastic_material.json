@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "CLC",
+    "BCB"
+  ],
+  "key": {
+    "B": "minecraft:bone_meal",
+    "C": "minecraft:coal",
+    "L": "minecraft:clay"
+  },
+  "result": {
+    "id": "sfcdelight:plastic_material",
+    "count": 4
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "textures": {
+    "oil": "sfcdelight:block/fryer_oil_original",
+    "particle": "sfcdelight:block/fryer_oil_original"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        2,
+        1
+      ],
+      "to": [
+        15,
+        3,
+        15
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        },
+        "north": {
+          "texture": "#oil"
+        },
+        "south": {
+          "texture": "#oil"
+        },
+        "east": {
+          "texture": "#oil"
+        },
+        "west": {
+          "texture": "#oil"
+        }
+      }
+    }
+  ]
+}

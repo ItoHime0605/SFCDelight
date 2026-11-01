@@ -17,6 +17,7 @@ public final class FryingRecipes {
         if (input.is(SaltedFriedChickenDelight.RAW_SWEET_POTATO_FRIES.get())) return SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get();
         return null;
     }
+    /** Only food produced by this fryer's recipes may be restored as cooked food. */
     public static boolean isCookedOutput(ItemStack food) {
         if (food == null || food.isEmpty()) return false;
         return food.is(SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get())
@@ -25,6 +26,8 @@ public final class FryingRecipes {
             || food.is(SaltedFriedChickenDelight.FRIED_FRIES.get())
             || food.is(SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get());
     }
+
+    /** Validate every entry before changing the world or consuming a held basket. */
     public static boolean isValidCookedBatch(List<ItemStack> foods, int maxPortions) {
         if (foods == null || foods.isEmpty() || foods.size() > 64 || maxPortions <= 0) return false;
         int portions = FriedBatchData.countPortions(foods);
@@ -32,18 +35,22 @@ public final class FryingRecipes {
             && foods.stream().allMatch(food -> isCookedOutput(food)
                 && food.getCount() > 0 && food.getCount() <= food.getMaxStackSize());
     }
+
     public static List<ItemStack> cook(List<ItemStack> raw) {
         List<ItemStack> cooked = new ArrayList<>();
         if (raw == null || raw.isEmpty() || raw.size() > 64) return List.of();
         int portions = FriedBatchData.countPortions(raw);
         if (portions <= 0 || portions > FryingBasketBlockEntity.MAX_PIECES) return List.of();
         for (ItemStack stack : raw) {
+            // Reject malformed or externally edited ingredient stacks before producing food.
             if (stack == null || stack.isEmpty() || stack.getCount() <= 0
                     || stack.getCount() > stack.getMaxStackSize()) return List.of();
             Item item = output(stack);
             if (item == null) return List.of();
             ItemStack result = new ItemStack(item, stack.getCount());
             if (result.getCount() > result.getMaxStackSize()) return List.of();
+            // Combine only when the destination stack has enough room.
+            // Otherwise preserve the second stack instead of exceeding its limit.
             boolean merged = false;
             for (ItemStack existing : cooked) {
                 if (ItemStack.isSameItemSameComponents(existing, result)

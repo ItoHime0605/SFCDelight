@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "oceansdelight:tentacles",
+    "sfcdelight:wheat_flour",
+    "sfcdelight:wheat_flour"
+  ],
+  "result": {
+    "id": "sfcdelight:battered_squid_tentacles",
+    "count": 2
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "oceansdelight"
+    }
+  ]
+}

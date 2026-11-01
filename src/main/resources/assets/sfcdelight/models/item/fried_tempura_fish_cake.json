@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sfcdelight:item/raw_tempura_fish_cake"
+  }
+}

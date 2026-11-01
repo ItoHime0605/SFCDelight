@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "sfcdelight:raw_chicken_dice",
+    "sfcdelight:raw_cod_dice",
+    "sfcdelight:dried_tofu",
+    "sfcdelight:hundred_layer_tofu",
+    "sfcdelight:rice_blood_cake",
+    "sfcdelight:coagulated_duck_blood",
+    "sfcdelight:raw_tempura_fish_cake",
+    "sfcdelight:raw_squid_ball",
+    "sfcdelight:raw_fries",
+    "sfcdelight:raw_sweet_potato_fries",
+    "sfcdelight:battered_squid_tentacles"
+  ]
+}

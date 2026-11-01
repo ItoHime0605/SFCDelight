@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": "sfcdelight:battered_squid_tentacles",
+  "result": {
+    "id": "sfcdelight:fried_squid_tentacles"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
+}

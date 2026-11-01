@@ -1,0 +1,190 @@
+{
+  "textures": {
+    "oil": "sfcdelight:block/fryer_oil_original",
+    "particle": "sfcdelight:block/fryer_oil_original"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        2,
+        1
+      ],
+      "to": [
+        15,
+        3,
+        15
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        },
+        "north": {
+          "texture": "#oil"
+        },
+        "south": {
+          "texture": "#oil"
+        },
+        "east": {
+          "texture": "#oil"
+        },
+        "west": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        3,
+        2
+      ],
+      "to": [
+        3,
+        3.12,
+        3
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        3,
+        7
+      ],
+      "to": [
+        10,
+        3.12,
+        8
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        3,
+        12
+      ],
+      "to": [
+        5,
+        3.12,
+        13
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        11,
+        3,
+        5
+      ],
+      "to": [
+        12,
+        3.12,
+        6
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        3,
+        10
+      ],
+      "to": [
+        7,
+        3.12,
+        11
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        3,
+        3
+      ],
+      "to": [
+        14,
+        3.12,
+        4
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        3,
+        8
+      ],
+      "to": [
+        9,
+        3.12,
+        9
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        3,
+        13
+      ],
+      "to": [
+        4,
+        3.12,
+        14
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    },
+    {
+      "from": [
+        10,
+        3,
+        6
+      ],
+      "to": [
+        11,
+        3.12,
+        7
+      ],
+      "faces": {
+        "up": {
+          "texture": "#oil"
+        }
+      }
+    }
+  ]
+}

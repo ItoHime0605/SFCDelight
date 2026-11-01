@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "submerged=false,lifting=false,raised=false": {
+      "model": "sfcdelight:block/frying_basket"
+    },
+    "submerged=false,lifting=false,raised=true": {
+      "model": "sfcdelight:block/frying_basket"
+    },
+    "submerged=false,lifting=true,raised=false": {
+      "model": "sfcdelight:block/frying_basket"
+    },
+    "submerged=false,lifting=true,raised=true": {
+      "model": "sfcdelight:block/frying_basket"
+    },
+    "submerged=true,lifting=false,raised=false": {
+      "model": "sfcdelight:block/frying_basket_submerged"
+    },
+    "submerged=true,lifting=false,raised=true": {
+      "model": "sfcdelight:block/frying_basket_raised"
+    },
+    "submerged=true,lifting=true,raised=false": {
+      "model": "sfcdelight:block/frying_basket_lifting"
+    },
+    "submerged=true,lifting=true,raised=true": {
+      "model": "sfcdelight:block/frying_basket_raised"
+    }
+  }
+}

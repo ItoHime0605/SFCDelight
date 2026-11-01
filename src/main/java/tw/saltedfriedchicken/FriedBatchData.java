@@ -60,7 +60,7 @@ public final class FriedBatchData {
             for (int i = 0; i < list.size(); i++) {
                 if (!(list.get(i) instanceof CompoundTag)) return List.of();
                 ItemStack food = ItemStack.parseOptional(registries, list.getCompound(i));
-                if (food.isEmpty() || food.getCount() <= 0 || food.getCount() > food.getMaxStackSize()) return List.of();
+                if (food.isEmpty() || food.getCount() <= 0 || food.getCount() > food.getMaxStackSize()) return List.of(); // Reject the entire corrupt batch.
                 foods.add(food);
             }
         } else if (tag.contains("FriedFood")) {
@@ -86,6 +86,8 @@ public final class FriedBatchData {
 
     /** Count distinct foods including data components (seasoning, custom variants, etc.). */
     public static int countDistinctTypes(List<ItemStack> foods) {
+        // A corrupt batch must never pass a caller's five-variety capacity check.
+        // Match countPortions(): return a sentinel greater than any legal capacity.
         if (foods == null || foods.size() > 64) return Integer.MAX_VALUE;
         List<ItemStack> unique = new ArrayList<>();
         for (ItemStack food : foods) {
@@ -100,12 +102,14 @@ public final class FriedBatchData {
         return unique.size();
     }
 
+
     public static ItemStack read(ItemStack container, HolderLookup.Provider registries) {
         List<ItemStack> foods = readAll(container, registries);
         return foods.size() == 1 ? foods.get(0).copy() : ItemStack.EMPTY;
     }
     public static ItemStack transfer(ItemStack from, Item to) {
         if (from == null || from.isEmpty() || to == null) return ItemStack.EMPTY;
+        // Do not create a seemingly filled container from an empty or unencoded source.
         CustomData data = from.get(DataComponents.CUSTOM_DATA);
         if (data == null) return ItemStack.EMPTY;
         CompoundTag payload = data.copyTag();

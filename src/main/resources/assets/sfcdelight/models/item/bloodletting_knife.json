@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "sfcdelight:item/bloodletting_knife"
+  }
+}

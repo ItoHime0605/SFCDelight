@@ -14,19 +14,20 @@ public class FryingStationBlockEntity extends BlockEntity {
     public FryingStationBlockEntity(BlockPos pos, BlockState state) { super(SaltedFriedChickenDelight.FRYER_ENTITY.get(), pos, state); }
     public int charges() { return charges; }
     public boolean isFrying() { return frying; }
+    /** For the future fryer-basket cooking controller; only a successful cook may consume oil. */
     public void setFrying(boolean active) {
-        if (frying == active) return;
+        if (level == null || level.isClientSide || frying == active) return;
         frying = active;
         update();
     }
     public boolean addOil() {
-        if (charges > 18) return false;
+        if (level == null || level.isClientSide || charges > 18) return false; // require room for both charges; no partial consumption
         charges += 2;
         update();
         return true;
     }
     public boolean consumeFryingCharge() {
-        if (charges <= 0) return false;
+        if (level == null || level.isClientSide || charges <= 0) return false;
         charges--;
         update();
         return true;
@@ -44,11 +45,13 @@ public class FryingStationBlockEntity extends BlockEntity {
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("FryingCharges", charges);
+        // Persistent oil charges only; active smoke is transient and recalculated by the basket.
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         charges = Math.max(0, Math.min(20, tag.getInt("FryingCharges")));
-        frying = level != null && level.isClientSide && tag.getBoolean("ActiveFrying");
+        // The active state is transient; it is only sent through block-entity update data.
+        frying = tag.getBoolean("ActiveFrying");
     }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = saveWithoutMetadata(registries);

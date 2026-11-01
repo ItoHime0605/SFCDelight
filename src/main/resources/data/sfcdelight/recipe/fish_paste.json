@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "farmersdelight:cod_slice",
+    "farmersdelight:cod_slice",
+    "sfcdelight:wheat_flour",
+    "#sfcdelight:salt"
+  ],
+  "result": {
+    "id": "sfcdelight:fish_paste",
+    "count": 4
+  }
+}

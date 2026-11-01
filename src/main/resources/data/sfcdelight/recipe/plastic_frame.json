@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P P",
+    " B ",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "tag": "sfcdelight:plastic_material"
+    },
+    "B": "minecraft:bucket"
+  },
+  "result": {
+    "id": "sfcdelight:plastic_frame",
+    "count": 1
+  }
+}

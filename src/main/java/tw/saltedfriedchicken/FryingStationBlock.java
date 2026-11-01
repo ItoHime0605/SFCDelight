@@ -1,6 +1,7 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class FryingStationBlock extends BaseEntityBlock {
+    public static final MapCodec<FryingStationBlock> CODEC = simpleCodec(FryingStationBlock::new);
+    @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
     public static final IntegerProperty INDICATOR = IntegerProperty.create("indicator", 0, 6);
     public FryingStationBlock(Properties properties) {
         super(properties);

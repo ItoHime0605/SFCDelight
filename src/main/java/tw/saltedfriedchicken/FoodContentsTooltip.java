@@ -16,7 +16,7 @@ public final class FoodContentsTooltip {
         List<String> names = new ArrayList<>();
         List<Integer> amounts = new ArrayList<>();
         for (ItemStack stack : stacks) {
-            if (stack.isEmpty()) continue;
+            if (stack == null || stack.isEmpty()) continue;
             String name = stack.getHoverName().getString();
             int index = names.indexOf(name);
             if (index >= 0) amounts.set(index, amounts.get(index) + stack.getCount());
@@ -36,6 +36,7 @@ public final class FoodContentsTooltip {
     }
 
     public static Component fromContainer(ItemStack container, boolean cooked) {
+        if (container == null || container.isEmpty()) return Component.literal("內含：無");
         ItemContainerContents contents = container.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
         return summarize(contents.stream().toList(), cooked);
     }

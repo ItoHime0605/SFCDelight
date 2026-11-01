@@ -1,4 +1,4 @@
-plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.+' }
+plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.148' }
 version = project.mod_version
 group = 'tw.saltedfriedchicken'
 base { archivesName = 'SaltedFriedChickenDelight' }

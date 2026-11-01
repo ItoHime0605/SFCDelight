@@ -34,7 +34,9 @@ public final class FryingRecipes {
     }
     public static List<ItemStack> cook(List<ItemStack> raw) {
         List<ItemStack> cooked = new ArrayList<>();
-        if (raw == null || raw.isEmpty() || FriedBatchData.countPortions(raw) > FryingBasketBlockEntity.MAX_PIECES) return List.of();
+        if (raw == null || raw.isEmpty() || raw.size() > 64) return List.of();
+        int portions = FriedBatchData.countPortions(raw);
+        if (portions <= 0 || portions > FryingBasketBlockEntity.MAX_PIECES) return List.of();
         for (ItemStack stack : raw) {
             if (stack == null || stack.isEmpty() || stack.getCount() <= 0
                     || stack.getCount() > stack.getMaxStackSize()) return List.of();
@@ -44,11 +46,10 @@ public final class FryingRecipes {
             if (result.getCount() > result.getMaxStackSize()) return List.of();
             boolean merged = false;
             for (ItemStack existing : cooked) {
-                if (ItemStack.isSameItemSameComponents(existing, result)) {
-                    if (existing.getCount() + result.getCount() <= existing.getMaxStackSize()) {
-                        existing.grow(result.getCount());
-                        merged = true;
-                    }
+                if (ItemStack.isSameItemSameComponents(existing, result)
+                        && existing.getCount() <= existing.getMaxStackSize() - result.getCount()) {
+                    existing.grow(result.getCount());
+                    merged = true;
                     break;
                 }
             }

@@ -1,6 +1,7 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -17,6 +18,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class DeOilerBlock extends BaseEntityBlock {
+    public static final MapCodec<DeOilerBlock> CODEC = simpleCodec(DeOilerBlock::new);
+    @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
     public DeOilerBlock(Properties properties) { super(properties); }
     @Override public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new DeOilerBlockEntity(pos, state); }
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }

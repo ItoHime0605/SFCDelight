@@ -5,6 +5,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.entity.animal.Pig;
@@ -38,19 +39,19 @@ public class SaltedFriedChickenDelight {
     public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedFoodCartBlockEntity>> CART_ENTITY = BLOCK_ENTITIES.register("fried_food_cart", () -> BlockEntityType.Builder.of(FriedFoodCartBlockEntity::new, CART.get()).build(null));
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
-    public static final DeferredItem<Item> PAPER_BAG_ITEM = ITEMS.registerSimpleBlockItem("paper_bag", PAPER_BAG);
-    public static final DeferredItem<Item> PAPER_BOX_ITEM = ITEMS.registerSimpleBlockItem("paper_box", PAPER_BOX);
+    public static final DeferredItem<BlockItem> PAPER_BAG_ITEM = ITEMS.registerSimpleBlockItem("paper_bag", PAPER_BAG);
+    public static final DeferredItem<BlockItem> PAPER_BOX_ITEM = ITEMS.registerSimpleBlockItem("paper_box", PAPER_BOX);
     public static final DeferredItem<Item> OILY_WASTE_PAPER_BAG = ITEMS.registerSimpleItem("oily_waste_paper_bag", new Item.Properties().stacksTo(64));
     public static final DeferredItem<Item> OILY_WASTE_PAPER_BOX = ITEMS.registerSimpleItem("oily_waste_paper_box", new Item.Properties().stacksTo(64));
     public static final DeferredItem<Item> FILLED_PAPER_BAG = ITEMS.register("filled_paper_bag", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> FILLED_PAPER_BOX = ITEMS.register("filled_paper_box", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> DEOILER_ITEM = ITEMS.registerSimpleBlockItem("de_oiler", DEOILER);
+    public static final DeferredItem<BlockItem> DEOILER_ITEM = ITEMS.registerSimpleBlockItem("de_oiler", DEOILER);
     public static final DeferredItem<Item> HOT_FOOD_BASKET = ITEMS.register("hot_food_basket", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> STEEL_SCOOP = ITEMS.registerSimpleItem("steel_scoop", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> LOADED_STEEL_SCOOP = ITEMS.register("loaded_steel_scoop", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> COOKING_OIL = ITEMS.registerSimpleItem("cooking_oil", new Item.Properties());
-    public static final DeferredItem<Item> FRYING_BASKET_ITEM = ITEMS.registerSimpleBlockItem("frying_basket", FRYING_BASKET_BLOCK);
-    public static final DeferredItem<Item> FRYER_ITEM = ITEMS.registerSimpleBlockItem("frying_station", FRYER);
+    public static final DeferredItem<BlockItem> FRYING_BASKET_ITEM = ITEMS.registerSimpleBlockItem("frying_basket", FRYING_BASKET_BLOCK);
+    public static final DeferredItem<BlockItem> FRYER_ITEM = ITEMS.registerSimpleBlockItem("frying_station", FRYER);
     public static final DeferredItem<Item> KNIFE = ITEMS.register("bloodletting_knife", () ->
         new SwordItem(Tiers.IRON, new Item.Properties().durability(128).attributes(
             SwordItem.createAttributes(Tiers.IRON, 2, -2.4f)))); // 1 base + 2 tier + 2 bonus = 5
@@ -79,7 +80,7 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> PLASTIC_MATERIAL = ITEMS.registerSimpleItem("plastic_material", new Item.Properties());
     public static final DeferredItem<Item> PLASTIC_FRAME = ITEMS.registerSimpleItem("plastic_frame", new Item.Properties());
     public static final DeferredItem<Item> IRON_TONGS = ITEMS.registerSimpleItem("iron_tongs", new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> CART_ITEM = ITEMS.registerSimpleBlockItem("fried_food_cart", CART);
+    public static final DeferredItem<BlockItem> CART_ITEM = ITEMS.registerSimpleBlockItem("fried_food_cart", CART);
     public static final DeferredItem<Item> PLASTIC_BASKET = ITEMS.register("plastic_basket", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> PLASTIC_BASKET_WHITE = ITEMS.register("plastic_basket_white", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));

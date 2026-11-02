@@ -10,5 +10,11 @@
   "result": {
     "id": "sfcdelight:fish_paste",
     "count": 4
-  }
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ]
 }

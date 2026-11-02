@@ -1,132 +1,28 @@
 {
   "variants": {
-    "facing=north,submerged=false,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 0
+    "submerged=false,lifting=false,raised=false": {
+      "model": "sfcdelight:block/frying_basket"
     },
-    "facing=east,submerged=false,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 90
+    "submerged=false,lifting=false,raised=true": {
+      "model": "sfcdelight:block/frying_basket"
     },
-    "facing=south,submerged=false,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 180
+    "submerged=false,lifting=true,raised=false": {
+      "model": "sfcdelight:block/frying_basket"
     },
-    "facing=west,submerged=false,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 270
+    "submerged=false,lifting=true,raised=true": {
+      "model": "sfcdelight:block/frying_basket"
     },
-    "facing=north,submerged=false,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 0
+    "submerged=true,lifting=false,raised=false": {
+      "model": "sfcdelight:block/frying_basket_submerged"
     },
-    "facing=east,submerged=false,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 90
+    "submerged=true,lifting=false,raised=true": {
+      "model": "sfcdelight:block/frying_basket_raised"
     },
-    "facing=south,submerged=false,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 180
+    "submerged=true,lifting=true,raised=false": {
+      "model": "sfcdelight:block/frying_basket_lifting"
     },
-    "facing=west,submerged=false,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 270
-    },
-    "facing=north,submerged=false,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 0
-    },
-    "facing=east,submerged=false,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 90
-    },
-    "facing=south,submerged=false,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 180
-    },
-    "facing=west,submerged=false,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 270
-    },
-    "facing=north,submerged=false,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 0
-    },
-    "facing=east,submerged=false,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 90
-    },
-    "facing=south,submerged=false,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 180
-    },
-    "facing=west,submerged=false,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket",
-      "y": 270
-    },
-    "facing=north,submerged=true,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket_submerged",
-      "y": 0
-    },
-    "facing=east,submerged=true,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket_submerged",
-      "y": 90
-    },
-    "facing=south,submerged=true,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket_submerged",
-      "y": 180
-    },
-    "facing=west,submerged=true,lifting=false,raised=false": {
-      "model": "sfcdelight:block/frying_basket_submerged",
-      "y": 270
-    },
-    "facing=north,submerged=true,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 0
-    },
-    "facing=east,submerged=true,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 90
-    },
-    "facing=south,submerged=true,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 180
-    },
-    "facing=west,submerged=true,lifting=false,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 270
-    },
-    "facing=north,submerged=true,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket_lifting",
-      "y": 0
-    },
-    "facing=east,submerged=true,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket_lifting",
-      "y": 90
-    },
-    "facing=south,submerged=true,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket_lifting",
-      "y": 180
-    },
-    "facing=west,submerged=true,lifting=true,raised=false": {
-      "model": "sfcdelight:block/frying_basket_lifting",
-      "y": 270
-    },
-    "facing=north,submerged=true,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 0
-    },
-    "facing=east,submerged=true,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 90
-    },
-    "facing=south,submerged=true,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 180
-    },
-    "facing=west,submerged=true,lifting=true,raised=true": {
-      "model": "sfcdelight:block/frying_basket_raised",
-      "y": 270
+    "submerged=true,lifting=true,raised=true": {
+      "model": "sfcdelight:block/frying_basket_raised"
     }
   }
 }

@@ -5,6 +5,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -43,6 +44,8 @@ public class SaltedFriedChickenDelight {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedPackagingBlockEntity>> PACKAGING_ENTITY = BLOCK_ENTITIES.register("fried_packaging", () -> BlockEntityType.Builder.of(FriedPackagingBlockEntity::new, PAPER_BAG.get(), PAPER_BOX.get()).build(null));
     public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedFoodCartBlockEntity>> CART_ENTITY = BLOCK_ENTITIES.register("fried_food_cart", () -> BlockEntityType.Builder.of(FriedFoodCartBlockEntity::new, CART.get()).build(null));
+    public static final DeferredBlock<Block> BASIL_CROP = BLOCKS.register("basil_crop", () -> new HerbCropBlock(Block.Properties.of().noCollission().randomTicks().instabreak().noOcclusion(), true));
+    public static final DeferredBlock<Block> GARLIC_CROP = BLOCKS.register("garlic_crop", () -> new HerbCropBlock(Block.Properties.of().noCollission().randomTicks().instabreak().noOcclusion(), false));
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB, MOD_ID);
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_TABS.register("sfcdelight", () -> CreativeModeTab.builder()
@@ -50,6 +53,10 @@ public class SaltedFriedChickenDelight {
             .icon(() -> new ItemStack(FRYER_ITEM.get()))
             .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
             .build());
+    public static final DeferredItem<Item> BASIL_SEEDS = ITEMS.register("basil_seeds", () -> new ItemNameBlockItem(BASIL_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> BASIL = ITEMS.registerSimpleItem("basil", new Item.Properties());
+    public static final DeferredItem<Item> GARLIC = ITEMS.registerSimpleItem("garlic", new Item.Properties());
+    public static final DeferredItem<Item> GARLIC_CLOVE = ITEMS.register("garlic_clove", () -> new ItemNameBlockItem(GARLIC_CROP.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> PAPER_BAG_ITEM = ITEMS.registerSimpleBlockItem("paper_bag", PAPER_BAG);
     public static final DeferredItem<BlockItem> PAPER_BOX_ITEM = ITEMS.registerSimpleBlockItem("paper_box", PAPER_BOX);
     public static final DeferredItem<Item> OILY_WASTE_PAPER_BAG = ITEMS.registerSimpleItem("oily_waste_paper_bag", new Item.Properties().stacksTo(64));

@@ -25,6 +25,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @Mod(SaltedFriedChickenDelight.MOD_ID)
 public class SaltedFriedChickenDelight {
     public static final String MOD_ID = "sfcdelight";
+    public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(net.minecraft.core.registries.Registries.RECIPE_SERIALIZER, MOD_ID);
+    public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>, PepperRefillRecipe.Serializer> PEPPER_REFILL_SERIALIZER = RECIPE_SERIALIZERS.register("pepper_refill", PepperRefillRecipe.Serializer::new);
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(net.minecraft.core.registries.Registries.BLOCK_ENTITY_TYPE, MOD_ID);
     public static final DeferredBlock<Block> PEPPER_JAR_BLOCK = BLOCKS.register("pepper_jar", () -> new PepperJarBlock(Block.Properties.of().strength(0.5f).noOcclusion()));
@@ -104,6 +106,7 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> PLASTIC_BASKET_BLACK = ITEMS.register("plastic_basket_black", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));
 
     public SaltedFriedChickenDelight(IEventBus modBus) {
+        RECIPE_SERIALIZERS.register(modBus);
         BLOCKS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
         ITEMS.register(modBus);

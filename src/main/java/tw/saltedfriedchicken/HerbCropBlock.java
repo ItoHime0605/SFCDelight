@@ -1,20 +1,17 @@
 package tw.saltedfriedchicken;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class HerbCropBlock extends CropBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     private final boolean basil;
+
+    // Four stages: ages 0, 1, 2, and mature age 3.
 
     public HerbCropBlock(Properties properties, boolean basil) {
         super(properties);

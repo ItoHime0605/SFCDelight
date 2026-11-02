@@ -50,7 +50,7 @@ public class SaltedFriedChickenDelight {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB, MOD_ID);
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_TABS.register("sfcdelight", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.sfcdelight"))
-            .icon(() -> new ItemStack(FRYER_ITEM.get()))
+            .icon(SaltedFriedChickenDelight::creativeTabIcon)
             .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
             .build());
     public static final DeferredItem<Item> BASIL_SEEDS = ITEMS.register("basil_seeds", () -> new ItemNameBlockItem(BASIL_CROP.get(), new Item.Properties()));
@@ -119,6 +119,8 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> PLASTIC_BASKET_GREEN = ITEMS.register("plastic_basket_green", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PLASTIC_BASKET_RED = ITEMS.register("plastic_basket_red", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PLASTIC_BASKET_BLACK = ITEMS.register("plastic_basket_black", () -> new PlasticFoodBasketItem(new Item.Properties().stacksTo(1)));
+
+    private static ItemStack creativeTabIcon() { return new ItemStack(FRYER_ITEM.get()); }
 
     public SaltedFriedChickenDelight(IEventBus modBus) {
         RECIPE_SERIALIZERS.register(modBus);

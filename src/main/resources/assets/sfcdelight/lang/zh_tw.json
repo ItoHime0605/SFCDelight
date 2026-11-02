@@ -66,5 +66,11 @@
   "item.sfcdelight.oily_waste_paper_box": "沾滿油的廢紙盒",
   "item.sfcdelight.white_pepper_powder": "白胡椒粉",
   "item.sfcdelight.pepper_shaker": "調味罐",
-  "itemGroup.sfcdelight": "鹹酥雞樂事"
+  "itemGroup.sfcdelight": "鹹酥雞樂事",
+  "item.sfcdelight.basil_seeds": "九層塔種子",
+  "item.sfcdelight.basil": "九層塔",
+  "item.sfcdelight.garlic": "蒜頭",
+  "item.sfcdelight.garlic_clove": "蒜瓣",
+  "block.sfcdelight.basil_crop": "九層塔",
+  "block.sfcdelight.garlic_crop": "蒜頭"
 }

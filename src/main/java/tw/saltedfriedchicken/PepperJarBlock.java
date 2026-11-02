@@ -2,6 +2,8 @@ package tw.saltedfriedchicken;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.storage.loot.LootParams;
+import java.util.List;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +32,12 @@ public final class PepperJarBlock extends Block {
     @Override protected MapCodec<? extends Block> codec() { return CODEC; }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(CHARGES);
+    }
+    /** Preserve charges in drops, including ordinary mining and explosions. */
+    @Override protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        ItemStack jar = new ItemStack(SaltedFriedChickenDelight.PEPPER_SHAKER.get());
+        PepperShakerItem.setCharges(jar, state.getValue(CHARGES));
+        return List.of(jar);
     }
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
     @Override protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "minecraft:chicken"
+  ],
+  "result": {
+    "id": "sfcdelight:raw_chicken_dice",
+    "count": 4
+  }
+}

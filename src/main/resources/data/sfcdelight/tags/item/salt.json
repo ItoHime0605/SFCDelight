@@ -1,7 +1,13 @@
 {
   "replace": false,
   "values": [
-    "vegandelight:salt",
-    "culturaldelights:salt"
+    {
+      "id": "vegandelight:salt",
+      "required": false
+    },
+    {
+      "id": "culturaldelights:salt",
+      "required": false
+    }
   ]
 }

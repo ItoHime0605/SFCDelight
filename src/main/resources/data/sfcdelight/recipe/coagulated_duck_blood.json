@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "sfcdelight:raw_duck_blood",
+    "minecraft:water_bucket"
+  ],
+  "result": {
+    "id": "sfcdelight:coagulated_duck_blood",
+    "count": 4
+  }
+}

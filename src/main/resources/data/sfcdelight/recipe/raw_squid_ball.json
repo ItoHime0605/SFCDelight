@@ -10,5 +10,11 @@
   "result": {
     "id": "sfcdelight:raw_squid_ball",
     "count": 4
-  }
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "oceansdelight"
+    }
+  ]
 }

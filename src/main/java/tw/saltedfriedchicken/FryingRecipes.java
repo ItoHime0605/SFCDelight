@@ -20,6 +20,7 @@ public final class FryingRecipes {
         if (input.is(SaltedFriedChickenDelight.DRIED_TOFU.get())) return SaltedFriedChickenDelight.FRIED_DRIED_TOFU.get();
         if (input.is(SaltedFriedChickenDelight.HUNDRED_LAYER_TOFU.get())) return SaltedFriedChickenDelight.FRIED_HUNDRED_LAYER_TOFU.get();
         if (input.is(SaltedFriedChickenDelight.RICE_BLOOD_CAKE.get())) return SaltedFriedChickenDelight.FRIED_RICE_BLOOD_CAKE.get();
+        if (input.is(SaltedFriedChickenDelight.COAGULATED_DUCK_BLOOD.get())) return SaltedFriedChickenDelight.FRIED_DUCK_BLOOD.get();
         return null;
     }
     /** Only food produced by this fryer's recipes may be restored as cooked food. */
@@ -34,7 +35,8 @@ public final class FryingRecipes {
             || food.is(SaltedFriedChickenDelight.FRIED_COD_DICE.get())
             || food.is(SaltedFriedChickenDelight.FRIED_DRIED_TOFU.get())
             || food.is(SaltedFriedChickenDelight.FRIED_HUNDRED_LAYER_TOFU.get())
-            || food.is(SaltedFriedChickenDelight.FRIED_RICE_BLOOD_CAKE.get());
+            || food.is(SaltedFriedChickenDelight.FRIED_RICE_BLOOD_CAKE.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_DUCK_BLOOD.get());
     }
 
     /** Validate every entry before changing the world or consuming a held basket. */

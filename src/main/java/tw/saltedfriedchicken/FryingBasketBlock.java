@@ -7,8 +7,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,20 +24,18 @@ import org.jetbrains.annotations.Nullable;
 public class FryingBasketBlock extends BaseEntityBlock {
     public static final MapCodec<FryingBasketBlock> CODEC = simpleCodec(FryingBasketBlock::new);
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
-    /** The handle points toward the player who placed the basket. */
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty SUBMERGED = BooleanProperty.create("submerged");
     public static final BooleanProperty LIFTING = BooleanProperty.create("lifting");
     public static final BooleanProperty RAISED = BooleanProperty.create("raised");
     public FryingBasketBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(SUBMERGED, false).setValue(LIFTING, false).setValue(RAISED, false));
+        registerDefaultState(stateDefinition.any().setValue(SUBMERGED, false).setValue(LIFTING, false).setValue(RAISED, false));
     }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
-        builder.add(FACING, SUBMERGED, LIFTING, RAISED);
+        builder.add(SUBMERGED, LIFTING, RAISED);
     }
     @Override public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(SUBMERGED,
+        return defaultBlockState().setValue(SUBMERGED,
             context.getLevel().getBlockState(context.getClickedPos().below()).getBlock() instanceof FryingStationBlock);
     }
     @Override protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,

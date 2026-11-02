@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sfcdelight:item/iron_tongs"
+    "layer0": "sfcdelight:item/steel_scoop"
   }
 }

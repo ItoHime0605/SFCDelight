@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "culturaldelights:cooking_oil"
+  ],
+  "result": {
+    "id": "sfcdelight:cooking_oil",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "culturaldelights"
+    }
+  ]
+}

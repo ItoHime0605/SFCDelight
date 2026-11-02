@@ -91,6 +91,11 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> FRIED_SQUID_BALL = ITEMS.registerSimpleItem("fried_squid_ball", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(5).saturationModifier(0.5f).build()));
     public static final DeferredItem<Item> FRIED_FRIES = ITEMS.registerSimpleItem("fried_fries", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationModifier(0.4f).build()));
     public static final DeferredItem<Item> FRIED_SWEET_POTATO_FRIES = ITEMS.registerSimpleItem("fried_sweet_potato_fries", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationModifier(0.4f).build()));
+    public static final DeferredItem<Item> FRIED_CHICKEN_DICE = ITEMS.registerSimpleItem("fried_chicken_dice", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(6).saturationModifier(0.7f).build()));
+    public static final DeferredItem<Item> FRIED_COD_DICE = ITEMS.registerSimpleItem("fried_cod_dice", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(5).saturationModifier(0.6f).build()));
+    public static final DeferredItem<Item> FRIED_DRIED_TOFU = ITEMS.registerSimpleItem("fried_dried_tofu", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationModifier(0.5f).build()));
+    public static final DeferredItem<Item> FRIED_HUNDRED_LAYER_TOFU = ITEMS.registerSimpleItem("fried_hundred_layer_tofu", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(5).saturationModifier(0.6f).build()));
+    public static final DeferredItem<Item> FRIED_RICE_BLOOD_CAKE = ITEMS.registerSimpleItem("fried_rice_blood_cake", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(5).saturationModifier(0.6f).build()));
     public static final DeferredItem<Item> RAW_SQUID_BALL = ITEMS.registerSimpleItem("raw_squid_ball", new Item.Properties());
     public static final DeferredItem<Item> RAW_FRIES = ITEMS.registerSimpleItem("raw_fries", new Item.Properties());
     public static final DeferredItem<Item> RAW_SWEET_POTATO_FRIES = ITEMS.registerSimpleItem("raw_sweet_potato_fries", new Item.Properties());

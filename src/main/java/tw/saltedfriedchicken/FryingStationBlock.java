@@ -81,7 +81,7 @@ public class FryingStationBlock extends BaseEntityBlock {
                     || !level.getBlockState(basketPos).canBeReplaced()) return ItemInteractionResult.FAIL;
             if (level.isClientSide) return ItemInteractionResult.SUCCESS;
             BlockState basketState = SaltedFriedChickenDelight.FRYING_BASKET_BLOCK.get()
-                    .defaultBlockState().setValue(FryingBasketBlock.FACING, player.getDirection().getOpposite()).setValue(FryingBasketBlock.SUBMERGED, true);
+                    .defaultBlockState().setValue(FryingBasketBlock.SUBMERGED, true);
             if (!level.setBlock(basketPos, basketState, 3)) return ItemInteractionResult.FAIL;
             if (!(level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity basket)
                     || !basket.restoreCooked(foods)) {

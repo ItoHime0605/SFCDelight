@@ -5,6 +5,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
@@ -42,6 +44,12 @@ public class SaltedFriedChickenDelight {
     public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedFoodCartBlockEntity>> CART_ENTITY = BLOCK_ENTITIES.register("fried_food_cart", () -> BlockEntityType.Builder.of(FriedFoodCartBlockEntity::new, CART.get()).build(null));
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB, MOD_ID);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = CREATIVE_TABS.register("sfcdelight", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.sfcdelight"))
+            .icon(() -> new ItemStack(FRYER_ITEM.get()))
+            .displayItems((parameters, output) -> ITEMS.getEntries().forEach(entry -> output.accept(entry.get())))
+            .build());
     public static final DeferredItem<BlockItem> PAPER_BAG_ITEM = ITEMS.registerSimpleBlockItem("paper_bag", PAPER_BAG);
     public static final DeferredItem<BlockItem> PAPER_BOX_ITEM = ITEMS.registerSimpleBlockItem("paper_box", PAPER_BOX);
     public static final DeferredItem<Item> OILY_WASTE_PAPER_BAG = ITEMS.registerSimpleItem("oily_waste_paper_bag", new Item.Properties().stacksTo(64));
@@ -110,6 +118,7 @@ public class SaltedFriedChickenDelight {
         BLOCKS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
         ITEMS.register(modBus);
+        CREATIVE_TABS.register(modBus);
         NeoForge.EVENT_BUS.register(this);
     }
 

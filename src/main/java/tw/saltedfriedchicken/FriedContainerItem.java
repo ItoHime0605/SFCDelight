@@ -67,7 +67,7 @@ public final class FriedContainerItem extends Item {
             if (spice > 0) {
                 player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,
                         new int[]{0, 300, 600, 1200, 1800}[spice]));
-                if (spice == 4) player.setSecondsOnFire(5);
+                if (spice == 4) player.igniteForSeconds(5);
             }
             Item replacement = packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get())
                     ? SaltedFriedChickenDelight.OILY_WASTE_PAPER_BAG.get()

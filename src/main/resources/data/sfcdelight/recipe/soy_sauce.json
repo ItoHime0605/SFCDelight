@@ -4,7 +4,7 @@
   "ingredients": [
     "minecraft:wheat",
     "#sfcdelight:salt",
-    "minecraft:water_bucket"
+    "minecraft:glass_bottle"
   ],
   "result": {
     "id": "sfcdelight:soy_sauce",

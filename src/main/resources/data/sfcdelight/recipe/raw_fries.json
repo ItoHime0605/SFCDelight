@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "minecraft:potato"
+  ],
+  "result": {
+    "id": "sfcdelight:raw_fries",
+    "count": 4
+  }
+}

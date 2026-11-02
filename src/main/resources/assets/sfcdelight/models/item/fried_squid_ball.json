@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sfcdelight:item/raw_squid_ball"
+    "layer0": "sfcdelight:item/fried_squid_ball"
   }
 }

@@ -15,6 +15,11 @@ public final class FryingRecipes {
         if (input.is(SaltedFriedChickenDelight.RAW_SQUID_BALL.get())) return SaltedFriedChickenDelight.FRIED_SQUID_BALL.get();
         if (input.is(SaltedFriedChickenDelight.RAW_FRIES.get())) return SaltedFriedChickenDelight.FRIED_FRIES.get();
         if (input.is(SaltedFriedChickenDelight.RAW_SWEET_POTATO_FRIES.get())) return SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_CHICKEN_DICE.get())) return SaltedFriedChickenDelight.FRIED_CHICKEN_DICE.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_COD_DICE.get())) return SaltedFriedChickenDelight.FRIED_COD_DICE.get();
+        if (input.is(SaltedFriedChickenDelight.DRIED_TOFU.get())) return SaltedFriedChickenDelight.FRIED_DRIED_TOFU.get();
+        if (input.is(SaltedFriedChickenDelight.HUNDRED_LAYER_TOFU.get())) return SaltedFriedChickenDelight.FRIED_HUNDRED_LAYER_TOFU.get();
+        if (input.is(SaltedFriedChickenDelight.RICE_BLOOD_CAKE.get())) return SaltedFriedChickenDelight.FRIED_RICE_BLOOD_CAKE.get();
         return null;
     }
     /** Only food produced by this fryer's recipes may be restored as cooked food. */
@@ -24,7 +29,12 @@ public final class FryingRecipes {
             || food.is(SaltedFriedChickenDelight.FRIED_TEMPURA_FISH_CAKE.get())
             || food.is(SaltedFriedChickenDelight.FRIED_SQUID_BALL.get())
             || food.is(SaltedFriedChickenDelight.FRIED_FRIES.get())
-            || food.is(SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get());
+            || food.is(SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_CHICKEN_DICE.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_COD_DICE.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_DRIED_TOFU.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_HUNDRED_LAYER_TOFU.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_RICE_BLOOD_CAKE.get());
     }
 
     /** Validate every entry before changing the world or consuming a held basket. */

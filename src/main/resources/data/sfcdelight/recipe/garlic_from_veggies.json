@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "veggiesdelight:garlic"
+  ],
+  "result": {
+    "id": "sfcdelight:garlic_clove",
+    "count": 4
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "veggiesdelight"
+    }
+  ]
+}

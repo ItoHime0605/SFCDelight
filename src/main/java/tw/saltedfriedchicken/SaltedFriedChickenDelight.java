@@ -41,9 +41,20 @@ public class SaltedFriedChickenDelight {
                 .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.BLOCK_BREAK_SPEED,
                     net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "slippery_mining_speed"),
                     -0.2, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, net.minecraft.world.effect.MobEffect> CHILI_SPEED_LIGHT =
+            EFFECTS.register("chili_speed_light", () -> new WorkshopEffect(net.minecraft.world.effect.MobEffectCategory.BENEFICIAL, 0xE78B45)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "chili_light_speed"),
+                    0.05, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, net.minecraft.world.effect.MobEffect> CHILI_SPEED_STRONG =
+            EFFECTS.register("chili_speed_strong", () -> new WorkshopEffect(net.minecraft.world.effect.MobEffectCategory.BENEFICIAL, 0xF14925)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "chili_strong_speed"),
+                    0.10, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(net.minecraft.core.registries.Registries.BLOCK_ENTITY_TYPE, MOD_ID);
     public static final DeferredBlock<Block> PEPPER_JAR_BLOCK = BLOCKS.register("pepper_jar", () -> new PepperJarBlock(Block.Properties.of().strength(0.5f).noOcclusion()));
+    public static final DeferredBlock<Block> CHILI_JAR_BLOCK = BLOCKS.register("chili_jar", () -> new ChiliJarBlock(Block.Properties.of().strength(0.5f).noOcclusion()));
     public static final DeferredBlock<Block> FRYER = BLOCKS.register("frying_station", () -> new FryingStationBlock(Block.Properties.of().strength(3.0f)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FryingStationBlockEntity>> FRYER_ENTITY = BLOCK_ENTITIES.register("frying_station", () -> BlockEntityType.Builder.of(FryingStationBlockEntity::new, FRYER.get()).build(null));
     public static final DeferredBlock<Block> FRYING_BASKET_BLOCK = BLOCKS.register("frying_basket", () -> new FryingBasketBlock(Block.Properties.of().strength(1.0f).noOcclusion()));
@@ -88,6 +99,10 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> LOADED_STEEL_SCOOP = ITEMS.register("loaded_steel_scoop", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PEPPER_SHAKER = ITEMS.register("pepper_shaker", () -> new PepperJarBlockItem(PEPPER_JAR_BLOCK.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> WHITE_PEPPER_POWDER = ITEMS.register("white_pepper_powder", () -> new WhitePepperItem(new Item.Properties()));
+    public static final DeferredItem<Item> CHILI_POWDER = ITEMS.register("chili_powder", () -> new ChiliPowderItem(new Item.Properties()));
+    public static final DeferredItem<Item> EMPTY_SEASONING_JAR = ITEMS.registerSimpleItem("empty_seasoning_jar", new Item.Properties());
+    public static final DeferredItem<BlockItem> CHILI_SHAKER = ITEMS.register("chili_shaker",
+            () -> new ChiliJarBlockItem(CHILI_JAR_BLOCK.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<BlockItem> PREPARATION_COUNTER_ITEM =
             ITEMS.registerSimpleBlockItem("preparation_counter", PREPARATION_COUNTER);
     public static final DeferredItem<Item> MARINATION_BOX = ITEMS.registerSimpleItem("marination_box", new Item.Properties().stacksTo(16));

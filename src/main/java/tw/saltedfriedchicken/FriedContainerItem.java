@@ -38,6 +38,11 @@ public final class FriedContainerItem extends Item {
             boolean whitePepper = WhitePepperItem.hasWhitePepper(stack);
             tooltip.add(Component.literal(whitePepper ? "調味：白胡椒（每份額外 +0.1 飽和度）" : "調味：原味"));
             tooltip.add(Component.literal("每吃一份：飢餓值 +1，飽和度 +" + (whitePepper ? "0.6" : "0.5")));
+            int chili = ChiliPowderItem.level(stack);
+            String[] names={"原味","微辣","小辣","中辣","大辣"};
+            tooltip.add(Component.literal("辣度："+names[chili]));
+            if (chili>0) tooltip.add(Component.literal(
+                    (chili<3 ? "移動速度 +5%" : "移動速度 +10%") + "，30 秒"));
         }
     }
 
@@ -73,7 +78,16 @@ public final class FriedContainerItem extends Item {
             // One portion restores 1 hunger and exactly 0.5 saturation, or 0.6
             // when seasoned with white pepper, independent of container size.
             boolean whitePepper = WhitePepperItem.hasWhitePepper(packageStack);
+            int chili = ChiliPowderItem.level(packageStack);
             player.getFoodData().eat(1, whitePepper ? 0.30f : 0.25f);
+            if (chili > 0) {
+                // One fixed 30-second effect per serving; do not stack both speeds.
+                player.removeEffect(SaltedFriedChickenDelight.CHILI_SPEED_LIGHT);
+                player.removeEffect(SaltedFriedChickenDelight.CHILI_SPEED_STRONG);
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        chili < 3 ? SaltedFriedChickenDelight.CHILI_SPEED_LIGHT
+                                  : SaltedFriedChickenDelight.CHILI_SPEED_STRONG, 20 * 30));
+            }
             Item replacement = packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get())
                     ? SaltedFriedChickenDelight.OILY_WASTE_PAPER_BAG.get()
                     : SaltedFriedChickenDelight.OILY_WASTE_PAPER_BOX.get();
@@ -81,6 +95,7 @@ public final class FriedContainerItem extends Item {
                     ? new ItemStack(replacement)
                     : FriedBatchData.wrapMany(packageStack.getItem(), remaining, level.registryAccess());
             if (!remaining.isEmpty() && whitePepper) WhitePepperItem.setWhitePepper(next);
+            if (!remaining.isEmpty() && chili > 0) ChiliPowderItem.setLevel(next,chili);
             player.setItemInHand(hand, next);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());

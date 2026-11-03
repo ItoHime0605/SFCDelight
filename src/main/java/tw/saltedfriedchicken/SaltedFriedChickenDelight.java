@@ -134,6 +134,11 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> KNIFE = ITEMS.register("bloodletting_knife", () ->
         new SwordItem(Tiers.IRON, new Item.Properties().durability(128).attributes(
             SwordItem.createAttributes(Tiers.IRON, 2, -2.4f)))); // 1 base + 2 tier + 2 bonus = 5
+    // Dedicated kitchen prep knife. Do not add to general knife tags or ability handlers:
+    // Farmer's Delight's ordinary meat cuts must remain unchanged.
+    public static final DeferredItem<Item> CHICKEN_CUTTING_KNIFE =
+            ITEMS.registerSimpleItem("chicken_cutting_knife", new Item.Properties().durability(256));
+
     public static final DeferredItem<Item> PIG_BLOOD = ITEMS.registerSimpleItem("raw_pig_blood", new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> DUCK_BLOOD = ITEMS.registerSimpleItem("raw_duck_blood", new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> SOY_SAUCE = ITEMS.registerSimpleItem("soy_sauce", new Item.Properties());

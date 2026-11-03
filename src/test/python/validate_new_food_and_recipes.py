@@ -73,7 +73,7 @@ assert "MAX_PIECES = 10" in (SRC/"FryingBasketBlockEntity.java").read_text(encod
 names=["frying_station","de_oiler","frying_basket","steel_scoop",
        "fried_food_cart","paper_bag","paper_box","plastic_basket",
        "basil_seeds","garlic_clove_from_allium","cooking_oil_from_seeds",
-       "raw_chicken_skin","battered_squid_rings"]
+       "chicken_cutting_knife","battered_squid_rings"]
 colors="white orange magenta light_blue yellow lime pink gray light_gray cyan purple blue brown green red black".split()
 names += ["plastic_basket_"+c for c in colors]
 assert len(names)==29
@@ -95,4 +95,4 @@ for name in names:
         assert "sfcdelight:plastic_basket" not in r["key"].values()
     if name=="battered_squid_rings":
         assert r["neoforge:conditions"]==[{"type":"neoforge:mod_loaded","modid":"oceansdelight"}]
-print("PASS: 6 32px sprites, 4 cooked varieties, 29 recipes, 16 safe dye colors, 12-slot cart")
+print("PASS: 6 32px sprites, 4 cooked varieties, 29 crafting recipes, 16 safe dye colors, 12-slot cart")

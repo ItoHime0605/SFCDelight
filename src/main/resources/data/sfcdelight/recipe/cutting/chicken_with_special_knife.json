@@ -1,0 +1,31 @@
+{
+  "type": "farmersdelight:cutting",
+  "ingredients": [
+    {
+      "item": "minecraft:chicken"
+    }
+  ],
+  "result": [
+    {
+      "item": {
+        "id": "sfcdelight:raw_chicken_dice",
+        "count": 4
+      }
+    },
+    {
+      "item": {
+        "id": "sfcdelight:raw_chicken_skin",
+        "count": 2
+      }
+    }
+  ],
+  "tool": {
+    "item": "sfcdelight:chicken_cutting_knife"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ]
+}

@@ -14,6 +14,10 @@ assert "MAX_WASHES = 20" in entity and "waterUses += 2" in entity and "waterUses
 assert "batterClicks < 3" in entity and "MARINATED_CHICKEN_DICE" in entity
 assert "setChanged()" in entity and "saveAdditional" in entity and "loadAdditional" in entity
 assert "onRemove" in block and "bench.drain()" in block
+assert "playerWillDestroy" in block and "player.getAbilities().instabuild" in block
+assert "bench.suppressCounterDrop()" in block and "bench.shouldDropCounter()" in block
+assert "GameRules.RULE_DOBLOCKDROPS" in block and "!moved" in block
+assert "suppressCounterDrop" in entity and "shouldDropCounter()" in entity
 assert "getClockWise()" in block and "getCounterClockWise()" in block
 assert "SLIPPERY_HANDS" in mod and "-0.2" in mod and "BLOCK_BREAK_SPEED" in mod
 assert "player.removeEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS)" in block

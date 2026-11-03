@@ -29,6 +29,33 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     public static final int DISPLAY_SLOTS = 18;
     public static final int MAX_DISPLAY_PORTIONS = 10;
     private final NonNullList<ItemStack> display = NonNullList.withSize(DISPLAY_SLOTS, ItemStack.EMPTY);
+    /** One reusable plastic frame is installed beneath each stocked display slot. */
+    private final NonNullList<ItemStack> displayFrames = NonNullList.withSize(DISPLAY_SLOTS, ItemStack.EMPTY);
+
+    public boolean hasFrame(int slot) {
+        return slot >= 0 && slot < DISPLAY_SLOTS && !displayFrames.get(slot).isEmpty();
+    }
+
+    public boolean installFrame(int slot, ItemStack held) {
+        if (level == null || level.isClientSide() || slot < 0 || slot >= DISPLAY_SLOTS
+                || held == null || !held.is(SaltedFriedChickenDelight.PLASTIC_FRAME.get())
+                || held.isEmpty() || hasFrame(slot)) return false;
+        displayFrames.set(slot, held.copyWithCount(1));
+        setChanged();
+        return true;
+    }
+
+    /** Return physical frames as well as their food when the cart is dismantled. */
+    public java.util.List<ItemStack> drainFrames() {
+        java.util.List<ItemStack> drops = new java.util.ArrayList<>();
+        if (level == null || level.isClientSide()) return drops;
+        for (int slot = 0; slot < DISPLAY_SLOTS; slot++) {
+            if (!displayFrames.get(slot).isEmpty()) drops.add(displayFrames.get(slot).copy());
+            displayFrames.set(slot, ItemStack.EMPTY);
+        }
+        setChanged();
+        return drops;
+    }
 
     public ItemStack getDisplayStack(int slot) {
         if (slot < 0 || slot >= DISPLAY_SLOTS) return ItemStack.EMPTY;
@@ -37,7 +64,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
 
     /** Server-side inventory operation; never merge different items or item components. */
     public int insertDisplay(int slot, ItemStack input, int requested) {
-        if (level == null || level.isClientSide() || slot < 0 || slot >= DISPLAY_SLOTS || input == null || input.isEmpty() || requested <= 0 || !input.is(DISPLAY_INGREDIENTS)) return 0;
+        if (level == null || level.isClientSide() || slot < 0 || slot >= DISPLAY_SLOTS || !hasFrame(slot) || input == null || input.isEmpty() || requested <= 0 || !input.is(DISPLAY_INGREDIENTS)) return 0;
         ItemStack current = display.get(slot);
         if (!current.isEmpty() && !ItemStack.isSameItemSameComponents(current, input)) return 0;
         int inserted = Math.min(requested, Math.min(input.getCount(), Math.min(MAX_DISPLAY_PORTIONS, input.getMaxStackSize()) - current.getCount()));
@@ -128,6 +155,9 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         CompoundTag displayTag = new CompoundTag();
         ContainerHelper.saveAllItems(displayTag, display, registries);
         tag.put("Display", displayTag);
+        CompoundTag framesTag = new CompoundTag();
+        ContainerHelper.saveAllItems(framesTag, displayFrames, registries);
+        tag.put("DisplayFrames", framesTag);
     }
 
     @Override
@@ -136,8 +166,21 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         for (int i = 0; i < MAX_BASKETS; i++) baskets.set(i, ItemStack.EMPTY);
         if (tag.contains("Baskets")) ContainerHelper.loadAllItems(tag.getCompound("Baskets"), baskets, registries);
         else ContainerHelper.loadAllItems(tag, baskets, registries); // migration from 0.1.5-alpha
-        for (int i = 0; i < DISPLAY_SLOTS; i++) display.set(i, ItemStack.EMPTY);
+        for (int i = 0; i < DISPLAY_SLOTS; i++) {
+            display.set(i, ItemStack.EMPTY);
+            displayFrames.set(i, ItemStack.EMPTY);
+        }
         if (tag.contains("Display")) ContainerHelper.loadAllItems(tag.getCompound("Display"), display, registries);
+        if (tag.contains("DisplayFrames")) {
+            ContainerHelper.loadAllItems(tag.getCompound("DisplayFrames"), displayFrames, registries);
+        } else {
+            // Legacy stocked carts had implicit built-in frames. Preserve their stored food
+            // instead of making the existing display inaccessible after upgrading.
+            for (int i = 0; i < DISPLAY_SLOTS; i++) {
+                if (!display.get(i).isEmpty())
+                    displayFrames.set(i, new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()));
+            }
+        }
         for (int i = 0; i < DISPLAY_SLOTS; i++) {
             ItemStack stack = display.get(i);
             if (stack.getCount() > MAX_DISPLAY_PORTIONS) stack.setCount(MAX_DISPLAY_PORTIONS);

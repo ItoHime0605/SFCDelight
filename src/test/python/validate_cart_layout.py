@@ -81,6 +81,8 @@ assert "relative(right, 2)" in renderer
 assert "getRenderBoundingBox" in renderer
 assert "installPepperJar" in entity and "refillPepperJar" in entity and "seasonPackage" in entity
 assert "CounterPepper" in entity and "takePepperJar" in block
+assert "CounterChili" in entity and "takeChiliJar" in block
+assert "drop(level, anchor, pepper);" in block and "drop(level, anchor, chili);" in block
 assert "held.shrink(inserted)" in block and "held.shrink(1)" in block
 assert "MAX_BASKETS = 8" in entity and "basketCount()" in entity
 assert "OLD_DISPLAY_SLOTS = 18" in entity and "LegacyFood" in entity and "LegacyFrames" in entity

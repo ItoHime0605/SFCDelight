@@ -18,9 +18,25 @@ assert "WhitePepperItem.setWhitePepper(next)" in food
 assert "rightCondiment" in cart and "cart.installChiliJar(held)" in cart
 assert "cart.refillChiliJar()" in cart and "cart.seasonChiliPackage" in cart
 assert "CounterChili" in entity and "counterChili = ItemStack.EMPTY" in entity
+assert "cart.installPepperJar(held)" in cart
+assert "cart.installChiliJar(held)" in cart
+assert "ItemStack pepper = cart.takePepperJar();" in cart
+assert "drop(level, anchor, pepper);" in cart
 assert "ItemStack chili = cart.takeChiliJar();" in cart
 assert "drop(level, anchor, chili);" in cart
 assert "if (drops)" in cart
+assert "RULE_DOBLOCKDROPS" in cart
+assert "counterPepper = held.copyWithCount(1)" in entity
+assert "counterChili = held.copyWithCount(1)" in entity
+assert "ItemStack out = counterPepper.copy();" in entity
+assert "ItemStack out=counterChili.copy();" in entity
+assert 'tag.put("CounterPepper", counterPepper.save(registries))' in entity
+assert 'tag.put("CounterChili", counterChili.save(registries))' in entity
+# Both real jars keep their item data when dismantled, not newly minted shakers.
+section = cart[cart.index("ItemStack pepper = cart.takePepperJar();"):cart.index("ItemStack basket;", cart.index("ItemStack pepper = cart.takePepperJar();"))]
+assert section.count("drop(level, anchor,") == 2
+assert "drop(level, anchor, pepper);" in section
+assert "drop(level, anchor, chili);" in section
 blockstates=json.loads((r/"src/main/resources/assets/sfcdelight/blockstates/chili_jar.json").read_text(encoding="utf-8"))
 assert len(blockstates["variants"])==61
 for item in ["empty_seasoning_jar","chili_powder","chili_shaker"]:
@@ -30,4 +46,4 @@ for item in ["empty_seasoning_jar","chili_powder","chili_shaker"]:
 for item in ("pepper_shaker","chili_shaker"):
     recipe=json.loads((r/f"src/main/resources/data/sfcdelight/recipe/{item}.json").read_text(encoding="utf-8"))
     assert recipe["result"]["components"]["minecraft:custom_data"]["PepperCharges"] == 10
-print("PASS: independent chili shaker and white pepper, four levels, fixed 30-second speed and saved cart jars")
+print("PASS: both physical cart shakers install, save remaining charges and drop together on dismantling")

@@ -115,6 +115,12 @@ public final class EquipmentStatusScreen extends AbstractContainerScreen<Equipme
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
+        // Reserve a genuine parchment caption strip and a full-height wood footer.
+        // Otherwise the low-positioned instructional labels collide with the frame.
+        graphics.fill(leftPos + 9, topPos + 138, leftPos + 197, topPos + 156, 0xFFF1E3C4);
+        graphics.fill(leftPos + 8, topPos + 156, leftPos + 197, topPos + 175, 0xFF513628);
+        graphics.fill(leftPos + 10, topPos + 158, leftPos + 195, topPos + 173, 0xFF815638);
+        graphics.fill(leftPos + 10, topPos + 158, leftPos + 195, topPos + 159, 0xFFB88853);
         String headline = switch (menu.kind()) {
             case EquipmentStatusMenu.FRYER -> "gui.sfcdelight.title_fryer";
             case EquipmentStatusMenu.DEOILER -> "gui.sfcdelight.title_deoiler";

@@ -36,7 +36,7 @@ public final class PreparationSinkScreen extends AbstractContainerScreen<Prepara
                 Component.translatable("gui.sfcdelight.sink_washes", water, 20),
                 x + 17, y + 50, 0xFFF4EED8, false);
         graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_bucket"),
-                x + 14, y + 86, 0xFF433328, false);
+                x + 14, y + 81, 0xFF433328, false);
         graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_use"),
                 x + 14, y + 100, 0xFFF7E4C5, false);
     }

@@ -26,6 +26,18 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
     }
 
     @Override
+    public net.minecraft.world.phys.AABB getRenderBoundingBox(FriedFoodCartBlockEntity cart) {
+        Direction back = cart.getBlockState().getValue(FriedFoodCartBlock.FACING).getOpposite();
+        net.minecraft.core.BlockPos origin = cart.getBlockPos();
+        net.minecraft.core.BlockPos far = origin.relative(back, 3);
+        return new net.minecraft.world.phys.AABB(
+                Math.min(origin.getX(), far.getX()), origin.getY(),
+                Math.min(origin.getZ(), far.getZ()),
+                Math.max(origin.getX(), far.getX()) + 1, origin.getY() + 2,
+                Math.max(origin.getZ(), far.getZ()) + 1).inflate(0.5);
+    }
+
+    @Override
     public void render(FriedFoodCartBlockEntity cart, float partialTick, PoseStack pose,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
         Direction front = cart.getBlockState().getValue(FriedFoodCartBlock.FACING);

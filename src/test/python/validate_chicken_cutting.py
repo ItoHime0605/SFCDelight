@@ -26,6 +26,8 @@ assert load(RECIPE/"raw_chicken_dice.json")["ingredients"]==["farmersdelight:chi
 craft=load(RECIPE/"chicken_cutting_knife.json")
 assert craft["type"]=="minecraft:crafting_shaped"
 assert craft["result"]=={"id":"sfcdelight:chicken_cutting_knife","count":1}
+assert craft["pattern"]==["  I"," I ","SC "]
+assert craft["key"]=={"I":"minecraft:iron_ingot","S":"minecraft:stick","C":"minecraft:comparator"}
 assert load(ART/"models/item/chicken_cutting_knife.json")["textures"]["layer0"]=="sfcdelight:item/chicken_cutting_knife"
 assert load(ART/"items/chicken_cutting_knife.json")["model"]["model"]=="sfcdelight:item/chicken_cutting_knife"
 sprite=(ART/"textures/item/chicken_cutting_knife.png").read_bytes()

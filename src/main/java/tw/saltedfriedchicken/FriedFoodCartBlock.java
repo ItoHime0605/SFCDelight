@@ -28,8 +28,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A single cart item places a 1-wide, 4-deep, 2-tall multiblock.
- * Four top segments hold three tilted plastic frames apiece (4x3 = 12).
+ * A single cart item places a TWO-wide, TWO-deep, TWO-tall multiblock.
+ * Twelve tilted plastic frames are arranged 4 across the width and 3 front-to-back.
  * Only the bottom-front master (part 0) owns the inventory block entity.
  */
 public class FriedFoodCartBlock extends BaseEntityBlock {
@@ -52,14 +52,22 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         builder.add(FACING, PART);
     }
 
+    // Index order per layer: 0 front-left, 1 front-right, 2 rear-left, 3 rear-right.
+    // The next four parts are directly above those four positions.
     private static BlockPos root(BlockPos segment, BlockState state) {
         int index = state.getValue(PART);
         Direction forward = state.getValue(FACING);
-        return segment.relative(forward, index % 4).below(index / 4);
+        Direction right = forward.getClockWise();
+        return segment.relative(right.getOpposite(), index % 2)
+                .relative(forward, (index % 4) / 2)
+                .below(index / 4);
     }
 
     private static BlockPos segmentPos(BlockPos anchor, BlockState anchorState, int part) {
-        return anchor.relative(anchorState.getValue(FACING).getOpposite(), part % 4).above(part / 4);
+        Direction forward = anchorState.getValue(FACING);
+        return anchor.relative(forward.getClockWise(), part % 2)
+                .relative(forward.getOpposite(), (part % 4) / 2)
+                .above(part / 4);
     }
 
     private static FriedFoodCartBlockEntity cartAt(Level level, BlockPos segment, BlockState segmentState) {
@@ -110,16 +118,23 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return getShape(state, level, pos, context);
     }
 
-    /** The three columns run across the short edge; four rows run front-to-back. */
+    /** Four display columns across TWO blocks, three rows from front to back across TWO blocks. */
     private static int displaySlot(BlockPos pos, BlockState state, BlockHitResult hit) {
         if (state.getValue(PART) < 4 || hit.getDirection() != Direction.UP) return -1;
+        int localPart = state.getValue(PART) - 4;
+        Direction front = state.getValue(FACING);
+        Direction right = front.getClockWise();
+        Direction back = front.getOpposite();
         double dx = hit.getLocation().x - (pos.getX() + 0.5);
         double dz = hit.getLocation().z - (pos.getZ() + 0.5);
-        Direction right = state.getValue(FACING).getClockWise();
-        double width = 0.5 + dx * right.getStepX() + dz * right.getStepZ();
-        if (width < 0.05 || width >= 0.95) return -1;
-        int column = Math.min(2, (int) Math.floor(width * 3));
-        return (state.getValue(PART) - 4) * 3 + column;
+        double width = (localPart % 2) + 0.5
+                + dx * right.getStepX() + dz * right.getStepZ();
+        double depth = (localPart / 2) + 0.5
+                + dx * back.getStepX() + dz * back.getStepZ();
+        if (width < 0.0 || width >= 2.0 || depth < 0.0 || depth >= 2.0) return -1;
+        int column = Math.min(3, (int) Math.floor(width * 2.0));
+        int row = Math.min(2, (int) Math.floor(depth * 1.5));
+        return row * 4 + column;
     }
 
     /** Up to ten total portions, allowing ten different ingredients in the same plastic basket. */

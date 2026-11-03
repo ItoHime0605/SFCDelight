@@ -74,6 +74,29 @@ public class FryingStationBlock extends BaseEntityBlock {
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
     @Override protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        // One fryer accepts exactly one prepared raw metal basket. Restore its
+        // complete contents atomically and start frying only after successful placement.
+        if (held.is(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get())) {
+            var raw = FriedBatchData.readAll(held, level.registryAccess());
+            BlockPos basketPos = pos.above();
+            if (!FryingRecipes.isValidRawBatch(raw, FryingBasketBlockEntity.MAX_PIECES)
+                    || !level.getBlockState(basketPos).canBeReplaced()) return ItemInteractionResult.FAIL;
+            if (level.isClientSide) return ItemInteractionResult.SUCCESS;
+            BlockState basketState = SaltedFriedChickenDelight.FRYING_BASKET_BLOCK.get()
+                    .defaultBlockState()
+                    .setValue(FryingBasketBlock.SUBMERGED, true)
+                    .setValue(FryingBasketBlock.RAISED, true);
+            if (!level.setBlock(basketPos, basketState, 3)) return ItemInteractionResult.FAIL;
+            if (!(level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity basket)
+                    || !basket.restoreRaw(raw)) {
+                level.removeBlock(basketPos, false);
+                return ItemInteractionResult.FAIL;
+            }
+            // This is a physical container transfer, including creative inventory.
+            // Keeping the held item would duplicate the ten food portions.
+            held.shrink(1);
+            return ItemInteractionResult.SUCCESS;
+        }
         if (held.is(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get())) {
             var foods = FriedBatchData.readAll(held, level.registryAccess());
             BlockPos basketPos = pos.above();

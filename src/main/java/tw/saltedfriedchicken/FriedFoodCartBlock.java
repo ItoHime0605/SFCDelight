@@ -152,8 +152,25 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                                                Player player, BlockHitResult hit) {
         if (hit.getDirection() != Direction.UP || !player.getMainHandItem().isEmpty()
                 || !player.getOffhandItem().isEmpty()) return InteractionResult.PASS;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof FriedFoodCartBlockEntity cart)) return InteractionResult.PASS;
+        int slot = displaySlot(pos, hit);
+        if (slot >= 0) {
+            // Sneak with empty hands to remove a vacant installed plastic frame.
+            if (!player.isShiftKeyDown()) return InteractionResult.PASS;
+            if (!cart.getDisplayStack(slot).isEmpty()) {
+                if (!level.isClientSide()) player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable(
+                                "message.sfcdelight.display_frame_has_food"), true);
+                return InteractionResult.FAIL;
+            }
+            if (level.isClientSide()) return InteractionResult.SUCCESS;
+            ItemStack frame = cart.removeFrame(slot);
+            if (frame.isEmpty()) return InteractionResult.PASS;
+            if (!player.getInventory().add(frame)) player.drop(frame, false);
+            return InteractionResult.SUCCESS;
+        }
+        // An empty-handed click outside the 6x3 frame grid accesses the basket rack.
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
         ItemStack basket = cart.popBasket();
         if (basket.isEmpty()) return InteractionResult.PASS;
         player.setItemInHand(InteractionHand.OFF_HAND, basket);

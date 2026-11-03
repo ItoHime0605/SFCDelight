@@ -32,8 +32,11 @@ assert "batch.size() > MAX_PIECES" in basket_be
 assert "countDistinctTypes(batch) > MAX_PIECES" in basket_be
 assert "plastic.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY)" in basket_be
 
-# Crouch to pick up a raw metal basket from a table or a raised empty-oil fryer.
-assert "player.isShiftKeyDown()" in basket
+# Empty-hand right click lifts a whole raw metal basket from a table,
+# without sneaking. Fryer-mounted raised uncooked baskets retain sneak pickup.
+assert "No sneak key required." in basket
+assert "if ((!state.getValue(SUBMERGED)" in basket
+assert "(player.isShiftKeyDown() && state.getValue(RAISED))" in basket
 assert "FryingRecipes.isValidRawBatch(basket.ingredients()" in basket
 assert "FriedBatchData.wrapMany(" in basket
 assert "SaltedFriedChickenDelight.LOADED_RAW_BASKET.get()" in basket

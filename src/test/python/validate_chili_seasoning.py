@@ -25,4 +25,7 @@ for item in ["empty_seasoning_jar","chili_powder","chili_shaker"]:
     path=r/"src/main/resources/assets/sfcdelight/items"/(item+".json")
     assert path.is_file()
     json.loads(path.read_text(encoding="utf-8"))
+for item in ("pepper_shaker","chili_shaker"):
+    recipe=json.loads((r/f"src/main/resources/data/sfcdelight/recipe/{item}.json").read_text(encoding="utf-8"))
+    assert recipe["result"]["components"]["minecraft:custom_data"]["PepperCharges"] == 10
 print("PASS: independent chili shaker and white pepper, four levels, fixed 30-second speed and saved cart jars")

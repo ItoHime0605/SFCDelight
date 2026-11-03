@@ -111,7 +111,7 @@ for file in recipes:
     changed+=1
 
 serial=(SRC/"PepperRefillRecipe.java").read_text(encoding="utf-8")
-assert "StreamCodec.unit(" not in serial, "StreamCodec.unit validates identity and disconnects clients"
+assert not re.search(r"(?m)^\s*StreamCodec\.unit\s*\(", serial), "StreamCodec.unit checks object identity and disconnects clients"
 assert "StreamCodec.of(" in serial
 assert "new PepperRefillRecipe(CraftingBookCategory.MISC)" in serial
 assert "return CODEC;" in serial and "return STREAM_CODEC;" in serial

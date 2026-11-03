@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -79,6 +78,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         for (int part = 1; part < 8; part++) {
             BlockPos at = segmentPos(origin, anchorState, part);
             if (!context.getLevel().getWorldBorder().isWithinBounds(at)
+                    || context.getLevel().isOutsideBuildHeight(at)
                     || !context.getLevel().getBlockState(at).canBeReplaced()) return null;
         }
         return anchorState;

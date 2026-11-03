@@ -39,7 +39,7 @@ jobs:
           test "$java_count" -ge 16
           test "$json_count" -ge 133
 
-      - name: Validate 2x2x2 cart assets and migration
+      - name: Validate 3x1x2 fixed cart, showcase and seasoning counter
         run: python3 src/test/python/validate_cart_layout.py
 
       - name: Set up Java 21

@@ -70,11 +70,45 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                 .above(part / 4);
     }
 
+    /** Legacy 1x4x2 cart coordinates, for safe teardown of old alpha installations. */
+    private static BlockPos legacyRoot(BlockPos segment, BlockState state) {
+        int part = state.getValue(PART);
+        return segment.relative(state.getValue(FACING), part % 4).below(part / 4);
+    }
+
+    private static BlockPos legacySegmentPos(BlockPos anchor, BlockState state, int part) {
+        return anchor.relative(state.getValue(FACING).getOpposite(), part % 4).above(part / 4);
+    }
+
+    private static boolean isMaster(Level level, BlockPos pos, Direction facing) {
+        BlockState check = level.getBlockState(pos);
+        return check.getBlock() instanceof FriedFoodCartBlock
+                && check.getValue(PART) == 0 && check.getValue(FACING) == facing;
+    }
+
+    private static BlockPos locateRoot(Level level, BlockPos segment, BlockState state) {
+        BlockPos modern = root(segment, state);
+        if (isMaster(level, modern, state.getValue(FACING))) return modern;
+        BlockPos previous = legacyRoot(segment, state);
+        if (isMaster(level, previous, state.getValue(FACING))) return previous;
+        return modern;
+    }
+
+    /** Detect obsolete four-deep placement so any part can dismantle it safely. */
+    private static boolean hasLegacyGeometry(Level level, BlockPos anchor, Direction front) {
+        Direction back = front.getOpposite();
+        for (int part = 1; part < 4; part++) {
+            BlockState candidate = level.getBlockState(anchor.relative(back, part));
+            if (candidate.getBlock() instanceof FriedFoodCartBlock
+                    && candidate.getValue(FACING) == front && candidate.getValue(PART) == part)
+                return true;
+        }
+        return false;
+    }
+
     private static FriedFoodCartBlockEntity cartAt(Level level, BlockPos segment, BlockState segmentState) {
-        BlockPos anchor = root(segment, segmentState);
-        BlockState rootState = level.getBlockState(anchor);
-        if (!(rootState.getBlock() instanceof FriedFoodCartBlock) || rootState.getValue(PART) != 0
-                || rootState.getValue(FACING) != segmentState.getValue(FACING)) return null;
+        BlockPos anchor = locateRoot(level, segment, segmentState);
+        if (!isMaster(level, anchor, segmentState.getValue(FACING))) return null;
         return level.getBlockEntity(anchor) instanceof FriedFoodCartBlockEntity cart ? cart : null;
     }
 
@@ -290,8 +324,8 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         if (!state.is(nextState.getBlock()) && !level.isClientSide && !DISMANTLING.get()) {
             DISMANTLING.set(true);
             try {
-                BlockPos anchor = root(pos, state);
-                BlockState anchorState = level.getBlockState(anchor);
+                BlockPos anchor = locateRoot(level, pos, state);
+                boolean legacyLayout = hasLegacyGeometry(level, anchor, state.getValue(FACING));
                 // For the master currently being removed, its block entity still exists here.
                 FriedFoodCartBlockEntity cart = level.getBlockEntity(anchor) instanceof FriedFoodCartBlockEntity c ? c : null;
                 if (cart != null) {
@@ -305,7 +339,8 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                 }
                 BlockState template = state.setValue(PART, 0);
                 for (int part = 0; part < 8; part++) {
-                    BlockPos other = segmentPos(anchor, template, part);
+                    BlockPos other = legacyLayout ? legacySegmentPos(anchor, template, part)
+                            : segmentPos(anchor, template, part);
                     if (other.equals(pos)) continue;
                     BlockState otherState = level.getBlockState(other);
                     if (otherState.getBlock() == this

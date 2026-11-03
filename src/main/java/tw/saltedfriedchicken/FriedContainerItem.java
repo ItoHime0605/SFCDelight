@@ -22,10 +22,20 @@ public final class FriedContainerItem extends Item {
 
     @Override public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        // A portable un-fried metal basket must not claim the food has been cooked.
-        boolean cooked = !stack.is(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get());
-        tooltip.add(FoodContentsTooltip.summarize(FriedBatchData.readAll(stack, context.registries()), cooked));
-        if (!cooked) tooltip.add(Component.literal("未油炸｜可放上油炸爐加工"));
+        // Both raw and cooked metal baskets are ONE physical container item.
+        // List each ingredient and its quantity; never show only a single food.
+        boolean rawBasket = stack.is(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get());
+        boolean hotBasket = stack.is(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get());
+        if (rawBasket || hotBasket) {
+            FoodContentsTooltip.appendMetalBasketContents(
+                    tooltip, FriedBatchData.readAll(stack, context.registries()), hotBasket);
+            tooltip.add(Component.literal(hotBasket
+                    ? "拿著金屬炸籃右鍵脫油機，整籃轉移炸物"
+                    : "拿著金屬炸籃右鍵油炸爐，整籃開始油炸"));
+        } else {
+            tooltip.add(FoodContentsTooltip.summarize(
+                    FriedBatchData.readAll(stack, context.registries()), true));
+        }
         if (WhitePepperItem.isPackage(stack)) {
             int spice = WhitePepperItem.spiceLevel(stack);
             String[] names = {"原味", "微辣", "小辣", "中辣", "大辣"};

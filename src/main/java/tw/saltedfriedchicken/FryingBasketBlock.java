@@ -76,11 +76,12 @@ public class FryingBasketBlock extends BaseEntityBlock {
     }
     @Override protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) || basket.ingredient().isEmpty()) return net.minecraft.world.InteractionResult.PASS;
-        // On a preparation table, crouch and lift the complete raw metal basket
-        // into your inventory. The same basket can then be placed on the fryer;
-        // it is not a second basket and its ten portions remain intact.
-        if (player.isShiftKeyDown()
-                && (!state.getValue(SUBMERGED) || state.getValue(RAISED))
+        // On a preparation table, a simple empty-hand right click lifts the
+        // entire metal basket with all its raw portions. No sneak key required.
+        // On a fryer, keep sneak-click for reclaiming an uncooked raised batch,
+        // so ordinary fryer interactions are not unintentionally interrupted.
+        if ((!state.getValue(SUBMERGED)
+                    || (player.isShiftKeyDown() && state.getValue(RAISED)))
                 && FryingRecipes.isValidRawBatch(basket.ingredients(), FryingBasketBlockEntity.MAX_PIECES)) {
             if (!level.isClientSide) {
                 java.util.List<ItemStack> raw = basket.ingredients();

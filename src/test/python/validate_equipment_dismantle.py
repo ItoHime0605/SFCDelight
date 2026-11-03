@@ -35,4 +35,7 @@ assert "FryingRecipes.isValidCookedBatch(foods" in basket
 assert "SaltedFriedChickenDelight.DEOILER_ITEM.get()" in deoiler
 assert "for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))" in deoiler
 assert "SaltedFriedChickenDelight.FRYER_ITEM.get()" in fryer
+assert fryer.count("rollback.suppressEquipmentDrop();") == 2
+assert "|| !basket.restoreRaw(raw))" in fryer
+assert "|| !basket.restoreCooked(foods))" in fryer
 print("PASS: bag/box, basket, de-oiler, fryer return items without duplicating consumed containers")

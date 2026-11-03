@@ -110,6 +110,10 @@ public class FryingStationBlock extends BaseEntityBlock {
             if (!level.setBlock(basketPos, basketState, 3)) return ItemInteractionResult.FAIL;
             if (!(level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity basket)
                     || !basket.restoreRaw(raw)) {
+                // The held portable basket was never consumed. Roll back the
+                // temporary world block without minting an extra empty basket.
+                if (level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity rollback)
+                    rollback.suppressEquipmentDrop();
                 level.removeBlock(basketPos, false);
                 return ItemInteractionResult.FAIL;
             }
@@ -129,6 +133,10 @@ public class FryingStationBlock extends BaseEntityBlock {
             if (!level.setBlock(basketPos, basketState, 3)) return ItemInteractionResult.FAIL;
             if (!(level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity basket)
                     || !basket.restoreCooked(foods)) {
+                // The held portable basket was never consumed. Roll back the
+                // temporary world block without minting an extra empty basket.
+                if (level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity rollback)
+                    rollback.suppressEquipmentDrop();
                 level.removeBlock(basketPos, false);
                 return ItemInteractionResult.FAIL;
             }

@@ -122,14 +122,19 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
 
         // The customer's seasonings sit on the left counter, not inside a food tray.
         // This renders the real stored pepper shaker, including its item model.
-        ItemStack pepper = cart.getPepperJar();
-        if (!pepper.isEmpty()) {
+        // Both independent real shaker items sit side by side on the prep counter.
+        ItemStack[] shakers={cart.getPepperJar(),cart.getChiliJar()};
+        for (int i=0;i<shakers.length;i++) {
+            if (shakers[i].isEmpty()) continue;
+            double shift=i==0 ? -0.19 : 0.19;
             pose.pushPose();
-            pose.translate(0.5 + front.getStepX() * 0.17, 1.14, 0.5 + front.getStepZ() * 0.17);
+            pose.translate(0.5 + right.getStepX()*shift + front.getStepX()*0.17,
+                    1.14,
+                    0.5 + right.getStepZ()*shift + front.getStepZ()*0.17);
             pose.mulPose(Axis.YP.rotationDegrees(angle));
-            pose.scale(0.48f, 0.48f, 0.48f);
-            items.renderStatic(pepper, ItemDisplayContext.FIXED, counterLight, packedOverlay,
-                    pose, buffers, cart.getLevel(), 360);
+            pose.scale(0.38f,0.38f,0.38f);
+            items.renderStatic(shakers[i],ItemDisplayContext.FIXED,counterLight,packedOverlay,
+                    pose,buffers,cart.getLevel(),360+i);
             pose.popPose();
         }
     }

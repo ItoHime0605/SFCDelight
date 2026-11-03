@@ -269,7 +269,9 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         if (held.is(SaltedFriedChickenDelight.PLASTIC_FRAME.get())) {
             if (level.isClientSide) return ItemInteractionResult.SUCCESS;
             if (!cart.installFrame(slot, held)) return ItemInteractionResult.FAIL;
-            if (!player.getAbilities().instabuild) held.shrink(1);
+            // A stocked frame is a physical item: consume the source even in creative,
+            // matching the cart's basket rack and avoiding duplicate return drops.
+            held.shrink(1);
             return ItemInteractionResult.SUCCESS;
         }
         if (held.is(SaltedFriedChickenDelight.IRON_TONGS.get())) {
@@ -301,7 +303,8 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         }
         int inserted = cart.insertDisplay(slot, held, 1);
         if (inserted == 0) return ItemInteractionResult.FAIL;
-        if (!player.getAbilities().instabuild) held.shrink(inserted);
+        // Food is now stored in the cart; never retain the original stack as well.
+        held.shrink(inserted);
         return ItemInteractionResult.SUCCESS;
     }
 

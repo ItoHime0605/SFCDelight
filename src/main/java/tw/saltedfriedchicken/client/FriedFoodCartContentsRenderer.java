@@ -3,6 +3,7 @@ package tw.saltedfriedchicken.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -52,6 +53,11 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
             for (int column = 0; column < 4; column++) {
                 int slot = row * 4 + column;
                 if (!cart.hasFrame(slot)) continue;
+                // Resolve lighting at the glowing showcase segment, not at the dark
+                // lower-left inventory master. This keeps food legible at night.
+                int foodLight = cart.getLevel() == null ? packedLight
+                        : LevelRenderer.getLightColor(cart.getLevel(),
+                              cart.getBlockPos().relative(right, 1 + column / 2).above());
                 // The counter is the first block; the showcase spans the next two.
                 double across = 0.5 + (column + 0.5) * 0.5;
                 double x = 0.5 + right.getStepX() * across + front.getStepX() * 0.27;
@@ -65,7 +71,7 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                 pose.mulPose(Axis.XP.rotationDegrees(-19.0f));
                 pose.scale(0.36f, 0.31f, 0.18f);
                 items.renderStatic(new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()),
-                        ItemDisplayContext.FIXED, packedLight, packedOverlay,
+                        ItemDisplayContext.FIXED, foodLight, packedOverlay,
                         pose, buffers, cart.getLevel(), slot);
                 pose.popPose();
 
@@ -82,13 +88,15 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                     pose.mulPose(Axis.XP.rotationDegrees(17.0f));
                     pose.mulPose(Axis.ZP.rotationDegrees((n % 3 - 1) * 11.0f));
                     pose.scale(0.22f, 0.22f, 0.22f);
-                    items.renderStatic(one, ItemDisplayContext.FIXED, packedLight, packedOverlay,
+                    items.renderStatic(one, ItemDisplayContext.FIXED, foodLight, packedOverlay,
                             pose, buffers, cart.getLevel(), slot * 4 + n);
                     pose.popPose();
                 }
             }
         }
 
+        int counterLight = cart.getLevel() == null ? packedLight
+                : LevelRenderer.getLightColor(cart.getLevel(), cart.getBlockPos().above());
         // The eight physical plastic baskets appear on the left shelf, including
         // each basket's real dye color. We never invent extra decorative baskets:
         // the render count exactly matches the inventory, bottom shelf first.
@@ -107,7 +115,7 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
             pose.mulPose(Axis.YP.rotationDegrees(angle));
             pose.mulPose(Axis.XP.rotationDegrees(17.5f));
             pose.scale(0.205f, 0.205f, 0.205f);
-            items.renderStatic(stored, ItemDisplayContext.FIXED, packedLight, packedOverlay,
+            items.renderStatic(stored, ItemDisplayContext.FIXED, counterLight, packedOverlay,
                     pose, buffers, cart.getLevel(), 500 + basketIndex);
             pose.popPose();
         }
@@ -120,7 +128,7 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
             pose.translate(0.5 + front.getStepX() * 0.17, 1.14, 0.5 + front.getStepZ() * 0.17);
             pose.mulPose(Axis.YP.rotationDegrees(angle));
             pose.scale(0.48f, 0.48f, 0.48f);
-            items.renderStatic(pepper, ItemDisplayContext.FIXED, packedLight, packedOverlay,
+            items.renderStatic(pepper, ItemDisplayContext.FIXED, counterLight, packedOverlay,
                     pose, buffers, cart.getLevel(), 360);
             pose.popPose();
         }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "sfcdelight:block/preparation_counter_left"
+    "model": "sfcdelight:item/preparation_counter"
   }
 }

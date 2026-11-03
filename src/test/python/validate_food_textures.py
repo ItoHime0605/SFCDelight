@@ -19,11 +19,11 @@ NAMES = (
 for name in NAMES:
     path = RES / "textures/item" / (name + ".png")
     assert path.is_file(), name
-    coverage = validate_icon(path)
-    assert 250 <= coverage <= 650, (name, coverage)
+    coverage = validate_icon(path, expected_size=128)
+    assert 5000 <= coverage <= 11000, (name, coverage)
     model = json.loads((RES / "models/item" / (name + ".json")).read_text(encoding="utf-8"))
     assert model["parent"] == "minecraft:item/generated", name
     assert model["textures"]["layer0"] == "sfcdelight:item/" + name, name
     item_definition = RES / "items" / (name + ".json")
     assert item_definition.exists(), item_definition
-    print(f"PASS {name}: independent transparent RGBA sprite, PNG CRC, model reference")
+    print(f"PASS {name}: independent transparent 128px sprite, PNG CRC, model reference")

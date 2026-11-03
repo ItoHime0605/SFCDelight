@@ -1,5 +1,5 @@
 """Keep all 11 second-pass Taiwanese street-food icons individually legible.
-They use real 32px RGBA pixel art, not text-based or tinted placeholder icons.
+They use real 128px indexed RGBA-compatible pixel art, not text-based or tinted placeholder icons.
 This is an art regression test; item registration, recipe math and NBT must not change.
 """
 from pathlib import Path
@@ -26,8 +26,8 @@ seen = set()
 for item_id in IDENTITIES:
     path = ASSETS / "textures/item" / (item_id + ".png")
     assert path.is_file(), item_id
-    coverage = validate_icon(path)  # Validated PNG CRC, 32x32 RGBA, real alpha.
-    assert 100 <= coverage <= 830, (item_id, coverage)
+    coverage = validate_icon(path, expected_size=128)  # Validated PNG CRC, 128x128, real alpha.
+    assert 5000 <= coverage <= 11000, (item_id, coverage)
     signature = sha256(path.read_bytes()).hexdigest()
     assert signature not in seen, ("Duplicate food illustration", item_id)
     seen.add(signature)
@@ -39,4 +39,4 @@ for item_id in IDENTITIES:
 # Previously reviewed art is not replaced by this pass:
 for item_id in ("fried_basil", "fried_mushroom", "fried_squid_rings", "fried_chicken_skin"):
     assert (ASSETS / "textures/item" / (item_id + ".png")).exists()
-print("PASS: 11 distinct 32×32 transparent original food sprites, linked item models, phase-one art preserved")
+print("PASS: 11 distinct 128×128 transparent original food sprites, linked item models, phase-one art preserved")

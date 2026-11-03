@@ -38,7 +38,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
     public static final IntegerProperty PART = IntegerProperty.create("part", 0, 7);
     private static final ThreadLocal<Boolean> DISMANTLING = ThreadLocal.withInitial(() -> false);
     private static final VoxelShape LOWER_SHAPE = box(0, 0, 0, 16, 16, 16);
-    private static final VoxelShape UPPER_SHAPE = box(0, 0, 0, 16, 12, 16);
+    private static final VoxelShape UPPER_SHAPE = box(0, 0, 0, 16, 16, 16);
 
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
@@ -154,7 +154,9 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
 
     /** Four display columns across TWO blocks, three rows from front to back across TWO blocks. */
     private static int displaySlot(BlockPos pos, BlockState state, BlockHitResult hit) {
-        if (state.getValue(PART) < 4 || hit.getDirection() != Direction.UP) return -1;
+        // The cart stands two blocks high. A player at ground level cannot easily
+        // reach the top face, so allow picking a tray from visible side faces too.
+        if (state.getValue(PART) < 4 || hit.getDirection() == Direction.DOWN) return -1;
         int localPart = state.getValue(PART) - 4;
         Direction front = state.getValue(FACING);
         Direction right = front.getClockWise();
@@ -165,7 +167,11 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                 + dx * right.getStepX() + dz * right.getStepZ();
         double depth = (localPart / 2) + 0.5
                 + dx * back.getStepX() + dz * back.getStepZ();
-        if (width < 0.0 || width >= 2.0 || depth < 0.0 || depth >= 2.0) return -1;
+        if (width < -0.001 || width > 2.001 || depth < -0.001 || depth > 2.001) return -1;
+        // Clicks on the far exterior faces may land exactly at 2.0; keep them
+        // mapped to the last frame rather than dropping the interaction.
+        width = Math.max(0.0, Math.min(1.999999, width));
+        depth = Math.max(0.0, Math.min(1.999999, depth));
         int column = Math.min(3, (int) Math.floor(width * 2.0));
         int row = Math.min(2, (int) Math.floor(depth * 1.5));
         return row * 4 + column;

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WWW",
+    "GCG",
+    "PPP"
+  ],
+  "key": {
+    "W": "minecraft:oak_planks",
+    "G": "minecraft:glass",
+    "C": "minecraft:crafting_table",
+    "P": "minecraft:spruce_planks"
+  },
+  "result": {
+    "id": "sfcdelight:fried_food_cart",
+    "count": 1
+  }
+}

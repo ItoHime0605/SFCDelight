@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "key": {
+    "P": "sfcdelight:plastic_material",
+    "D": "minecraft:magenta_dye"
+  },
+  "result": {
+    "id": "sfcdelight:plastic_basket_magenta",
+    "count": 1
+  }
+}

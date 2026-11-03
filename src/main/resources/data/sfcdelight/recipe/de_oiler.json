@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "IPI",
+    " C "
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:piston",
+    "C": "minecraft:cauldron"
+  },
+  "result": {
+    "id": "sfcdelight:de_oiler",
+    "count": 1
+  }
+}

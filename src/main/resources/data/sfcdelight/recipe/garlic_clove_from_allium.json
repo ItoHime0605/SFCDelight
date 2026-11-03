@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "minecraft:allium",
+    "minecraft:wheat_seeds"
+  ],
+  "result": {
+    "id": "sfcdelight:garlic_clove",
+    "count": 2
+  }
+}

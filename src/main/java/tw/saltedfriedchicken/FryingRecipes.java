@@ -11,6 +11,10 @@ public final class FryingRecipes {
     public static Item output(ItemStack input) {
         if (input == null || input.isEmpty()) return null;
         if (input.is(SaltedFriedChickenDelight.BATTERED_SQUID_TENTACLES.get())) return SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get();
+        if (input.is(SaltedFriedChickenDelight.RAW_CHICKEN_SKIN.get())) return SaltedFriedChickenDelight.FRIED_CHICKEN_SKIN.get();
+        if (input.is(net.minecraft.world.item.Items.BROWN_MUSHROOM)) return SaltedFriedChickenDelight.FRIED_MUSHROOM.get();
+        if (input.is(SaltedFriedChickenDelight.BASIL.get())) return SaltedFriedChickenDelight.FRIED_BASIL.get();
+        if (input.is(SaltedFriedChickenDelight.BATTERED_SQUID_RINGS.get())) return SaltedFriedChickenDelight.FRIED_SQUID_RINGS.get();
         if (input.is(SaltedFriedChickenDelight.RAW_TEMPURA_FISH_CAKE.get())) return SaltedFriedChickenDelight.FRIED_TEMPURA_FISH_CAKE.get();
         if (input.is(SaltedFriedChickenDelight.RAW_SQUID_BALL.get())) return SaltedFriedChickenDelight.FRIED_SQUID_BALL.get();
         if (input.is(SaltedFriedChickenDelight.RAW_FRIES.get())) return SaltedFriedChickenDelight.FRIED_FRIES.get();
@@ -29,7 +33,11 @@ public final class FryingRecipes {
     /** Only food produced by this fryer's recipes may be restored as cooked food. */
     public static boolean isCookedOutput(ItemStack food) {
         if (food == null || food.isEmpty()) return false;
-        return food.is(SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get())
+        return food.is(SaltedFriedChickenDelight.FRIED_CHICKEN_SKIN.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_MUSHROOM.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_BASIL.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_SQUID_RINGS.get())
+            || food.is(SaltedFriedChickenDelight.FRIED_SQUID_TENTACLES.get())
             || food.is(SaltedFriedChickenDelight.FRIED_TEMPURA_FISH_CAKE.get())
             || food.is(SaltedFriedChickenDelight.FRIED_SQUID_BALL.get())
             || food.is(SaltedFriedChickenDelight.FRIED_FRIES.get())

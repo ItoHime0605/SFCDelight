@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " P ",
+    "P P",
+    " P "
+  ],
+  "key": {
+    "P": "sfcdelight:plastic_material"
+  },
+  "result": {
+    "id": "sfcdelight:plastic_basket",
+    "count": 1
+  }
+}

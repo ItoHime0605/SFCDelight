@@ -107,5 +107,11 @@
   "gui.sfcdelight.sink_use": "一般空手右鍵洗手；蹲下右鍵查看水量",
   "message.sfcdelight.hands_clean": "雙手乾淨，不需要洗手。",
   "message.sfcdelight.hands_washed": "已洗手，手滑效果解除！",
-  "message.sfcdelight.sink_empty": "洗手台沒有水，請先加入水桶。"
+  "message.sfcdelight.sink_empty": "洗手台沒有水，請先加入水桶。",
+  "item.sfcdelight.raw_chicken_skin": "生雞皮",
+  "item.sfcdelight.fried_chicken_skin": "炸雞皮",
+  "item.sfcdelight.fried_mushroom": "炸香菇",
+  "item.sfcdelight.fried_basil": "酥炸九層塔",
+  "item.sfcdelight.battered_squid_rings": "裹粉魷魚圈",
+  "item.sfcdelight.fried_squid_rings": "炸魷魚圈"
 }

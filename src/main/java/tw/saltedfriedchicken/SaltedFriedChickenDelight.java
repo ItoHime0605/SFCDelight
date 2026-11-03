@@ -156,6 +156,13 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> FRIED_HUNDRED_LAYER_TOFU = ITEMS.registerSimpleItem("fried_hundred_layer_tofu", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
     public static final DeferredItem<Item> FRIED_RICE_BLOOD_CAKE = ITEMS.registerSimpleItem("fried_rice_blood_cake", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
     public static final DeferredItem<Item> FRIED_DUCK_BLOOD = ITEMS.registerSimpleItem("fried_duck_blood", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
+    // Classic street-fry ingredients: 1 food point / 0.5 saturation per fried portion.
+    public static final DeferredItem<Item> RAW_CHICKEN_SKIN = ITEMS.registerSimpleItem("raw_chicken_skin", new Item.Properties());
+    public static final DeferredItem<Item> FRIED_CHICKEN_SKIN = ITEMS.registerSimpleItem("fried_chicken_skin", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
+    public static final DeferredItem<Item> FRIED_MUSHROOM = ITEMS.registerSimpleItem("fried_mushroom", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
+    public static final DeferredItem<Item> FRIED_BASIL = ITEMS.registerSimpleItem("fried_basil", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
+    public static final DeferredItem<Item> BATTERED_SQUID_RINGS = ITEMS.registerSimpleItem("battered_squid_rings", new Item.Properties());
+    public static final DeferredItem<Item> FRIED_SQUID_RINGS = ITEMS.registerSimpleItem("fried_squid_rings", new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(1).saturationModifier(0.25f).build()));
     public static final DeferredItem<Item> RAW_SQUID_BALL = ITEMS.registerSimpleItem("raw_squid_ball", new Item.Properties());
     public static final DeferredItem<Item> RAW_FRIES = ITEMS.registerSimpleItem("raw_fries", new Item.Properties());
     public static final DeferredItem<Item> RAW_SWEET_POTATO_FRIES = ITEMS.registerSimpleItem("raw_sweet_potato_fries", new Item.Properties());

@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import tw.saltedfriedchicken.FryingBasketBlock;
 import tw.saltedfriedchicken.FryingBasketBlockEntity;
@@ -18,6 +20,16 @@ public final class FryingBasketContentsRenderer implements BlockEntityRenderer<F
 
     public FryingBasketContentsRenderer(BlockEntityRendererProvider.Context context) {
         this.items = context.getItemRenderer();
+    }
+
+    /** Food descends into the fryer block below and rises above the basket block.
+     * The default one-block bounds would incorrectly cull one of those poses.
+     */
+    @Override
+    public AABB getRenderBoundingBox(FryingBasketBlockEntity basket) {
+        BlockPos pos = basket.getBlockPos();
+        return new AABB(pos.getX() - 0.25, pos.getY() - 1.0, pos.getZ() - 0.25,
+                pos.getX() + 1.25, pos.getY() + 2.0, pos.getZ() + 1.25);
     }
 
     @Override

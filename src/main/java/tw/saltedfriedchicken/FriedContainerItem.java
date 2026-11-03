@@ -10,8 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.effect.MobEffectInstance;
 
 /**
  * Takeaway fried food: one right click consumes one actual portion, preserving
@@ -37,11 +35,9 @@ public final class FriedContainerItem extends Item {
                     FriedBatchData.readAll(stack, context.registries()), true));
         }
         if (WhitePepperItem.isPackage(stack)) {
-            int spice = WhitePepperItem.spiceLevel(stack);
-            String[] names = {"原味", "微辣", "小辣", "中辣", "大辣"};
-            tooltip.add(Component.literal("辣度：" + names[spice]));
-            if (spice > 0) tooltip.add(Component.literal("火焰抗性：" + new int[]{0,15,30,60,90}[spice] + " 秒"));
-            if (spice == 4) tooltip.add(Component.literal("注意：大辣食用後會著火 5 秒"));
+            boolean whitePepper = WhitePepperItem.hasWhitePepper(stack);
+            tooltip.add(Component.literal(whitePepper ? "調味：白胡椒（每份額外 +0.1 飽和度）" : "調味：原味"));
+            tooltip.add(Component.literal("每吃一份：飢餓值 +1，飽和度 +" + (whitePepper ? "0.6" : "0.5")));
         }
     }
 
@@ -73,22 +69,18 @@ public final class FriedContainerItem extends Item {
                 }
             }
             if (eaten.isEmpty()) return InteractionResultHolder.fail(packageStack);
-            // Eating one serving; food-specific effects can be integrated after
-            // their exact definitions are verified. Avoid applying arbitrary buffs.
-            player.getFoodData().eat(2, 0.3f);
-            int spice = WhitePepperItem.spiceLevel(packageStack);
-            if (spice > 0) {
-                player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,
-                        new int[]{0, 300, 600, 1200, 1800}[spice]));
-                if (spice == 4) player.igniteForSeconds(5);
-            }
+            // Minecraft adds nutrition * saturationModifier * 2 to saturation.
+            // One portion restores 1 hunger and exactly 0.5 saturation, or 0.6
+            // when seasoned with white pepper, independent of container size.
+            boolean whitePepper = WhitePepperItem.hasWhitePepper(packageStack);
+            player.getFoodData().eat(1, whitePepper ? 0.30f : 0.25f);
             Item replacement = packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get())
                     ? SaltedFriedChickenDelight.OILY_WASTE_PAPER_BAG.get()
                     : SaltedFriedChickenDelight.OILY_WASTE_PAPER_BOX.get();
             ItemStack next = remaining.isEmpty()
                     ? new ItemStack(replacement)
                     : FriedBatchData.wrapMany(packageStack.getItem(), remaining, level.registryAccess());
-            if (!remaining.isEmpty() && spice > 0) WhitePepperItem.setSpiceLevel(next, spice);
+            if (!remaining.isEmpty() && whitePepper) WhitePepperItem.setWhitePepper(next);
             player.setItemInHand(hand, next);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());

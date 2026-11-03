@@ -94,11 +94,11 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         if (level == null || level.isClientSide() || !hasPepperJar()
                 || food == null || !WhitePepperItem.isPackage(food)
                 || PepperShakerItem.charges(counterPepper) <= 0
-                || WhitePepperItem.spiceLevel(food) >= 4) return false;
+                || WhitePepperItem.hasWhitePepper(food)) return false;
         int capacity = food.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
         if (!FryingRecipes.isValidCookedBatch(
                 FriedBatchData.readAll(food, level.registryAccess()), capacity)) return false;
-        WhitePepperItem.setSpiceLevel(food, WhitePepperItem.spiceLevel(food) + 1);
+        WhitePepperItem.setWhitePepper(food);
         if (!creative) PepperShakerItem.setCharges(counterPepper, PepperShakerItem.charges(counterPepper) - 1);
         setChanged();
         return true;

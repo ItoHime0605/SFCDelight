@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
-/** Season a complete takeaway package held in the other hand, up to four shakes. */
+/** White pepper is an optional one-time seasoning: +0.1 saturation per eaten portion. */
 public final class WhitePepperItem extends Item {
     public WhitePepperItem(Properties properties) { super(properties); }
 
@@ -19,17 +19,21 @@ public final class WhitePepperItem extends Item {
                 || stack.is(SaltedFriedChickenDelight.FILLED_PAPER_BOX.get());
     }
 
-    public static int spiceLevel(ItemStack stack) {
-        if (!isPackage(stack)) return 0;
+    public static boolean hasWhitePepper(ItemStack stack) {
+        if (!isPackage(stack)) return false;
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        if (data == null) return 0;
-        int value = data.copyTag().getInt("PepperLevel");
-        return Math.max(0, Math.min(4, value));
+        if (data == null) return false;
+        CompoundTag tag = data.copyTag();
+        // Migrate alpha worlds: PepperLevel previously (incorrectly) meant
+        // white pepper. Never grant chili buffs or fire effects from legacy data.
+        return tag.getBoolean("WhitePepper") || tag.getInt("PepperLevel") > 0;
     }
 
-    public static void setSpiceLevel(ItemStack stack, int value) {
+    public static void setWhitePepper(ItemStack stack) {
+        if (!isPackage(stack)) return;
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        tag.putInt("PepperLevel", Math.max(0, Math.min(4, value)));
+        tag.putBoolean("WhitePepper", true);
+        tag.remove("PepperLevel");
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
@@ -39,12 +43,10 @@ public final class WhitePepperItem extends Item {
                 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         if (!isPackage(packageStack)) return InteractionResultHolder.pass(powder);
         int capacity = packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
-        if (!FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(packageStack, level.registryAccess()), capacity))
-            return InteractionResultHolder.fail(powder);
-        int oldLevel = spiceLevel(packageStack);
-        if (oldLevel >= 4) return InteractionResultHolder.fail(powder);
+        if (!FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(packageStack, level.registryAccess()), capacity)
+                || hasWhitePepper(packageStack)) return InteractionResultHolder.fail(powder);
         if (!level.isClientSide) {
-            setSpiceLevel(packageStack, oldLevel + 1);
+            setWhitePepper(packageStack);
             if (!player.getAbilities().instabuild) powder.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(powder, level.isClientSide);

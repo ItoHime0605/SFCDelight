@@ -46,13 +46,13 @@ public final class PepperShakerItem extends Item {
             }
             return InteractionResultHolder.sidedSuccess(jar, level.isClientSide);
         }
-        if (!WhitePepperItem.isPackage(other) || charges(jar) <= 0 || WhitePepperItem.spiceLevel(other) >= 4)
+        if (!WhitePepperItem.isPackage(other) || charges(jar) <= 0 || WhitePepperItem.hasWhitePepper(other))
             return InteractionResultHolder.pass(jar);
         int capacity = other.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
         if (!FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(other, level.registryAccess()), capacity))
             return InteractionResultHolder.fail(jar);
         if (!level.isClientSide) {
-            WhitePepperItem.setSpiceLevel(other, WhitePepperItem.spiceLevel(other) + 1);
+            WhitePepperItem.setWhitePepper(other);
             if (!player.getAbilities().instabuild) setCharges(jar, charges(jar) - 1);
         }
         return InteractionResultHolder.sidedSuccess(jar, level.isClientSide);

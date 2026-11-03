@@ -22,7 +22,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     public static final int MAX_BASKETS = 8;
     private final NonNullList<ItemStack> baskets = NonNullList.withSize(MAX_BASKETS, ItemStack.EMPTY);
     private int count = 0;
-    /** Four sections along the cart, three display frames across: twelve individual slots. */
+    /** Four display columns across the 2-block width, three rows along the 2-block depth. */
     /** Data-driven allowlist: other mods may add compatible ingredients via this tag. */
     public static final TagKey<Item> DISPLAY_INGREDIENTS = TagKey.create(
             Registries.ITEM, ResourceLocation.fromNamespaceAndPath("sfcdelight", "display_ingredients"));

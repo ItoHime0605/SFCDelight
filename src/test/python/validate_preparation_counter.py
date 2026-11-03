@@ -50,9 +50,9 @@ assert "bench.washes()" in menu and "SimpleContainerData(1)" in menu
 assert "Math.max(0, Math.min(PreparationCounterBlockEntity.MAX_WASHES" in menu
 assert "PREPARATION_SINK_MENU" in mod and "MENU_TYPES.register(modBus)" in mod
 assert "RegisterMenuScreensEvent" in client and "PreparationSinkScreen::new" in client
-assert "gui.sfcdelight.sink_washes" in screen and "water * 142 / 20" in screen
+assert "gui.sfcdelight.sink_washes" in screen and "water * 136 / 20" in screen
 assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["menu.sfcdelight.preparation_sink"] == "不鏽鋼洗手台"
-assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["gui.sfcdelight.sink_bucket"] == "每桶水補充 5 次，最多可儲存 20 次"
+assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["gui.sfcdelight.sink_bucket"] == "每桶水可補充 5 次洗手次數"
 prep_renderer=(src/"client/PreparationCounterContentsRenderer.java").read_text(encoding="utf-8")
 prep_reg=(src/"client/ClientBlockEntityRenderers.java").read_text(encoding="utf-8")
 assert "PreparationCounterContentsRenderer::new" in prep_reg

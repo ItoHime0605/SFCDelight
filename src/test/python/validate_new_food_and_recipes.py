@@ -36,8 +36,29 @@ for food,translated in foods.items():
     assert struct.unpack_from(">IIBBBBB",chunks[b"IHDR"])==(32,32,8,6,0,0,0)
     rgba=zlib.decompress(chunks[b"IDAT"])
     assert len(rgba)==32*129
-    assert all(rgba[y*129]==0 for y in range(32))
-    assert 100 <= sum(rgba[y*129+1+x*4+3]>0 for y in range(32) for x in range(32)) <= 750
+    # PNG allows adaptive per-row filters (0..4); restore scanlines before reading alpha.
+    previous = bytearray(128)
+    coverage = 0
+    for y in range(32):
+        f = rgba[y*129]
+        assert 0 <= f <= 4
+        row = bytearray(rgba[y*129+1:y*129+129])
+        for i in range(128):
+            left = row[i-4] if i>=4 else 0
+            up = previous[i]
+            ul = previous[i-4] if i>=4 else 0
+            if f == 0: predictor = 0
+            elif f == 1: predictor = left
+            elif f == 2: predictor = up
+            elif f == 3: predictor = (left + up)//2
+            else:
+                p = left + up - ul
+                a,b,c = abs(p-left),abs(p-up),abs(p-ul)
+                predictor = left if a<=b and a<=c else up if b<=c else ul
+            row[i] = (row[i] + predictor) & 255
+        coverage += sum(row[x*4+3] > 0 for x in range(32))
+        previous = row
+    assert 100 <= coverage <= 750, food
 
 for inp,out in [
 ("RAW_CHICKEN_SKIN","FRIED_CHICKEN_SKIN"),("Items.BROWN_MUSHROOM","FRIED_MUSHROOM"),
@@ -71,7 +92,7 @@ for name in names:
     if name.startswith("plastic_basket_"):
         assert r["result"]["id"]=="sfcdelight:"+name
         assert r["key"]["D"]=="minecraft:"+name[len("plastic_basket_"):]+"_dye"
-        assert "sfcdelight:plastic_basket" not in json.dumps(r)
+        assert "sfcdelight:plastic_basket" not in r["key"].values()
     if name=="battered_squid_rings":
         assert r["neoforge:conditions"]==[{"type":"neoforge:mod_loaded","modid":"oceansdelight"}]
 print("PASS: 6 32px sprites, 4 cooked varieties, 29 recipes, 16 safe dye colors, 12-slot cart")

@@ -6,15 +6,17 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import tw.saltedfriedchicken.FriedFoodCartBlock;
 import tw.saltedfriedchicken.FriedFoodCartBlockEntity;
 import tw.saltedfriedchicken.SaltedFriedChickenDelight;
 
 /**
- * One-block night market cart, six plastic display frames across and three rows deep.
- * Each display shows its real stocked ingredient rather than a hard-coded texture.
- * The slanted food tiles follow the existing 18 frame positions in fried_food_cart.json.
+ * Twelve separate angled plastic frames, three across each of the four cart sections.
+ * The renderer is attached only to the front-bottom master block entity and draws
+ * the four-section contents across the complete two-block-tall structure.
  */
 public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<FriedFoodCartBlockEntity> {
     private final ItemRenderer items;
@@ -26,36 +28,57 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
     @Override
     public void render(FriedFoodCartBlockEntity cart, float partialTick, PoseStack pose,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 6; column++) {
-                if (!cart.hasFrame(row * 6 + column)) continue;
-                ItemStack display = cart.getDisplayStack(row * 6 + column);
-                // Actual plastic frame centers in model pixels:
-                // X: 2.31 + 2.25*column; Z: 3.375 + 4.35*row; top around Y=10.45.
-                double x = (2.31 + 2.25 * column) / 16.0;
-                double z = (3.375 + 4.35 * row) / 16.0;
-                // The small 3D plastic frame is actually stocked into this slot.
-                // The cart's permanent supports remain visible even while the slot is empty.
+        Direction front = cart.getBlockState().getValue(FriedFoodCartBlock.FACING);
+        Direction back = front.getOpposite();
+        Direction right = front.getClockWise();
+
+        // Use the enlarged block-entity render bounds for all four physical sections.
+        for (int depth = 0; depth < 4; depth++) {
+            for (int column = 0; column < 3; column++) {
+                int slot = depth * 3 + column;
+                if (!cart.hasFrame(slot)) continue;
+
+                // 3 transverse frame centers at x=3.3, 8.0, 12.7 model units.
+                double offset = (column - 1) * (4.7 / 16.0);
+                double x = 0.5 + back.getStepX() * depth + right.getStepX() * offset;
+                double z = 0.5 + back.getStepZ() * depth + right.getStepZ() * offset;
+                float angle = switch (front) {
+                    case NORTH -> 0.0f;
+                    case EAST -> 90.0f;
+                    case SOUTH -> 180.0f;
+                    case WEST -> 270.0f;
+                    default -> 0.0f;
+                };
+
+                // The physical plastic frame remains visible even when there is no food.
                 pose.pushPose();
-                pose.translate(x, 0.673, z);
+                pose.translate(x, 1.45, z);
+                pose.mulPose(Axis.YP.rotationDegrees(angle));
                 pose.mulPose(Axis.XP.rotationDegrees(-22.5f));
-                pose.scale(0.116f, 0.050f, 0.205f);
+                pose.scale(0.28f, 0.08f, 0.66f);
                 items.renderStatic(new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()),
                         ItemDisplayContext.FIXED, packedLight, packedOverlay,
-                        pose, buffers, cart.getLevel(), row * 6 + column);
+                        pose, buffers, cart.getLevel(), slot);
                 pose.popPose();
-                if (display.isEmpty()) continue;
-                int visible = Math.min(3, 1 + (display.getCount() - 1) / 4);
-                ItemStack one = display.copyWithCount(1);
-                for (int i = 0; i < visible; i++) {
+
+                ItemStack food = cart.getDisplayStack(slot);
+                if (food.isEmpty()) continue;
+                int visible = Math.min(4, 1 + (food.getCount() - 1) / 3);
+                ItemStack one = food.copyWithCount(1);
+                for (int n = 0; n < visible; n++) {
                     pose.pushPose();
-                    pose.translate(x + (i - (visible - 1) / 2.0) * 0.029,
-                                   0.691 + i * 0.005, z + i * 0.030);
-                    pose.mulPose(Axis.XP.rotationDegrees(64.0f));
-                    pose.mulPose(Axis.ZP.rotationDegrees(-8.0f + i * 8.0f));
-                    pose.scale(0.108f, 0.108f, 0.108f);
+                    // Food piles inside this frame; total count remains server-owned.
+                    pose.translate(x + right.getStepX() * (n - 1.5) * 0.034
+                                      + back.getStepX() * n * 0.048,
+                                   1.49 + n * 0.012,
+                                   z + right.getStepZ() * (n - 1.5) * 0.034
+                                     + back.getStepZ() * n * 0.048);
+                    pose.mulPose(Axis.YP.rotationDegrees(angle));
+                    pose.mulPose(Axis.XP.rotationDegrees(66.0f));
+                    pose.mulPose(Axis.ZP.rotationDegrees((n % 3 - 1) * 8.0f));
+                    pose.scale(0.23f, 0.23f, 0.23f);
                     items.renderStatic(one, ItemDisplayContext.FIXED, packedLight, packedOverlay,
-                            pose, buffers, cart.getLevel(), row * 6 + column);
+                            pose, buffers, cart.getLevel(), slot * 4 + n);
                     pose.popPose();
                 }
             }

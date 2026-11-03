@@ -140,17 +140,6 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         return drops;
     }
 
-    @Override
-    public net.minecraft.world.phys.AABB getRenderBoundingBox() {
-        net.minecraft.core.Direction back = getBlockState().getValue(FriedFoodCartBlock.FACING).getOpposite();
-        net.minecraft.core.BlockPos far = worldPosition.relative(back, 3);
-        return new net.minecraft.world.phys.AABB(
-                Math.min(worldPosition.getX(), far.getX()), worldPosition.getY(),
-                Math.min(worldPosition.getZ(), far.getZ()),
-                Math.max(worldPosition.getX(), far.getX()) + 1, worldPosition.getY() + 2,
-                Math.max(worldPosition.getZ(), far.getZ()) + 1).inflate(0.5);
-    }
-
     public FriedFoodCartBlockEntity(BlockPos pos, BlockState state) {
         super(SaltedFriedChickenDelight.CART_ENTITY.get(), pos, state);
     }

@@ -201,8 +201,9 @@ public class FryingBasketBlockEntity extends BlockEntity {
         if (state.getValue(FryingBasketBlock.LIFTING) != lifting || state.getValue(FryingBasketBlock.RAISED) != raised) {
             level.setBlock(worldPosition, state.setValue(FryingBasketBlock.LIFTING, lifting)
                 .setValue(FryingBasketBlock.RAISED, raised), 3);
+            // Do not dirty every idle frying-basket chunk 20 times each second.
+            setChanged();
         }
-        setChanged();
     }
     /** Notify clients when basket contents change; progress remains server-owned. */
     private void sync() {

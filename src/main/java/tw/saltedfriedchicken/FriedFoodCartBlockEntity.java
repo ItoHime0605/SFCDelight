@@ -45,6 +45,16 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         return true;
     }
 
+    /** Only an empty display frame can be picked up; never detach stocked food. */
+    public ItemStack removeFrame(int slot) {
+        if (level == null || level.isClientSide() || !hasFrame(slot) || !display.get(slot).isEmpty())
+            return ItemStack.EMPTY;
+        ItemStack frame = displayFrames.get(slot).copy();
+        displayFrames.set(slot, ItemStack.EMPTY);
+        setChanged();
+        return frame;
+    }
+
     /** Return physical frames as well as their food when the cart is dismantled. */
     public java.util.List<ItemStack> drainFrames() {
         java.util.List<ItemStack> drops = new java.util.ArrayList<>();

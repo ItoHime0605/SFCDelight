@@ -39,6 +39,19 @@ public final class FryingRecipes {
             || food.is(SaltedFriedChickenDelight.FRIED_DUCK_BLOOD.get());
     }
 
+    /** A portable table-loaded metal basket may contain up to ten raw portions.
+     * Validate all stacks and every variety; never silently discard malformed food.
+     */
+    public static boolean isValidRawBatch(List<ItemStack> foods, int maxPortions) {
+        if (foods == null || foods.isEmpty() || foods.size() > maxPortions || maxPortions <= 0)
+            return false;
+        int portions = FriedBatchData.countPortions(foods);
+        return portions > 0 && portions <= maxPortions
+                && foods.stream().allMatch(food -> food != null && !food.isEmpty()
+                    && output(food) != null && food.getCount() > 0
+                    && food.getCount() <= food.getMaxStackSize());
+    }
+
     /** Validate every entry before changing the world or consuming a held basket. */
     public static boolean isValidCookedBatch(List<ItemStack> foods, int maxPortions) {
         if (foods == null || foods.isEmpty() || foods.size() > 64 || maxPortions <= 0) return false;

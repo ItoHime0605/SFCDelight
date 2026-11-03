@@ -14,7 +14,8 @@
     "yellow": "minecraft:block/yellow_concrete",
     "bottle": "minecraft:block/light_gray_stained_glass",
     "particle": "sfcdelight:block/nightmarket_oak",
-    "brass": "sfcdelight:block/nightmarket_brass"
+    "brass": "sfcdelight:block/nightmarket_brass",
+    "brand": "sfcdelight:block/nightmarket_sign"
   },
   "elements": [
     {
@@ -750,6 +751,134 @@
         },
         "down": {
           "texture": "#wood"
+        }
+      }
+    },
+    {
+      "from": [
+        4.65,
+        8.5,
+        0.83
+      ],
+      "to": [
+        11.35,
+        12.05,
+        1.02
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brass"
+        },
+        "south": {
+          "texture": "#brass"
+        },
+        "east": {
+          "texture": "#brass"
+        },
+        "west": {
+          "texture": "#brass"
+        },
+        "up": {
+          "texture": "#brass"
+        },
+        "down": {
+          "texture": "#brass"
+        }
+      }
+    },
+    {
+      "from": [
+        4.95,
+        8.8,
+        0.6
+      ],
+      "to": [
+        11.05,
+        11.75,
+        0.82
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brand"
+        },
+        "south": {
+          "texture": "#brand"
+        },
+        "east": {
+          "texture": "#brand"
+        },
+        "west": {
+          "texture": "#brand"
+        },
+        "up": {
+          "texture": "#brand"
+        },
+        "down": {
+          "texture": "#brand"
+        }
+      }
+    },
+    {
+      "from": [
+        5.15,
+        11.82,
+        0.93
+      ],
+      "to": [
+        5.48,
+        13.3,
+        1.23
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brass"
+        },
+        "south": {
+          "texture": "#brass"
+        },
+        "east": {
+          "texture": "#brass"
+        },
+        "west": {
+          "texture": "#brass"
+        },
+        "up": {
+          "texture": "#brass"
+        },
+        "down": {
+          "texture": "#brass"
+        }
+      }
+    },
+    {
+      "from": [
+        10.52,
+        11.82,
+        0.93
+      ],
+      "to": [
+        10.85,
+        13.3,
+        1.23
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brass"
+        },
+        "south": {
+          "texture": "#brass"
+        },
+        "east": {
+          "texture": "#brass"
+        },
+        "west": {
+          "texture": "#brass"
+        },
+        "up": {
+          "texture": "#brass"
+        },
+        "down": {
+          "texture": "#brass"
         }
       }
     }

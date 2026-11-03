@@ -11,6 +11,15 @@ import tw.saltedfriedchicken.EquipmentStatusMenu;
 public final class EquipmentStatusScreen extends AbstractContainerScreen<EquipmentStatusMenu> {
     private static final ResourceLocation BACKGROUND =
             ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/equipment_status.png");
+    // Original 16px equipment insignia rather than the same decorative icon for every device.
+    private static final ResourceLocation ICON_CART =
+            ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/status_cart.png");
+    private static final ResourceLocation ICON_FRYER =
+            ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/status_fryer.png");
+    private static final ResourceLocation ICON_DEOILER =
+            ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/status_deoiler.png");
+    private static final ResourceLocation ICON_PREPARATION =
+            ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/status_preparation.png");
     private static final int DARK = 0xFF382923;
     private static final int WHITE = 0xFFF9EDD6;
     private static final int MUTED = 0xFF775A44;
@@ -128,6 +137,17 @@ public final class EquipmentStatusScreen extends AbstractContainerScreen<Equipme
             default -> "gui.sfcdelight.title_cart";
         };
         txt(graphics, headline, 17, 22, WHITE);
+        // An inset icon on the awning: easy to recognise at native Minecraft UI scale.
+        ResourceLocation insignia = switch (menu.kind()) {
+            case EquipmentStatusMenu.FRYER -> ICON_FRYER;
+            case EquipmentStatusMenu.DEOILER -> ICON_DEOILER;
+            case EquipmentStatusMenu.PREPARATION -> ICON_PREPARATION;
+            default -> ICON_CART;
+        };
+        graphics.fill(leftPos + 174, topPos + 13, leftPos + 195, topPos + 36, 0xFF56302D);
+        graphics.fill(leftPos + 175, topPos + 14, leftPos + 194, topPos + 35, 0xFFB27B50);
+        graphics.fill(leftPos + 176, topPos + 15, leftPos + 193, topPos + 34, 0xFF4A3330);
+        graphics.blit(insignia, leftPos + 177, topPos + 16, 0, 0, 16, 16, 16, 16);
         switch (menu.kind()) {
             case EquipmentStatusMenu.FRYER -> fryer(graphics);
             case EquipmentStatusMenu.DEOILER -> deoiler(graphics);

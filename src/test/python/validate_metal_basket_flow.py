@@ -63,6 +63,30 @@ assert definition["model"]["model"] == "sfcdelight:item/loaded_raw_basket"
 hot_definition = json.loads((RES / "items/hot_food_basket.json").read_text(encoding="utf-8"))
 assert hot_definition["model"]["model"] == "sfcdelight:item/hot_food_basket"
 assert lang["item.sfcdelight.loaded_raw_basket"] == "裝有生食材的金屬炸籃"
-assert "未油炸｜可放上油炸爐加工" in container
+assert "appendMetalBasketContents" in container
+assert "HOT_FOOD_BASKET.get()" in container
+assert "LOADED_RAW_BASKET.get()" in container
+details = source("FoodContentsTooltip.java")
+assert "食材份數：" in details and "內含食材：" in details
+assert "已油炸・待脫油" in details
+assert "amounts.forEach" in details
+assert "拿著金屬炸籃右鍵脫油機，整籃轉移炸物" in container
 
-print("PASS: portable raw metal basket, ten mixed portions, one fryer, atomic transfer, 15-second cook")
+# Pick up the completed fryer basket as one hot container, then
+# transfer it into the de-oiler as an intact batch.
+assert "FryingRecipes.isValidCookedBatch(basket.ingredients()" in basket
+assert "SaltedFriedChickenDelight.HOT_FOOD_BASKET.get()" in basket
+assert "Never scatter individual contents" in basket
+de_oiler = source("DeOilerBlock.java")
+de_oiler_entity = source("DeOilerBlockEntity.java")
+assert "held.is(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get())" in de_oiler
+assert "machine.insert(held)" in de_oiler
+assert "held.shrink(1)" in de_oiler
+assert "new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get())" in de_oiler
+assert "FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(cooked" in de_oiler_entity
+assert "CYCLE_TICKS = 160" in de_oiler_entity
+assert "FriedBatchData.readAll(stored, level.registryAccess())" in de_oiler
+assert "only the remaining fried foods drop" in de_oiler.lower()
+assert "Containers.dropItemStack(level, pos.getX()+0.5" not in de_oiler
+
+print("PASS: metal basket carries every fried portion, readable tooltip, atomic de-oiler transfer and no duplicate basket")

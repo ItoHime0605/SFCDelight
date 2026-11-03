@@ -38,15 +38,13 @@ public class FryingBasketBlockEntity extends BlockEntity {
                 || getBlockState().getValue(FryingBasketBlock.SUBMERGED)
                 || ingredients.stream().mapToInt(ItemStack::getCount).sum() >= MAX_PIECES
                 || progress > 0 || liftTicks > 0 || !isReadyForMore()) return false;
-        if (FriedBatchData.countDistinctTypes(ingredients) >= 5
-                && ingredients.stream().noneMatch(s -> ItemStack.isSameItemSameComponents(s, held))) return false;
         ingredients.add(held.copyWithCount(1));
         progress = 0;
         batchReady = false; // On a table this basket is for preparation, not auto-frying.
         sync();
         return true;
     }
-    /** One atomic transfer of a complete plastic-basket selection (up to ten portions, five kinds). */
+    /** One atomic transfer of a complete plastic-basket selection (up to ten portions, any mix of up to ten kinds). */
     public boolean transferFromPlastic(ItemStack plastic) {
         if (level == null || level.isClientSide || plastic == null || plastic.getCount() != 1
                 || !(plastic.getItem() instanceof PlasticFoodBasketItem) || !ingredients.isEmpty()
@@ -55,9 +53,9 @@ public class FryingBasketBlockEntity extends BlockEntity {
         if (getBlockState().getValue(FryingBasketBlock.LIFTING)) return false;
         ItemContainerContents container = plastic.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
         List<ItemStack> batch = container.stream().filter(stack -> !stack.isEmpty()).map(ItemStack::copy).toList();
-        if (batch.isEmpty() || batch.size() > 5
+        if (batch.isEmpty() || batch.size() > MAX_PIECES
                 || FriedBatchData.countPortions(batch) > MAX_PIECES
-                || FriedBatchData.countDistinctTypes(batch) > 5
+                || FriedBatchData.countDistinctTypes(batch) > MAX_PIECES
                 || batch.stream().anyMatch(stack -> FryingRecipes.output(stack) == null)) return false;
         // All validations precede changes to either container. Never partially unload a basket.
         ingredients.addAll(batch);

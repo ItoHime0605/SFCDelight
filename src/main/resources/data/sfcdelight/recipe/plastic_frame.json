@@ -10,7 +10,9 @@
     "P": {
       "tag": "sfcdelight:plastic_material"
     },
-    "B": "minecraft:bucket"
+    "B": {
+      "item": "minecraft:bucket"
+    }
   },
   "result": {
     "id": "sfcdelight:plastic_frame",

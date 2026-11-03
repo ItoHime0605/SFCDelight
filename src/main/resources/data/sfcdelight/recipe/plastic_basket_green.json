@@ -7,8 +7,12 @@
     " P "
   ],
   "key": {
-    "P": "sfcdelight:plastic_material",
-    "D": "minecraft:green_dye"
+    "P": {
+      "item": "sfcdelight:plastic_material"
+    },
+    "D": {
+      "item": "minecraft:green_dye"
+    }
   },
   "result": {
     "id": "sfcdelight:plastic_basket_green",

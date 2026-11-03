@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "culturaldelights:cooking_oil"
+    {
+      "item": "culturaldelights:cooking_oil"
+    }
   ],
   "result": {
     "id": "sfcdelight:cooking_oil",

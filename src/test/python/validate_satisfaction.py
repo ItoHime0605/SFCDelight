@@ -14,5 +14,5 @@ assert "GarlicBasilMixItem.mark(next)" in food
 assert 'tag.putBoolean("GarlicBasil",true)' in mix
 assert 'hasMix(food) ||' in mix
 recipe=json.loads((root/"src/main/resources/data/sfcdelight/recipe/garlic_basil_mix.json").read_text())
-assert recipe["ingredients"]==["sfcdelight:garlic","sfcdelight:basil"]
+assert recipe["ingredients"]==[{"item":"sfcdelight:garlic"},{"item":"sfcdelight:basil"}]
 print("PASS: garlic/basil +20% mining and attack, five-minute nonstacking status per eaten serving")

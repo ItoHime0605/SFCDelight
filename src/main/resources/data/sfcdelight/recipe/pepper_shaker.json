@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "sfcdelight:empty_seasoning_jar",
-    "sfcdelight:white_pepper_powder"
+    {
+      "item": "sfcdelight:empty_seasoning_jar"
+    },
+    {
+      "item": "sfcdelight:white_pepper_powder"
+    }
   ],
   "result": {
     "id": "sfcdelight:pepper_shaker",

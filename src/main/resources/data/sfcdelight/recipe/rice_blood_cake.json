@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "sfcdelight:raw_pig_blood",
-    "farmersdelight:cooked_rice",
-    "farmersdelight:cooked_rice",
-    "#sfcdelight:salt"
+    {
+      "item": "sfcdelight:raw_pig_blood"
+    },
+    {
+      "item": "farmersdelight:cooked_rice"
+    },
+    {
+      "item": "farmersdelight:cooked_rice"
+    },
+    {
+      "tag": "sfcdelight:salt"
+    }
   ],
   "result": {
     "id": "sfcdelight:rice_blood_cake",

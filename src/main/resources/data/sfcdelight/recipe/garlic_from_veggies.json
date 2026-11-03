@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "veggiesdelight:garlic"
+    {
+      "item": "veggiesdelight:garlic"
+    }
   ],
   "result": {
     "id": "sfcdelight:garlic_clove",

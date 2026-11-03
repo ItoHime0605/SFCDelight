@@ -7,9 +7,15 @@
     " S "
   ],
   "key": {
-    "I": "minecraft:iron_ingot",
-    "H": "minecraft:hopper",
-    "S": "minecraft:stick"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
   },
   "result": {
     "id": "sfcdelight:bloodletting_knife",

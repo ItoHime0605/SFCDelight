@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "sfcdelight:fish_paste",
-    "sfcdelight:fish_paste",
-    "oceansdelight:squid_rings",
-    "oceansdelight:squid_rings"
+    {
+      "item": "sfcdelight:fish_paste"
+    },
+    {
+      "item": "sfcdelight:fish_paste"
+    },
+    {
+      "item": "oceansdelight:squid_rings"
+    },
+    {
+      "item": "oceansdelight:squid_rings"
+    }
   ],
   "result": {
     "id": "sfcdelight:raw_squid_ball",

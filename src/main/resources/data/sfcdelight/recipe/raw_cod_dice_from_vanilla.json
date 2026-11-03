@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "minecraft:cod"
+    {
+      "item": "minecraft:cod"
+    }
   ],
   "result": {
     "id": "sfcdelight:raw_cod_dice",

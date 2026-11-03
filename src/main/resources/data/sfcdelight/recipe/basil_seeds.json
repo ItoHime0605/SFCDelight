@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "minecraft:wheat_seeds",
-    "minecraft:green_dye"
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:green_dye"
+    }
   ],
   "result": {
     "id": "sfcdelight:basil_seeds",

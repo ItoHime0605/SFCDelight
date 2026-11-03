@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "farmersdelight:chicken_cuts"
+    {
+      "item": "farmersdelight:chicken_cuts"
+    }
   ],
   "result": {
     "id": "sfcdelight:raw_chicken_dice",

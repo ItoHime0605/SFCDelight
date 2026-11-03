@@ -1,7 +1,9 @@
 {
   "type": "minecraft:smelting",
   "category": "food",
-  "ingredient": "sfcdelight:battered_squid_tentacles",
+  "ingredient": {
+    "item": "sfcdelight:battered_squid_tentacles"
+  },
   "result": {
     "id": "sfcdelight:fried_squid_tentacles"
   },

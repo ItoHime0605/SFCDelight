@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "minecraft:wheat_seeds",
-    "minecraft:wheat_seeds",
-    "minecraft:wheat_seeds",
-    "minecraft:wheat_seeds",
-    "minecraft:glass_bottle"
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
   ],
   "result": {
     "id": "sfcdelight:cooking_oil",

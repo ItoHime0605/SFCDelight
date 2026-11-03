@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "minecraft:potato"
+    {
+      "item": "minecraft:potato"
+    }
   ],
   "result": {
     "id": "sfcdelight:raw_fries",

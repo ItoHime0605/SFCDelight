@@ -39,7 +39,7 @@ for face in ("north","east","south","west"):
 for name in ("preparation_counter","marination_box","marinating_chicken_box","marinating_cod_box","steel_bowl"):
   recipe=j("src/main/resources/data/sfcdelight/recipe/"+name+".json")
   assert recipe["result"]["id"]=="sfcdelight:"+name
-assert "minecraft:sugar" in j("src/main/resources/data/sfcdelight/recipe/marinating_chicken_box.json")["ingredients"]
+assert {"item":"minecraft:sugar"} in j("src/main/resources/data/sfcdelight/recipe/marinating_chicken_box.json")["ingredients"]
 menu=(src/"PreparationSinkMenu.java").read_text(encoding="utf-8")
 screen=(src/"client/PreparationSinkScreen.java").read_text(encoding="utf-8")
 client=(src/"client/ClientPreparationSinkScreens.java").read_text(encoding="utf-8")

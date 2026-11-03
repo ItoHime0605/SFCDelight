@@ -7,9 +7,15 @@
     " C "
   ],
   "key": {
-    "I": "minecraft:iron_ingot",
-    "P": "minecraft:piston",
-    "C": "minecraft:cauldron"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "minecraft:cauldron"
+    }
   },
   "result": {
     "id": "sfcdelight:de_oiler",

@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "sfcdelight:marination_box",
-    "sfcdelight:raw_cod_dice",
-    "sfcdelight:soy_sauce",
-    "minecraft:sugar"
+    {
+      "item": "sfcdelight:marination_box"
+    },
+    {
+      "item": "sfcdelight:raw_cod_dice"
+    },
+    {
+      "item": "sfcdelight:soy_sauce"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
   ],
   "result": {
     "id": "sfcdelight:marinating_cod_box",

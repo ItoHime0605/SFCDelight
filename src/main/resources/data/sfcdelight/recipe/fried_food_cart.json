@@ -7,10 +7,18 @@
     "PPP"
   ],
   "key": {
-    "W": "minecraft:oak_planks",
-    "G": "minecraft:glass",
-    "C": "minecraft:crafting_table",
-    "P": "minecraft:spruce_planks"
+    "W": {
+      "item": "minecraft:oak_planks"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "minecraft:crafting_table"
+    },
+    "P": {
+      "item": "minecraft:spruce_planks"
+    }
   },
   "result": {
     "id": "sfcdelight:fried_food_cart",

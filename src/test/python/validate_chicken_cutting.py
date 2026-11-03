@@ -22,12 +22,12 @@ assert cut["result"]==[
 assert cut["neoforge:conditions"]==[{"type":"neoforge:mod_loaded","modid":"farmersdelight"}]
 assert not (RECIPE/"raw_chicken_dice_from_vanilla.json").exists()
 assert not (RECIPE/"raw_chicken_skin.json").exists()
-assert load(RECIPE/"raw_chicken_dice.json")["ingredients"]==["farmersdelight:chicken_cuts"]
+assert load(RECIPE/"raw_chicken_dice.json")["ingredients"]==[{"item":"farmersdelight:chicken_cuts"}]
 craft=load(RECIPE/"chicken_cutting_knife.json")
 assert craft["type"]=="minecraft:crafting_shaped"
 assert craft["result"]=={"id":"sfcdelight:chicken_cutting_knife","count":1}
 assert craft["pattern"]==["  I"," I ","SC "]
-assert craft["key"]=={"I":"minecraft:iron_ingot","S":"minecraft:stick","C":"minecraft:comparator"}
+assert craft["key"]=={"I":{"item":"minecraft:iron_ingot"},"S":{"item":"minecraft:stick"},"C":{"item":"minecraft:comparator"}}
 assert load(ART/"models/item/chicken_cutting_knife.json")["textures"]["layer0"]=="sfcdelight:item/chicken_cutting_knife"
 assert load(ART/"items/chicken_cutting_knife.json")["model"]["model"]=="sfcdelight:item/chicken_cutting_knife"
 sprite=(ART/"textures/item/chicken_cutting_knife.png").read_bytes()

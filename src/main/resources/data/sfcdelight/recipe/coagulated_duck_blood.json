@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "sfcdelight:raw_duck_blood",
-    "minecraft:bowl"
+    {
+      "item": "sfcdelight:raw_duck_blood"
+    },
+    {
+      "item": "minecraft:bowl"
+    }
   ],
   "result": {
     "id": "sfcdelight:coagulated_duck_blood",

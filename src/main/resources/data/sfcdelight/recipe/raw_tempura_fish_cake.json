@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "sfcdelight:fish_paste",
-    "sfcdelight:fish_paste",
-    "minecraft:sugar"
+    {
+      "item": "sfcdelight:fish_paste"
+    },
+    {
+      "item": "sfcdelight:fish_paste"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
   ],
   "result": {
     "id": "sfcdelight:raw_tempura_fish_cake",

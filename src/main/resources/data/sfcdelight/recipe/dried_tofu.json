@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "vegandelight:smoked_tofu",
-    "vegandelight:smoked_tofu",
-    "sfcdelight:soy_sauce"
+    {
+      "item": "vegandelight:smoked_tofu"
+    },
+    {
+      "item": "vegandelight:smoked_tofu"
+    },
+    {
+      "item": "sfcdelight:soy_sauce"
+    }
   ],
   "result": {
     "id": "sfcdelight:dried_tofu",

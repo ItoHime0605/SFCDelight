@@ -7,10 +7,18 @@
     "SCS"
   ],
   "key": {
-    "I": "minecraft:iron_ingot",
-    "B": "minecraft:bucket",
-    "S": "minecraft:smooth_stone",
-    "C": "minecraft:campfire"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    },
+    "C": {
+      "item": "minecraft:campfire"
+    }
   },
   "result": {
     "id": "sfcdelight:frying_station",

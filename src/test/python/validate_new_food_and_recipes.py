@@ -91,8 +91,8 @@ for name in names:
         assert 1<=len(r["ingredients"])<=9
     if name.startswith("plastic_basket_"):
         assert r["result"]["id"]=="sfcdelight:"+name
-        assert r["key"]["D"]=="minecraft:"+name[len("plastic_basket_"):]+"_dye"
-        assert "sfcdelight:plastic_basket" not in r["key"].values()
+        assert r["key"]["D"]=={"item":"minecraft:"+name[len("plastic_basket_"):]+"_dye"}
+        assert {"item":"sfcdelight:plastic_basket"} not in r["key"].values()
     if name=="battered_squid_rings":
         assert r["neoforge:conditions"]==[{"type":"neoforge:mod_loaded","modid":"oceansdelight"}]
 print("PASS: 6 32px sprites, 4 cooked varieties, 29 crafting recipes, 16 safe dye colors, 12-slot cart")

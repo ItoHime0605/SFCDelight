@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "food",
   "ingredients": [
-    "vegandelight:silken_tofu",
-    "vegandelight:silken_tofu",
-    "sfcdelight:wheat_flour",
-    "culturaldelights:cooking_oil"
+    {
+      "item": "vegandelight:silken_tofu"
+    },
+    {
+      "item": "vegandelight:silken_tofu"
+    },
+    {
+      "item": "sfcdelight:wheat_flour"
+    },
+    {
+      "item": "culturaldelights:cooking_oil"
+    }
   ],
   "result": {
     "id": "sfcdelight:hundred_layer_tofu",

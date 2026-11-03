@@ -47,7 +47,13 @@ public final class PepperRefillRecipe extends CustomRecipe {
     public static final class Serializer implements RecipeSerializer<PepperRefillRecipe> {
         public static final MapCodec<PepperRefillRecipe> CODEC = MapCodec.unit(new PepperRefillRecipe(CraftingBookCategory.MISC));
         public static final StreamCodec<RegistryFriendlyByteBuf, PepperRefillRecipe> STREAM_CODEC =
-                StreamCodec.unit(new PepperRefillRecipe(CraftingBookCategory.MISC));
+                // Network sync must accept recipe objects created by the JSON codec.
+                // StreamCodec.unit(value) checks *object identity* on encode, which
+                // breaks when the JSON parser supplies another recipe instance.
+                // The recipe has no payload beyond its fixed MISC category.
+                StreamCodec.of((buffer, recipe) -> {
+                    // No per-recipe fields to transmit.
+                }, buffer -> new PepperRefillRecipe(CraftingBookCategory.MISC));
         @Override public MapCodec<PepperRefillRecipe> codec() { return CODEC; }
         @Override public StreamCodec<RegistryFriendlyByteBuf, PepperRefillRecipe> streamCodec() { return STREAM_CODEC; }
     }

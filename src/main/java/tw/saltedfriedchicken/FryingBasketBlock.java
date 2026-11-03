@@ -111,15 +111,11 @@ public class FryingBasketBlock extends BaseEntityBlock {
             }
             return net.minecraft.world.InteractionResult.SUCCESS;
         }
-        // Do not allow bare-handed extraction from submerged hot oil during frying.
-        if (state.getValue(SUBMERGED) && !state.getValue(RAISED)) return net.minecraft.world.InteractionResult.FAIL;
-        if (!level.isClientSide) {
-            for (ItemStack out : basket.extractAll()) {
-                if (!player.getInventory().add(out)) player.drop(out, false);
-            }
-            if (level.getBlockEntity(pos.below()) instanceof FryingStationBlockEntity fryer) fryer.setFrying(false);
-        }
-        return net.minecraft.world.InteractionResult.SUCCESS;
+        // Never scatter individual contents from an occupied metal frying basket.
+        // Raw tabletop food is picked up as a whole above; cooked fryer contents
+        // are wrapped in a whole hot basket. A raised raw fryer basket still
+        // requires crouch-click to avoid accidental removal before frying.
+        return net.minecraft.world.InteractionResult.FAIL;
     }
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) {

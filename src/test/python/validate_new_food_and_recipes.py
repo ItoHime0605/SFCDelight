@@ -1,6 +1,7 @@
 """Static checks for newly introduced foods, craftables and 16-color baskets."""
 from pathlib import Path
 import json, struct, zlib
+from sfcdelight_png import validate_icon
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT/"src/main/java/tw/saltedfriedchicken"
 A = ROOT/"src/main/resources/assets/sfcdelight"
@@ -22,43 +23,7 @@ for food,translated in foods.items():
     item=json.loads((A/"items"/(food+".json")).read_text(encoding="utf-8"))
     assert model["textures"]["layer0"]=="sfcdelight:item/"+food
     assert item["model"]["model"]=="sfcdelight:item/"+food
-    data=(A/"textures/item"/(food+".png")).read_bytes()
-    assert data[:8]==bytes((137,80,78,71,13,10,26,10)),food
-    pos=8;chunks={}
-    while pos<len(data):
-        n=struct.unpack_from(">I",data,pos)[0]
-        tag_name=data[pos+4:pos+8]
-        payload=data[pos+8:pos+8+n]
-        assert zlib.crc32(tag_name+payload)==struct.unpack_from(">I",data,pos+8+n)[0]
-        chunks[tag_name]=payload;pos+=12+n
-        if tag_name==b"IEND":break
-    assert pos==len(data)
-    assert struct.unpack_from(">IIBBBBB",chunks[b"IHDR"])==(32,32,8,6,0,0,0)
-    rgba=zlib.decompress(chunks[b"IDAT"])
-    assert len(rgba)==32*129
-    # PNG allows adaptive per-row filters (0..4); restore scanlines before reading alpha.
-    previous = bytearray(128)
-    coverage = 0
-    for y in range(32):
-        f = rgba[y*129]
-        assert 0 <= f <= 4
-        row = bytearray(rgba[y*129+1:y*129+129])
-        for i in range(128):
-            left = row[i-4] if i>=4 else 0
-            up = previous[i]
-            ul = previous[i-4] if i>=4 else 0
-            if f == 0: predictor = 0
-            elif f == 1: predictor = left
-            elif f == 2: predictor = up
-            elif f == 3: predictor = (left + up)//2
-            else:
-                p = left + up - ul
-                a,b,c = abs(p-left),abs(p-up),abs(p-ul)
-                predictor = left if a<=b and a<=c else up if b<=c else ul
-            row[i] = (row[i] + predictor) & 255
-        coverage += sum(row[x*4+3] > 0 for x in range(32))
-        previous = row
-    assert 100 <= coverage <= 750, food
+    validate_icon(A/"textures/item"/(food+".png"))
 
 for inp,out in [
 ("RAW_CHICKEN_SKIN","FRIED_CHICKEN_SKIN"),("Items.BROWN_MUSHROOM","FRIED_MUSHROOM"),

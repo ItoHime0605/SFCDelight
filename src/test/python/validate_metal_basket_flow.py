@@ -86,7 +86,10 @@ assert "new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get())" in de
 assert "FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(cooked" in de_oiler_entity
 assert "CYCLE_TICKS = 160" in de_oiler_entity
 assert "FriedBatchData.readAll(stored, level.registryAccess())" in de_oiler
-assert "only the remaining fried foods drop" in de_oiler.lower()
-assert "Containers.dropItemStack(level, pos.getX()+0.5" not in de_oiler
+assert "machine.dropContents()" in de_oiler
+assert "SaltedFriedChickenDelight.DEOILER_ITEM.get()" in de_oiler
+assert "for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))" in de_oiler
+assert "GameRules.RULE_DOBLOCKDROPS" in de_oiler
+assert "machine.shouldDropEquipment()" in de_oiler
 
 print("PASS: metal basket carries every fried portion, readable tooltip, atomic de-oiler transfer and no duplicate basket")

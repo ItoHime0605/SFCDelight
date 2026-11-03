@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
-    "minecraft:iron_ingot",
-    "minecraft:glass_bottle"
+    "sfcdelight:empty_seasoning_jar",
+    "sfcdelight:white_pepper_powder"
   ],
   "result": {
     "id": "sfcdelight:pepper_shaker",

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "sfcdelight:empty_seasoning_jar",
+    "sfcdelight:chili_powder"
+  ],
+  "result": {
+    "id": "sfcdelight:chili_shaker",
+    "count": 1
+  }
+}

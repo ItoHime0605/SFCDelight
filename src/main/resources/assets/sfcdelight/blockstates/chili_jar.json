@@ -1,0 +1,187 @@
+{
+  "variants": {
+    "charges=0": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=1": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=2": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=3": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=4": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=5": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=6": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=7": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=8": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=9": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=10": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=11": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=12": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=13": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=14": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=15": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=16": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=17": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=18": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=19": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=20": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=21": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=22": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=23": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=24": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=25": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=26": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=27": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=28": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=29": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=30": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=31": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=32": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=33": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=34": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=35": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=36": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=37": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=38": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=39": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=40": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=41": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=42": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=43": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=44": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=45": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=46": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=47": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=48": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=49": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=50": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=51": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=52": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=53": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=54": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=55": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=56": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=57": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=58": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=59": {
+      "model": "sfcdelight:block/chili_jar"
+    },
+    "charges=60": {
+      "model": "sfcdelight:block/chili_jar"
+    }
+  }
+}

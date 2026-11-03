@@ -92,5 +92,11 @@
   "item.sfcdelight.battered_chicken_dice": "裹粉雞丁",
   "item.sfcdelight.battered_cod_dice": "裹粉鱈魚丁",
   "item.sfcdelight.steel_bowl": "不鏽鋼料理盆",
-  "effect.sfcdelight.slippery_hands": "手滑"
+  "effect.sfcdelight.slippery_hands": "手滑",
+  "block.sfcdelight.chili_jar": "辣椒粉罐",
+  "item.sfcdelight.chili_shaker": "辣椒粉罐",
+  "item.sfcdelight.empty_seasoning_jar": "空調味罐",
+  "item.sfcdelight.chili_powder": "辣椒粉",
+  "effect.sfcdelight.chili_speed_light": "辣味刺激",
+  "effect.sfcdelight.chili_speed_strong": "辣味刺激"
 }

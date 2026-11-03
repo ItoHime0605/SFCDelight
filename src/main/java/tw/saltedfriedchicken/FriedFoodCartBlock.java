@@ -32,15 +32,21 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
     @Override
     protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
 
-    /** Display coordinates are relative to the NORTH-facing model.
-     * Other faces must not accidentally expose the display inventory.
+    /** Pick the actual 6x3 plastic display frames on the TOP of the cart.
+     * Their centers agree with the static model and the dynamic ingredient renderer.
+     * Never map three rows to vertical front-face positions by accident.
      */
     private static int displaySlot(BlockPos pos, BlockHitResult hit) {
-        if (hit.getDirection() != Direction.NORTH) return -1;
-        double x = hit.getLocation().x - pos.getX();
-        double y = hit.getLocation().y - pos.getY();
-        if (x < 0 || x >= 1 || y < 0 || y >= 1) return -1;
-        return (2 - Math.min(2, (int)(y * 3))) * 6 + Math.min(5, (int)(x * 6));
+        if (hit.getDirection() != Direction.UP) return -1;
+        double x = (hit.getLocation().x - pos.getX()) * 16.0;
+        double z = (hit.getLocation().z - pos.getZ()) * 16.0;
+        int col = (int) Math.floor((x - 1.30) / 2.25);
+        int row = (int) Math.floor((z - 1.40) / 4.35);
+        if (col < 0 || col >= 6 || row < 0 || row >= 3) return -1;
+        double dx = x - 1.30 - col * 2.25;
+        double dz = z - 1.40 - row * 4.35;
+        if (dx < 0 || dx > 2.02 || dz < 0 || dz > 3.95) return -1;
+        return row * 6 + col;
     }
 
     /** Up to ten total portions, allowing ten different ingredients in the same plastic basket. */

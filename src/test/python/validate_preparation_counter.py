@@ -34,4 +34,16 @@ for name in ("preparation_counter","marination_box","marinating_chicken_box","ma
   recipe=j("src/main/resources/data/sfcdelight/recipe/"+name+".json")
   assert recipe["result"]["id"]=="sfcdelight:"+name
 assert "minecraft:sugar" in j("src/main/resources/data/sfcdelight/recipe/marinating_chicken_box.json")["ingredients"]
+menu=(src/"PreparationSinkMenu.java").read_text(encoding="utf-8")
+screen=(src/"client/PreparationSinkScreen.java").read_text(encoding="utf-8")
+client=(src/"client/ClientPreparationSinkScreens.java").read_text(encoding="utf-8")
+assert "serverPlayer.openMenu" in block and "player.isShiftKeyDown()" in block
+assert block.index("player.isShiftKeyDown()",block.index("useWithoutItem")) < block.index("bench.washHands()",block.index("useWithoutItem"))
+assert "DataSlots" in menu or "addDataSlots(data)" in menu
+assert "bench.washes()" in menu and "SimpleContainerData(1)" in menu
+assert "Math.max(0, Math.min(PreparationCounterBlockEntity.MAX_WASHES" in menu
+assert "PREPARATION_SINK_MENU" in mod and "MENU_TYPES.register(modBus)" in mod
+assert "RegisterMenuScreensEvent" in client and "PreparationSinkScreen::new" in client
+assert "gui.sfcdelight.sink_washes" in screen and "water * 142 / 20" in screen
+assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["menu.sfcdelight.preparation_sink"] == "不鏽鋼洗手台"
 print("PASS: 2x1 marination/steel bowl workstation, 3-minute timer, 3 manual batter clicks, 20 washes, permanent slippery status until washing")

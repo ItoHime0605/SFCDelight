@@ -28,6 +28,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 @Mod(SaltedFriedChickenDelight.MOD_ID)
 public class SaltedFriedChickenDelight {
     public static final String MOD_ID = "sfcdelight";
+    public static final DeferredRegister<net.minecraft.world.inventory.MenuType<?>> MENU_TYPES =
+            DeferredRegister.create(net.minecraft.core.registries.Registries.MENU, MOD_ID);
+    public static final DeferredHolder<net.minecraft.world.inventory.MenuType<?>, net.minecraft.world.inventory.MenuType<PreparationSinkMenu>> PREPARATION_SINK_MENU =
+            MENU_TYPES.register("preparation_sink", () -> new net.minecraft.world.inventory.MenuType<>(
+                    PreparationSinkMenu::new, net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS));
     public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(net.minecraft.core.registries.Registries.RECIPE_SERIALIZER, MOD_ID);
     public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>, PepperRefillRecipe.Serializer> PEPPER_REFILL_SERIALIZER = RECIPE_SERIALIZERS.register("pepper_refill", PepperRefillRecipe.Serializer::new);
     public static final DeferredRegister<net.minecraft.world.effect.MobEffect> EFFECTS =
@@ -183,6 +188,7 @@ public class SaltedFriedChickenDelight {
     private static ItemStack creativeTabIcon() { return new ItemStack(FRYER_ITEM.get()); }
 
     public SaltedFriedChickenDelight(IEventBus modBus) {
+        MENU_TYPES.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         EFFECTS.register(modBus);
         BLOCKS.register(modBus);

@@ -100,5 +100,12 @@
   "effect.sfcdelight.chili_speed_light": "辣味刺激",
   "effect.sfcdelight.chili_speed_strong": "辣味刺激",
   "item.sfcdelight.garlic_basil_mix": "蒜香九層塔",
-  "effect.sfcdelight.satisfaction": "滿足感"
+  "effect.sfcdelight.satisfaction": "滿足感",
+  "menu.sfcdelight.preparation_sink": "不鏽鋼洗手台",
+  "gui.sfcdelight.sink_washes": "剩餘洗手次數：%s / %s",
+  "gui.sfcdelight.sink_bucket": "每桶水補充 2 次，最多可儲存 20 次",
+  "gui.sfcdelight.sink_use": "一般空手右鍵洗手；蹲下右鍵查看水量",
+  "message.sfcdelight.hands_clean": "雙手乾淨，不需要洗手。",
+  "message.sfcdelight.hands_washed": "已洗手，手滑效果解除！",
+  "message.sfcdelight.sink_empty": "洗手台沒有水，請先加入水桶。"
 }

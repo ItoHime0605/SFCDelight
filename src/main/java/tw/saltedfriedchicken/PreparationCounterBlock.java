@@ -131,15 +131,25 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
         if (bench == null) return InteractionResult.PASS;
         if (state.getValue(PART) == 1) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
-            if (player.isShiftKeyDown() && player.hasEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS)) {
-                if (bench.washHands()) {
-                    player.removeEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS);
-                    level.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,0.6f,1.35f);
-                    player.displayClientMessage(Component.literal("已洗手，手滑效果解除！"), true);
-                } else player.displayClientMessage(Component.literal("洗手台沒有水，請先加入水桶。"), true);
+            // Agreed controls: crouch + empty-hand right click opens water GUI;
+            // normal empty-hand right click washes only when hands are slippery.
+            if (player.isShiftKeyDown()) {
+                if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                    serverPlayer.openMenu(new net.minecraft.world.SimpleMenuProvider(
+                            (id, inventory, viewer) -> new PreparationSinkMenu(id, inventory, bench, pos),
+                            Component.translatable("menu.sfcdelight.preparation_sink")));
+                return InteractionResult.SUCCESS;
+            }
+            if (!player.hasEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS)) {
+                player.displayClientMessage(Component.translatable("message.sfcdelight.hands_clean"), true);
+                return InteractionResult.SUCCESS;
+            }
+            if (bench.washHands()) {
+                player.removeEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS);
+                level.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,0.6f,1.35f);
+                player.displayClientMessage(Component.translatable("message.sfcdelight.hands_washed"), true);
             } else {
-                player.displayClientMessage(Component.literal("洗手台剩餘：" + bench.washes()
-                        + " / 20 次；潛行空手右鍵可洗手"), true);
+                player.displayClientMessage(Component.translatable("message.sfcdelight.sink_empty"), true);
             }
             return InteractionResult.SUCCESS;
         }

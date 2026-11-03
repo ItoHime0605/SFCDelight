@@ -162,12 +162,36 @@ public class FryingStationBlock extends BaseEntityBlock {
     }
 
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moved) {
-        if (!state.is(next.getBlock()) && !level.isClientSide && !moved
-                && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
-                && level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer
-                && fryer.shouldDropEquipment()) {
-            // Oil charges are consumed fuel; only the physical station is returned.
-            net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(SaltedFriedChickenDelight.FRYER_ITEM.get()));
+        if (!state.is(next.getBlock()) && !level.isClientSide) {
+            // Detach the real basket BEFORE removing the fryer so its content
+            // and cooked/raw state do not get changed by neighbor updates.
+            BlockPos basketPos = pos.above();
+            BlockState basketState = level.getBlockState(basketPos);
+            if (basketState.getBlock() instanceof FryingBasketBlock
+                    && basketState.getValue(FryingBasketBlock.SUBMERGED)
+                    && level.getBlockEntity(basketPos) instanceof FryingBasketBlockEntity basket) {
+                boolean shouldDrop = !moved
+                        && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                        && basket.shouldDropEquipment()
+                        && (!(level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer)
+                            || fryer.shouldDropEquipment());
+                if (shouldDrop)
+                    FryingBasketBlock.dropPortableBasket(level, basketPos, basket);
+                // A single precomputed portable drop owns the food. Clear the
+                // entity before removing its block to prevent duplicate drops.
+                basket.extractAll();
+                basket.suppressEquipmentDrop();
+                level.removeBlock(basketPos, false);
+            }
+            if (!moved
+                    && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                    && level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer
+                    && fryer.shouldDropEquipment()) {
+                // Oil charges are consumed fuel. Return the fryer itself.
+                net.minecraft.world.Containers.dropItemStack(level,
+                        pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,
+                        new ItemStack(SaltedFriedChickenDelight.FRYER_ITEM.get()));
+            }
         }
         super.onRemove(state, level, pos, next, moved);
     }

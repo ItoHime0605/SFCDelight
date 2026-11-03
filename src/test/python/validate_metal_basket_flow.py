@@ -88,7 +88,9 @@ assert "CYCLE_TICKS = 160" in de_oiler_entity
 assert "FriedBatchData.readAll(stored, level.registryAccess())" in de_oiler
 assert "machine.dropContents()" in de_oiler
 assert "SaltedFriedChickenDelight.DEOILER_ITEM.get()" in de_oiler
-assert "for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))" in de_oiler
+assert "FryingBasketBlock.dropPortableBasket(level, basketPos, basket)" in fryer
+assert "machine.dropContents();" in de_oiler
+assert "FriedBatchData.readAll(stored, level.registryAccess())" not in de_oiler
 assert "GameRules.RULE_DOBLOCKDROPS" in de_oiler
 assert "machine.shouldDropEquipment()" in de_oiler
 

@@ -38,9 +38,22 @@ assert "SaltedFriedChickenDelight.HOT_FOOD_BASKET.get()" in basket
 assert "FryingRecipes.isValidRawBatch(foods" in basket
 assert "FryingRecipes.isValidCookedBatch(foods" in basket
 assert "SaltedFriedChickenDelight.DEOILER_ITEM.get()" in deoiler
-assert "for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))" in deoiler
+assert "machine.dropContents();" in deoiler
+assert "for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))" not in deoiler
+assert "Only the physical machine is recovered" in deoiler
+assert "FryingBasketBlock.dropPortableBasket(level, basketPos, basket);" in fryer
+assert "basket.extractAll();" in fryer and "basket.suppressEquipmentDrop();" in fryer
+assert "level.removeBlock(basketPos, false);" in fryer
+assert "FryingBasketBlock.dropPortableBasket" in fryer
+assert "public static void dropPortableBasket(" in basket
+assert "FryingRecipes.isValidRawBatch(foods" in basket
+assert "FryingRecipes.isValidCookedBatch(foods" in basket
+cart = read("FriedFoodCartBlock.java")
+assert "cart.drainDisplay()" in cart and "cart.drainFrames()" in cart
+assert "cart.popBasket()" in cart and "cart.takePepperJar()" in cart
+assert "RULE_DOBLOCKDROPS" in cart
 assert "SaltedFriedChickenDelight.FRYER_ITEM.get()" in fryer
 assert fryer.count("rollback.suppressEquipmentDrop();") == 2
 assert "|| !basket.restoreRaw(raw))" in fryer
 assert "|| !basket.restoreCooked(foods))" in fryer
-print("PASS: bag/box, basket, de-oiler, fryer return items without duplicating consumed containers")
+print("PASS: cart returns real inventory; de-oiler discards food; fryer returns its basket by raw/cooked state")

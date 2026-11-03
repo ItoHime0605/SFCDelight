@@ -126,33 +126,45 @@ public class FryingBasketBlock extends BaseEntityBlock {
         return super.playerWillDestroy(level, pos, state, player);
     }
 
+    /**
+     * Return one portable basket that reflects the actual contents at break time.
+     * Cooking in progress remains RAW: a 15-second batch must never instantly
+     * become cooked simply because the station below was removed.
+     */
+    public static void dropPortableBasket(Level level, BlockPos pos, FryingBasketBlockEntity basket) {
+        java.util.List<ItemStack> foods = basket.ingredients();
+        ItemStack dropped = ItemStack.EMPTY;
+        if (foods.isEmpty()) {
+            dropped = new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get());
+        } else if (FryingRecipes.isValidRawBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
+            dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get(),
+                    foods, level.registryAccess());
+        } else if (FryingRecipes.isValidCookedBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
+            dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get(),
+                    foods, level.registryAccess());
+        }
+        if (!dropped.isEmpty()) {
+            net.minecraft.world.Containers.dropItemStack(
+                    level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, dropped);
+        } else {
+            // Corrupted legacy data: retain surviving ingredients and the
+            // physical basket rather than silently deleting them.
+            for (ItemStack food : foods) if (!food.isEmpty())
+                net.minecraft.world.Containers.dropItemStack(
+                        level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, food);
+            net.minecraft.world.Containers.dropItemStack(level,
+                    pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,
+                    new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get()));
+        }
+    }
+
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && !level.isClientSide
                 && level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) {
-            if (!movedByPiston && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS) && basket.shouldDropEquipment()) {
-                // A raw/cooked tabletop basket is one physical metal basket.
-                // Dropping its portions separately would mint additional food
-                // while losing the original container.
-                java.util.List<ItemStack> foods = basket.ingredients();
-                ItemStack dropped = ItemStack.EMPTY;
-                if (foods.isEmpty()) {
-                    dropped = new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get());
-                } else if (FryingRecipes.isValidRawBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
-                    dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get(),
-                            foods, level.registryAccess());
-                } else if (FryingRecipes.isValidCookedBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
-                    dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get(),
-                            foods, level.registryAccess());
-                }
-                if (!dropped.isEmpty()) {
-                    net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, dropped);
-                } else {
-                    // If legacy data cannot form a safe container, preserve all
-                    // surviving stacks instead of destroying them.
-                    for (ItemStack item : foods)
-                        net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, item);
-                    net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get()));
-                }
+            if (!movedByPiston
+                    && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                    && basket.shouldDropEquipment()) {
+                dropPortableBasket(level, pos, basket);
             }
             basket.extractAll();
             if (level.getBlockEntity(pos.below()) instanceof FryingStationBlockEntity fryer)

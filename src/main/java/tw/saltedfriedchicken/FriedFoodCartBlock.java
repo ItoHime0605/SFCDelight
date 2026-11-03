@@ -405,14 +405,21 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                 // For the master currently being removed, its block entity still exists here.
                 FriedFoodCartBlockEntity cart = level.getBlockEntity(anchor) instanceof FriedFoodCartBlockEntity c ? c : null;
                 if (cart != null) {
-                    for (ItemStack item : cart.drainDisplay()) drop(level, anchor, item);
-                    for (ItemStack item : cart.drainFrames()) drop(level, anchor, item);
-                    drop(level, anchor, cart.takePepperJar());
-                    drop(level, anchor, cart.takeChiliJar());
+                    boolean drops = !moved && level.getGameRules().getBoolean(
+                            net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS);
+                    // All real display food, frames, stored baskets and spices
+                    // are returned with the cart. Never invent extra decorations.
+                    for (ItemStack item : cart.drainDisplay()) if (drops) drop(level, anchor, item);
+                    for (ItemStack item : cart.drainFrames()) if (drops) drop(level, anchor, item);
+                    ItemStack pepper = cart.takePepperJar();
+                    ItemStack chili = cart.takeChiliJar();
+                    if (drops) {
+                        drop(level, anchor, pepper);
+                        drop(level, anchor, chili);
+                    }
                     ItemStack basket;
-                    while (!(basket = cart.popBasket()).isEmpty()) drop(level, anchor, basket);
-                    if (!moved && cart.shouldDropCart()
-                            && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS))
+                    while (!(basket = cart.popBasket()).isEmpty()) if (drops) drop(level, anchor, basket);
+                    if (drops && cart.shouldDropCart())
                         drop(level, anchor, new ItemStack(SaltedFriedChickenDelight.CART_ITEM.get()));
                 }
                 BlockState template = state.setValue(PART, 0);

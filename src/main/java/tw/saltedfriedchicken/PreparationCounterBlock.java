@@ -176,6 +176,15 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
                 : "左側可以放入醃製箱（3 分鐘），或放上鋼盆裹粉。"), true);
         return InteractionResult.SUCCESS;
     }
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        // Creative mode removes the whole 2x1 counter without minting a spare item.
+        if (!level.isClientSide && player.getAbilities().instabuild) {
+            PreparationCounterBlockEntity bench = getBench(level, pos, state);
+            if (bench != null) bench.suppressCounterDrop();
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moved) {
         if (!state.is(next.getBlock()) && !level.isClientSide && !DISMANTLING.get()) {
             DISMANTLING.set(true);
@@ -187,7 +196,11 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
                 if (rooted) {
                     if (level.getBlockEntity(master) instanceof PreparationCounterBlockEntity bench)
                         for (ItemStack item: bench.drain()) drop(level,master,item);
-                    drop(level,master,new ItemStack(SaltedFriedChickenDelight.PREPARATION_COUNTER_ITEM.get()));
+                    if (!moved && level.getGameRules().getBoolean(
+                            net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                            && (level.getBlockEntity(master) instanceof PreparationCounterBlockEntity bench
+                                && bench.shouldDropCounter()))
+                        drop(level,master,new ItemStack(SaltedFriedChickenDelight.PREPARATION_COUNTER_ITEM.get()));
                     BlockPos other=master.relative(state.getValue(FACING).getClockWise());
                     if (level.getBlockState(other).getBlock() == this) level.removeBlock(other,false);
                     if (!master.equals(pos)) level.removeBlock(master,false);

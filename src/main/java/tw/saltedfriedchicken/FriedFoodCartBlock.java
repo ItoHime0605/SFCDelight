@@ -232,7 +232,28 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         FriedFoodCartBlockEntity cart = cartAt(level, pos, state);
         if (cart == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        // Basket rack is reachable from the front of the bottom-front segment.
+        // Left-hand counter: a real pepper shaker with saved charges, not a decoration.
+        if (state.getValue(PART) == 3 && hit.getDirection() == state.getValue(FACING)) {
+            if (held.is(SaltedFriedChickenDelight.PEPPER_SHAKER.get())) {
+                if (level.isClientSide) return ItemInteractionResult.SUCCESS;
+                if (!cart.installPepperJar(held)) return ItemInteractionResult.FAIL;
+                held.shrink(1); // Transfer the actual item even in creative mode.
+                return ItemInteractionResult.SUCCESS;
+            }
+            if (held.is(SaltedFriedChickenDelight.WHITE_PEPPER_POWDER.get())) {
+                if (level.isClientSide) return ItemInteractionResult.SUCCESS;
+                if (!cart.refillPepperJar()) return ItemInteractionResult.FAIL;
+                if (!player.getAbilities().instabuild) held.shrink(1);
+                return ItemInteractionResult.SUCCESS;
+            }
+            if (WhitePepperItem.isPackage(held)) {
+                if (level.isClientSide) return ItemInteractionResult.SUCCESS;
+                return cart.seasonPackage(held, player.getAbilities().instabuild)
+                        ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+            }
+        }
+
+        // The basket rack is accessible at the left lower front of the cart.
         if (state.getValue(PART) == 0 && hit.getDirection() == state.getValue(FACING)
                 && held.getItem() instanceof PlasticFoodBasketItem) {
             if (!held.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
@@ -287,10 +308,30 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hit) {
-        if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty())
-            return InteractionResult.PASS;
+        if (!player.getMainHandItem().isEmpty()) return InteractionResult.PASS;
         FriedFoodCartBlockEntity cart = cartAt(level, pos, state);
         if (cart == null) return InteractionResult.PASS;
+        if (state.getValue(PART) == 3 && hit.getDirection() == state.getValue(FACING)) {
+            ItemStack other = player.getOffhandItem();
+            if (WhitePepperItem.isPackage(other)) {
+                if (level.isClientSide) return InteractionResult.SUCCESS;
+                return cart.seasonPackage(other, player.getAbilities().instabuild)
+                        ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+            }
+            if (!other.isEmpty()) return InteractionResult.PASS;
+            if (!cart.hasPepperJar()) return InteractionResult.PASS;
+            if (level.isClientSide) return InteractionResult.SUCCESS;
+            if (player.isShiftKeyDown()) {
+                ItemStack jar = cart.takePepperJar();
+                if (jar.isEmpty()) return InteractionResult.PASS;
+                if (!player.getInventory().add(jar)) player.drop(jar, false);
+            } else {
+                player.displayClientMessage(net.minecraft.network.chat.Component.literal(
+                    "白胡椒粉剩餘次數：" + PepperShakerItem.charges(cart.getPepperJar()) + " / 60"), true);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (!player.getOffhandItem().isEmpty()) return InteractionResult.PASS;
         int slot = displaySlot(pos, state, hit);
         if (slot >= 0) {
             if (!player.isShiftKeyDown()) return InteractionResult.PASS;
@@ -346,6 +387,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                 if (cart != null) {
                     for (ItemStack item : cart.drainDisplay()) drop(level, anchor, item);
                     for (ItemStack item : cart.drainFrames()) drop(level, anchor, item);
+                    drop(level, anchor, cart.takePepperJar());
                     ItemStack basket;
                     while (!(basket = cart.popBasket()).isEmpty()) drop(level, anchor, basket);
                     if (!moved && cart.shouldDropCart()

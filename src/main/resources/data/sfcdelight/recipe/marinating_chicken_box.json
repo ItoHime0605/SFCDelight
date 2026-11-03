@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "sfcdelight:marination_box",
+    "sfcdelight:raw_chicken_dice",
+    "sfcdelight:soy_sauce",
+    "minecraft:sugar"
+  ],
+  "result": {
+    "id": "sfcdelight:marinating_chicken_box",
+    "count": 1
+  }
+}

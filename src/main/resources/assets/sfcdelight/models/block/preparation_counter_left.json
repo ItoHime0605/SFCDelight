@@ -1,0 +1,236 @@
+{
+  "textures": {
+    "steel": "minecraft:block/iron_block",
+    "dark": "minecraft:block/polished_deepslate",
+    "surface": "minecraft:block/smooth_stone",
+    "water": "minecraft:block/light_blue_stained_glass",
+    "woods": "minecraft:block/barrel_side",
+    "particle": "minecraft:block/iron_block"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        11.8,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel"
+        },
+        "south": {
+          "texture": "#steel"
+        },
+        "east": {
+          "texture": "#steel"
+        },
+        "west": {
+          "texture": "#steel"
+        },
+        "up": {
+          "texture": "#steel"
+        },
+        "down": {
+          "texture": "#steel"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        11.8,
+        0
+      ],
+      "to": [
+        16,
+        13.2,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#dark"
+        },
+        "south": {
+          "texture": "#dark"
+        },
+        "east": {
+          "texture": "#dark"
+        },
+        "west": {
+          "texture": "#dark"
+        },
+        "up": {
+          "texture": "#dark"
+        },
+        "down": {
+          "texture": "#dark"
+        }
+      }
+    },
+    {
+      "from": [
+        0.9,
+        13.2,
+        0.9
+      ],
+      "to": [
+        15.1,
+        14,
+        15.1
+      ],
+      "faces": {
+        "north": {
+          "texture": "#surface"
+        },
+        "south": {
+          "texture": "#surface"
+        },
+        "east": {
+          "texture": "#surface"
+        },
+        "west": {
+          "texture": "#surface"
+        },
+        "up": {
+          "texture": "#surface"
+        },
+        "down": {
+          "texture": "#surface"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        14,
+        1
+      ],
+      "to": [
+        15,
+        14.2,
+        2
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel"
+        },
+        "south": {
+          "texture": "#steel"
+        },
+        "east": {
+          "texture": "#steel"
+        },
+        "west": {
+          "texture": "#steel"
+        },
+        "up": {
+          "texture": "#steel"
+        },
+        "down": {
+          "texture": "#steel"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        14,
+        14
+      ],
+      "to": [
+        15,
+        14.2,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel"
+        },
+        "south": {
+          "texture": "#steel"
+        },
+        "east": {
+          "texture": "#steel"
+        },
+        "west": {
+          "texture": "#steel"
+        },
+        "up": {
+          "texture": "#steel"
+        },
+        "down": {
+          "texture": "#steel"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        1,
+        1
+      ],
+      "to": [
+        3,
+        10,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#dark"
+        },
+        "south": {
+          "texture": "#dark"
+        },
+        "east": {
+          "texture": "#dark"
+        },
+        "west": {
+          "texture": "#dark"
+        },
+        "up": {
+          "texture": "#dark"
+        },
+        "down": {
+          "texture": "#dark"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        1,
+        1
+      ],
+      "to": [
+        15,
+        10,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#dark"
+        },
+        "south": {
+          "texture": "#dark"
+        },
+        "east": {
+          "texture": "#dark"
+        },
+        "west": {
+          "texture": "#dark"
+        },
+        "up": {
+          "texture": "#dark"
+        },
+        "down": {
+          "texture": "#dark"
+        }
+      }
+    }
+  ]
+}

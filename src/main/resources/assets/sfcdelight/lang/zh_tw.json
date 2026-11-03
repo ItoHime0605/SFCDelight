@@ -81,5 +81,16 @@
   "item.sfcdelight.fried_duck_blood": "炸鴨血",
   "message.sfcdelight.display_frame_required": "請先在展示位放入塑膠框，再擺放食材。",
   "message.sfcdelight.display_frame_has_food": "請先取走展示位上的食材，才能收起塑膠框。",
-  "item.sfcdelight.loaded_raw_basket": "裝有生食材的金屬炸籃"
+  "item.sfcdelight.loaded_raw_basket": "裝有生食材的金屬炸籃",
+  "block.sfcdelight.preparation_counter": "不鏽鋼料理台",
+  "item.sfcdelight.preparation_counter": "不鏽鋼料理台",
+  "item.sfcdelight.marination_box": "空醃製箱",
+  "item.sfcdelight.marinating_chicken_box": "雞丁醃製箱",
+  "item.sfcdelight.marinating_cod_box": "鱈魚丁醃製箱",
+  "item.sfcdelight.marinated_chicken_dice": "醃好的雞丁",
+  "item.sfcdelight.marinated_cod_dice": "醃好的鱈魚丁",
+  "item.sfcdelight.battered_chicken_dice": "裹粉雞丁",
+  "item.sfcdelight.battered_cod_dice": "裹粉鱈魚丁",
+  "item.sfcdelight.steel_bowl": "不鏽鋼料理盆",
+  "effect.sfcdelight.slippery_hands": "手滑"
 }

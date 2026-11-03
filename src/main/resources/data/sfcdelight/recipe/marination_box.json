@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:chest",
+    "minecraft:glass_pane"
+  ],
+  "result": {
+    "id": "sfcdelight:marination_box",
+    "count": 1
+  }
+}

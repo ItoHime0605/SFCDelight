@@ -24,6 +24,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     private int count = 0;
     /** A real, refillable white-pepper shaker stored on the left serving counter. */
     private ItemStack counterPepper = ItemStack.EMPTY;
+    private ItemStack counterChili = ItemStack.EMPTY;
     /** Four front-facing columns over the two display blocks, three vertical rows (twelve trays). */
     /** Data-driven allowlist: other mods may add compatible ingredients via this tag. */
     public static final TagKey<Item> DISPLAY_INGREDIENTS = TagKey.create(
@@ -100,6 +101,46 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
                 FriedBatchData.readAll(food, level.registryAccess()), capacity)) return false;
         WhitePepperItem.setWhitePepper(food);
         if (!creative) PepperShakerItem.setCharges(counterPepper, PepperShakerItem.charges(counterPepper) - 1);
+        setChanged();
+        return true;
+    }
+
+    public ItemStack getChiliJar() { return counterChili.copy(); }
+    public boolean hasChiliJar() { return !counterChili.isEmpty(); }
+
+    public boolean installChiliJar(ItemStack held) {
+        if (level == null || level.isClientSide || hasChiliJar()
+                || held == null || held.getCount() != 1
+                || !held.is(SaltedFriedChickenDelight.CHILI_SHAKER.get())) return false;
+        counterChili = held.copyWithCount(1);
+        setChanged();
+        return true;
+    }
+    public ItemStack takeChiliJar() {
+        if (level == null || level.isClientSide || !hasChiliJar()) return ItemStack.EMPTY;
+        ItemStack out=counterChili.copy();
+        counterChili=ItemStack.EMPTY;
+        setChanged();
+        return out;
+    }
+    public boolean refillChiliJar() {
+        if (level == null || level.isClientSide || !hasChiliJar()) return false;
+        int charges=PepperShakerItem.charges(counterChili);
+        if (charges>50) return false;
+        PepperShakerItem.setCharges(counterChili,charges+10);
+        setChanged();
+        return true;
+    }
+    public boolean seasonChiliPackage(ItemStack packageStack,boolean creative) {
+        if (level == null || level.isClientSide || !hasChiliJar()
+                || packageStack == null || !WhitePepperItem.isPackage(packageStack)
+                || PepperShakerItem.charges(counterChili)==0
+                || ChiliPowderItem.level(packageStack)>=4) return false;
+        int cap=packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
+        if (!FryingRecipes.isValidCookedBatch(
+                FriedBatchData.readAll(packageStack,level.registryAccess()),cap)) return false;
+        ChiliPowderItem.setLevel(packageStack,ChiliPowderItem.level(packageStack)+1);
+        if (!creative) PepperShakerItem.setCharges(counterChili,PepperShakerItem.charges(counterChili)-1);
         setChanged();
         return true;
     }
@@ -240,6 +281,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tag.putInt("BasketCount", count);
         if (!counterPepper.isEmpty()) tag.put("CounterPepper", counterPepper.save(registries));
+        if (!counterChili.isEmpty()) tag.put("CounterChili", counterChili.save(registries));
         CompoundTag basketTag = new CompoundTag();
         ContainerHelper.saveAllItems(basketTag, baskets, registries);
         tag.put("Baskets", basketTag);
@@ -264,6 +306,10 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
                 ? ItemStack.parseOptional(registries, tag.getCompound("CounterPepper")) : ItemStack.EMPTY;
         if (!counterPepper.is(SaltedFriedChickenDelight.PEPPER_SHAKER.get())
                 || counterPepper.getCount() != 1) counterPepper = ItemStack.EMPTY;
+        counterChili = tag.contains("CounterChili", 10)
+                ? ItemStack.parseOptional(registries, tag.getCompound("CounterChili")) : ItemStack.EMPTY;
+        if (!counterChili.is(SaltedFriedChickenDelight.CHILI_SHAKER.get())
+                || counterChili.getCount() != 1) counterChili = ItemStack.EMPTY;
         for (int i = 0; i < MAX_BASKETS; i++) baskets.set(i, ItemStack.EMPTY);
         if (tag.contains("Baskets")) ContainerHelper.loadAllItems(tag.getCompound("Baskets"), baskets, registries);
         else ContainerHelper.loadAllItems(tag, baskets, registries); // migration from 0.1.5-alpha

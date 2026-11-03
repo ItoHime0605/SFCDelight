@@ -57,6 +57,8 @@ definition = json.loads((RES / "items/loaded_raw_basket.json").read_text(encodin
 lang = json.loads((RES / "lang/zh_tw.json").read_text(encoding="utf-8"))
 assert model["parent"] == "sfcdelight:item/frying_basket"
 assert definition["model"]["model"] == "sfcdelight:item/loaded_raw_basket"
+hot_definition = json.loads((RES / "items/hot_food_basket.json").read_text(encoding="utf-8"))
+assert hot_definition["model"]["model"] == "sfcdelight:item/hot_food_basket"
 assert lang["item.sfcdelight.loaded_raw_basket"] == "裝有生食材的金屬炸籃"
 assert "未油炸｜可放上油炸爐加工" in container
 

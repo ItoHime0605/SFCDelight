@@ -13,6 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Eight-second powered-by-itself de-oiling cycle. No redstone requirement. */
 public class DeOilerBlockEntity extends BlockEntity {
+    /** Only a transient interaction flag. Never save this to world NBT. */
+    private boolean suppressEquipmentDrop;
+    public void suppressEquipmentDrop() { suppressEquipmentDrop = true; }
+    public boolean shouldDropEquipment() { return !suppressEquipmentDrop; }
+
     public static final int CYCLE_TICKS = 160;
     private ItemStack food = ItemStack.EMPTY;
     private int elapsed;

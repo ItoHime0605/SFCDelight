@@ -79,21 +79,44 @@ public class FriedPackagingBlock extends BaseEntityBlock {
             ItemStack scoop = container.take();
             if (scoop.isEmpty()) return InteractionResult.FAIL;
             ItemStack packed = FriedBatchData.transfer(scoop, capacity == 5 ? SaltedFriedChickenDelight.FILLED_PAPER_BAG.get() : SaltedFriedChickenDelight.FILLED_PAPER_BOX.get());
+            container.suppressEquipmentDrop();
             level.removeBlock(pos, false);
             if (!player.getInventory().add(packed)) player.drop(packed, false);
         }
         return InteractionResult.SUCCESS;
     }
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide && player.getAbilities().instabuild
+                && level.getBlockEntity(pos) instanceof FriedPackagingBlockEntity packageEntity)
+            packageEntity.suppressEquipmentDrop();
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean piston) {
-        if (!state.is(next.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof FriedPackagingBlockEntity container && !container.isEmpty()) {
-            ItemStack scoop = container.take();
-            // On forced removal, preserve malformed contents as the original scoop
-            // instead of silently rewriting them into a valid-looking food package.
-            ItemStack dropped = FryingRecipes.isValidCookedBatch(
-                    FriedBatchData.readAll(scoop, level.registryAccess()), capacity)
-                    ? FriedBatchData.transfer(scoop, capacity == 5 ? SaltedFriedChickenDelight.FILLED_PAPER_BAG.get() : SaltedFriedChickenDelight.FILLED_PAPER_BOX.get())
-                    : scoop;
-            if (!dropped.isEmpty()) net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, dropped);
+        if (!state.is(next.getBlock()) && !level.isClientSide && !piston
+                && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                && level.getBlockEntity(pos) instanceof FriedPackagingBlockEntity container
+                && container.shouldDropEquipment()) {
+            ItemStack stored = container.take();
+            ItemStack dropped;
+            if (stored.isEmpty()) {
+                // An unused placed bag/box is recovered as the original empty item.
+                dropped = new ItemStack(capacity == 5
+                        ? SaltedFriedChickenDelight.PAPER_BAG_ITEM.get()
+                        : SaltedFriedChickenDelight.PAPER_BOX_ITEM.get());
+            } else if (stored.is(SaltedFriedChickenDelight.LOADED_STEEL_SCOOP.get())
+                    && FryingRecipes.isValidCookedBatch(
+                            FriedBatchData.readAll(stored, level.registryAccess()), capacity)) {
+                // One packed takeaway replaces the placed empty package.
+                dropped = FriedBatchData.transfer(stored, capacity == 5
+                        ? SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()
+                        : SaltedFriedChickenDelight.FILLED_PAPER_BOX.get());
+            } else {
+                // Never silently discard unrecognized data or make a fake food bag.
+                dropped = stored;
+            }
+            if (!dropped.isEmpty())
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, dropped);
         }
         super.onRemove(state, level, pos, next, piston);
     }

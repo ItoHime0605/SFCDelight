@@ -90,6 +90,7 @@ public class FryingBasketBlock extends BaseEntityBlock {
                         raw, level.registryAccess());
                 if (loaded.isEmpty()) return net.minecraft.world.InteractionResult.FAIL;
                 basket.extractAll();
+                basket.suppressEquipmentDrop();
                 level.removeBlock(pos, false);
                 if (!player.getInventory().add(loaded)) player.drop(loaded, false);
             }
@@ -105,6 +106,7 @@ public class FryingBasketBlock extends BaseEntityBlock {
                 ItemStack hotBasket = FriedBatchData.wrapMany(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get(), cooked, level.registryAccess());
                 if (hotBasket.isEmpty()) return net.minecraft.world.InteractionResult.FAIL;
                 basket.extractAll();
+                basket.suppressEquipmentDrop();
                 level.removeBlock(pos, false);
                 // A filled hot basket already includes the metal basket: no duplicate.
                 if (!player.getInventory().add(hotBasket)) player.drop(hotBasket, false);
@@ -117,12 +119,44 @@ public class FryingBasketBlock extends BaseEntityBlock {
         // requires crouch-click to avoid accidental removal before frying.
         return net.minecraft.world.InteractionResult.FAIL;
     }
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide && player.getAbilities().instabuild
+                && level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket)
+            basket.suppressEquipmentDrop();
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) {
-            for (ItemStack contents : basket.extractAll()) {
-                net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, contents);
+        if (!state.is(newState.getBlock()) && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) {
+            if (!movedByPiston && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS) && basket.shouldDropEquipment()) {
+                // A raw/cooked tabletop basket is one physical metal basket.
+                // Dropping its portions separately would mint additional food
+                // while losing the original container.
+                java.util.List<ItemStack> foods = basket.ingredients();
+                ItemStack dropped = ItemStack.EMPTY;
+                if (foods.isEmpty()) {
+                    dropped = new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get());
+                } else if (FryingRecipes.isValidRawBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
+                    dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.LOADED_RAW_BASKET.get(),
+                            foods, level.registryAccess());
+                } else if (FryingRecipes.isValidCookedBatch(foods, FryingBasketBlockEntity.MAX_PIECES)) {
+                    dropped = FriedBatchData.wrapMany(SaltedFriedChickenDelight.HOT_FOOD_BASKET.get(),
+                            foods, level.registryAccess());
+                }
+                if (!dropped.isEmpty()) {
+                    net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, dropped);
+                } else {
+                    // If legacy data cannot form a safe container, preserve all
+                    // surviving stacks instead of destroying them.
+                    for (ItemStack item : foods)
+                        net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, item);
+                    net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get()));
+                }
             }
-            if (level.getBlockEntity(pos.below()) instanceof FryingStationBlockEntity fryer) fryer.setFrying(false);
+            basket.extractAll();
+            if (level.getBlockEntity(pos.below()) instanceof FryingStationBlockEntity fryer)
+                fryer.setFrying(false);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
     }

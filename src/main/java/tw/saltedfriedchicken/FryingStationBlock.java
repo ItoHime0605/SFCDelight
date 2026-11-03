@@ -146,4 +146,22 @@ public class FryingStationBlock extends BaseEntityBlock {
         if (!player.getAbilities().instabuild) held.shrink(1);
         return ItemInteractionResult.SUCCESS;
     }
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide && player.getAbilities().instabuild
+                && level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer)
+            fryer.suppressEquipmentDrop();
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moved) {
+        if (!state.is(next.getBlock()) && !level.isClientSide && !moved
+                && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS)
+                && level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer
+                && fryer.shouldDropEquipment()) {
+            // Oil charges are consumed fuel; only the physical station is returned.
+            net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(SaltedFriedChickenDelight.FRYER_ITEM.get()));
+        }
+        super.onRemove(state, level, pos, next, moved);
+    }
+
 }

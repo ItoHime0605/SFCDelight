@@ -86,18 +86,25 @@ public class DeOilerBlock extends BaseEntityBlock {
         }
         return net.minecraft.world.InteractionResult.SUCCESS;
     }
+    @Override public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide && player.getAbilities().instabuild
+                && level.getBlockEntity(pos) instanceof DeOilerBlockEntity machine)
+            machine.suppressEquipmentDrop();
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean piston) {
         if (!state.is(next.getBlock()) && !level.isClientSide
                 && level.getBlockEntity(pos) instanceof DeOilerBlockEntity machine) {
-            ItemStack stored = machine.dropContents();
-            // The empty metal basket was already returned when the hot batch
-            // entered the machine. Dropping another HOT_FOOD_BASKET here would
-            // duplicate the physical basket. Only the remaining fried foods drop.
-            if (!stored.isEmpty()) {
-                for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess())) {
-                    net.minecraft.world.Containers.dropItemStack(
-                            level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, food);
-                }
+            if (!piston && level.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOBLOCKDROPS) && machine.shouldDropEquipment()) {
+                // The empty metal basket was already handed back on insertion.
+                // Return the machine plus actual remaining fried portions only.
+                ItemStack stored = machine.dropContents();
+                for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess()))
+                    net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, food);
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(SaltedFriedChickenDelight.DEOILER_ITEM.get()));
+            } else {
+                machine.dropContents();
             }
         }
         super.onRemove(state, level, pos, next, piston);

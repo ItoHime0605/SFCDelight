@@ -11,6 +11,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Oil is stored as 20 frying charges; each oil item contributes two charges. */
 public class FryingStationBlockEntity extends BlockEntity {
+    /** Only a transient interaction flag. Never save this to world NBT. */
+    private boolean suppressEquipmentDrop;
+    public void suppressEquipmentDrop() { suppressEquipmentDrop = true; }
+    public boolean shouldDropEquipment() { return !suppressEquipmentDrop; }
+
     private int charges;
     private boolean frying;
     public FryingStationBlockEntity(BlockPos pos, BlockState state) { super(SaltedFriedChickenDelight.FRYER_ENTITY.get(), pos, state); }

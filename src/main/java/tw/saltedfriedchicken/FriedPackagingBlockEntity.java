@@ -11,6 +11,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** A placed, single-use takeaway container. Contents survive world saves and chunk reloads. */
 public class FriedPackagingBlockEntity extends BlockEntity {
+    /** Only a transient interaction flag. Never save this to world NBT. */
+    private boolean suppressEquipmentDrop;
+    public void suppressEquipmentDrop() { suppressEquipmentDrop = true; }
+    public boolean shouldDropEquipment() { return !suppressEquipmentDrop; }
+
     private ItemStack contents = ItemStack.EMPTY;
     public FriedPackagingBlockEntity(BlockPos pos, BlockState state) { super(SaltedFriedChickenDelight.PACKAGING_ENTITY.get(), pos, state); }
     public boolean isEmpty() { return contents.isEmpty(); }

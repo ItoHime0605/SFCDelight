@@ -18,6 +18,11 @@ import net.minecraft.world.level.Level;
 
 /** A single-batch basket. Cooking is server authoritative; no oil is spent on an aborted batch. */
 public class FryingBasketBlockEntity extends BlockEntity {
+    /** Only a transient interaction flag. Never save this to world NBT. */
+    private boolean suppressEquipmentDrop;
+    public void suppressEquipmentDrop() { suppressEquipmentDrop = true; }
+    public boolean shouldDropEquipment() { return !suppressEquipmentDrop; }
+
     private final List<ItemStack> ingredients = new ArrayList<>();
     private int progress;
     private int liftTicks;

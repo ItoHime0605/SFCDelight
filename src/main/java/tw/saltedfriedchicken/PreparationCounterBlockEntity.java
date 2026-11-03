@@ -24,6 +24,11 @@ public class PreparationCounterBlockEntity extends BlockEntity {
     private int flour;
     private int batterClicks;
     private int waterUses;
+    /** Transient creative-break flag, never serialized to the world save. */
+    private boolean suppressCounterDrop;
+
+    public void suppressCounterDrop() { suppressCounterDrop = true; }
+    public boolean shouldDropCounter() { return !suppressCounterDrop; }
 
     public PreparationCounterBlockEntity(BlockPos pos, BlockState state) {
         super(SaltedFriedChickenDelight.PREPARATION_COUNTER_ENTITY.get(), pos, state);

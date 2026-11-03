@@ -26,9 +26,9 @@ public final class PreparationSinkScreen extends AbstractContainerScreen<Prepara
         graphics.fill(x + 17, y + 43, x + 159, y + 57, 0xFF102026);
         if (barWidth > 0)
             graphics.fill(x + 17, y + 43, x + 17 + barWidth, y + 57, 0xFF46B9D6);
-        // Ten visual marks, one water bucket per mark (two washes).
-        for (int i = 1; i < 10; i++) {
-            int markX = x + 17 + i * 142 / 10;
+        // Four water-bucket segments, five washes per bucket.
+        for (int i = 1; i < 4; i++) {
+            int markX = x + 17 + i * 142 / 4;
             graphics.fill(markX, y + 43, markX + 1, y + 57, 0xFF284B5A);
         }
     }

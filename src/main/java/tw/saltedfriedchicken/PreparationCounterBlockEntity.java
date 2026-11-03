@@ -17,6 +17,7 @@ import java.util.List;
 public class PreparationCounterBlockEntity extends BlockEntity {
     public static final int MARINATE_TICKS = 20 * 180;
     public static final int MAX_WASHES = 20;
+    public static final int WASHES_PER_BUCKET = 5;
     private ItemStack marination = ItemStack.EMPTY;
     private int marinateTicks;
     private ItemStack bowl = ItemStack.EMPTY;
@@ -51,8 +52,8 @@ public class PreparationCounterBlockEntity extends BlockEntity {
     public int batterClicks() { return batterClicks; }
 
     public boolean addWater() {
-        if (level == null || level.isClientSide || waterUses > MAX_WASHES - 2) return false;
-        waterUses += 2;
+        if (level == null || level.isClientSide || waterUses > MAX_WASHES - WASHES_PER_BUCKET) return false;
+        waterUses += WASHES_PER_BUCKET;
         sync();
         return true;
     }

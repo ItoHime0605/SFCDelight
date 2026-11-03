@@ -10,7 +10,11 @@ entity=(src/"PreparationCounterBlockEntity.java").read_text(encoding="utf-8")
 mod=(src/"SaltedFriedChickenDelight.java").read_text(encoding="utf-8")
 recipes=(src/"FryingRecipes.java").read_text(encoding="utf-8")
 assert "MARINATE_TICKS = 20 * 180" in entity
-assert "MAX_WASHES = 20" in entity and "waterUses += 2" in entity and "waterUses--" in entity
+assert "MAX_WASHES = 20" in entity and "WASHES_PER_BUCKET = 5" in entity
+assert "waterUses > MAX_WASHES - WASHES_PER_BUCKET" in entity
+assert "waterUses += WASHES_PER_BUCKET;" in entity and "waterUses--" in entity
+assert "waterUses += 2" not in entity
+assert "for (int i = 1; i < 4; i++)" in (src/"client/PreparationSinkScreen.java").read_text(encoding="utf-8")
 assert "batterClicks < 3" in entity and "MARINATED_CHICKEN_DICE" in entity
 assert "setChanged()" in entity and "saveAdditional" in entity and "loadAdditional" in entity
 assert "onRemove" in block and "bench.drain()" in block
@@ -46,4 +50,5 @@ assert "PREPARATION_SINK_MENU" in mod and "MENU_TYPES.register(modBus)" in mod
 assert "RegisterMenuScreensEvent" in client and "PreparationSinkScreen::new" in client
 assert "gui.sfcdelight.sink_washes" in screen and "water * 142 / 20" in screen
 assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["menu.sfcdelight.preparation_sink"] == "不鏽鋼洗手台"
-print("PASS: 2x1 marination/steel bowl workstation, 3-minute timer, 3 manual batter clicks, 20 washes, permanent slippery status until washing")
+assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["gui.sfcdelight.sink_bucket"] == "每桶水補充 5 次，最多可儲存 20 次"
+print("PASS: 2x1 workstation, 3-minute marinade, 3 manual batter clicks, 4 buckets x 5 washes = 20 washes")

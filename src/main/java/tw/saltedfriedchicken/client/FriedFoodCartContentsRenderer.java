@@ -14,9 +14,8 @@ import tw.saltedfriedchicken.FriedFoodCartBlockEntity;
 import tw.saltedfriedchicken.SaltedFriedChickenDelight;
 
 /**
- * Twelve separate angled plastic frames, three across each of the four cart sections.
- * The renderer is attached only to the front-bottom master block entity and draws
- * the four-section contents across the complete two-block-tall structure.
+ * Twelve separate angled plastic frames, four across and three deep.
+ * One master block entity renders the contents across the whole 2x2x2 cart.
  */
 public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<FriedFoodCartBlockEntity> {
     private final ItemRenderer items;
@@ -27,9 +26,11 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
 
     @Override
     public net.minecraft.world.phys.AABB getRenderBoundingBox(FriedFoodCartBlockEntity cart) {
-        Direction back = cart.getBlockState().getValue(FriedFoodCartBlock.FACING).getOpposite();
+        Direction front = cart.getBlockState().getValue(FriedFoodCartBlock.FACING);
+        Direction back = front.getOpposite();
+        Direction right = front.getClockWise();
         net.minecraft.core.BlockPos origin = cart.getBlockPos();
-        net.minecraft.core.BlockPos far = origin.relative(back, 3);
+        net.minecraft.core.BlockPos far = origin.relative(right).relative(back);
         return new net.minecraft.world.phys.AABB(
                 Math.min(origin.getX(), far.getX()), origin.getY(),
                 Math.min(origin.getZ(), far.getZ()),
@@ -44,16 +45,18 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
         Direction back = front.getOpposite();
         Direction right = front.getClockWise();
 
-        // Use the enlarged block-entity render bounds for all four physical sections.
-        for (int depth = 0; depth < 4; depth++) {
-            for (int column = 0; column < 3; column++) {
-                int slot = depth * 3 + column;
+        // Four across the TWO-block width; three rows across the TWO-block depth.
+        for (int depth = 0; depth < 3; depth++) {
+            for (int column = 0; column < 4; column++) {
+                int slot = depth * 4 + column;
                 if (!cart.hasFrame(slot)) continue;
 
-                // 3 transverse frame centers at x=3.3, 8.0, 12.7 model units.
-                double offset = (column - 1) * (4.7 / 16.0);
-                double x = 0.5 + back.getStepX() * depth + right.getStepX() * offset;
-                double z = 0.5 + back.getStepZ() * depth + right.getStepZ() * offset;
+                // World-space positions relative to the front-left master block.
+                // Each slot occupies 0.5 blocks across and 2/3 blocks front-to-back.
+                double across = (column + 0.5) * 0.5 - 0.5;
+                double frontBack = (depth + 0.5) * (2.0 / 3.0) - 0.5;
+                double x = 0.5 + back.getStepX() * frontBack + right.getStepX() * across;
+                double z = 0.5 + back.getStepZ() * frontBack + right.getStepZ() * across;
                 float angle = switch (front) {
                     case NORTH -> 0.0f;
                     case EAST -> 90.0f;
@@ -67,7 +70,7 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                 pose.translate(x, 1.45, z);
                 pose.mulPose(Axis.YP.rotationDegrees(angle));
                 pose.mulPose(Axis.XP.rotationDegrees(-22.5f));
-                pose.scale(0.28f, 0.08f, 0.66f);
+                pose.scale(0.40f, 0.08f, 0.55f);
                 items.renderStatic(new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()),
                         ItemDisplayContext.FIXED, packedLight, packedOverlay,
                         pose, buffers, cart.getLevel(), slot);
@@ -88,7 +91,7 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                     pose.mulPose(Axis.YP.rotationDegrees(angle));
                     pose.mulPose(Axis.XP.rotationDegrees(66.0f));
                     pose.mulPose(Axis.ZP.rotationDegrees((n % 3 - 1) * 8.0f));
-                    pose.scale(0.23f, 0.23f, 0.23f);
+                    pose.scale(0.25f, 0.25f, 0.25f);
                     items.renderStatic(one, ItemDisplayContext.FIXED, packedLight, packedOverlay,
                             pose, buffers, cart.getLevel(), slot * 4 + n);
                     pose.popPose();

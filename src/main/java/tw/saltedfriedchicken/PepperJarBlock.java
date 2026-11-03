@@ -46,8 +46,22 @@ public final class PepperJarBlock extends Block {
     @Override protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        if (!held.is(SaltedFriedChickenDelight.WHITE_PEPPER_POWDER.get())) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         int current = state.getValue(CHARGES);
+        if (WhitePepperItem.isPackage(held)) {
+            int cap=held.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
+            if (current==0 || WhitePepperItem.hasWhitePepper(held)
+                    || !FryingRecipes.isValidCookedBatch(
+                        FriedBatchData.readAll(held,level.registryAccess()),cap))
+                return ItemInteractionResult.FAIL;
+            if (!level.isClientSide) {
+                WhitePepperItem.setWhitePepper(held);
+                if (!player.getAbilities().instabuild)
+                    level.setBlock(pos,state.setValue(CHARGES,current-1),3);
+            }
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (!held.is(SaltedFriedChickenDelight.WHITE_PEPPER_POWDER.get()))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (current > 50) return ItemInteractionResult.FAIL;
         if (!level.isClientSide) {
             level.setBlock(pos, state.setValue(CHARGES, current + 10), 3);

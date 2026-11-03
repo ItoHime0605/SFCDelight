@@ -3,6 +3,8 @@ package tw.saltedfriedchicken;
 import net.minecraft.core.BlockPos;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +35,7 @@ public class DeOilerBlock extends BaseEntityBlock {
                 if (!level.isClientSide) {
                     if (!machine.insert(held)) return ItemInteractionResult.FAIL;
                     held.shrink(1);
+                    level.playSound(null,pos,SoundEvents.IRON_TRAPDOOR_CLOSE,SoundSource.BLOCKS,0.5f,1.2f);
                     // Return exactly one empty basket only when the hot basket is consumed.
                     ItemStack emptyBasket = new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get());
                     if (!player.getInventory().add(emptyBasket)) player.drop(emptyBasket, false);
@@ -56,6 +59,7 @@ public class DeOilerBlock extends BaseEntityBlock {
                 if (loaded.isEmpty()) return ItemInteractionResult.FAIL;
                 ItemStack food = machine.extractCompleted();
                 if (food.isEmpty()) return ItemInteractionResult.FAIL;
+                level.playSound(null,pos,SoundEvents.IRON_TRAPDOOR_OPEN,SoundSource.BLOCKS,0.5f,1.15f);
                 // Keep other scoops in a stack intact; replace the held one when possible.
                 if (held.getCount() == 1) {
                     player.setItemInHand(hand, loaded);

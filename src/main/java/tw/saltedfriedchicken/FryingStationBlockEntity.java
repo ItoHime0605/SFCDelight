@@ -1,6 +1,8 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -18,6 +20,9 @@ public class FryingStationBlockEntity extends BlockEntity {
     public void setFrying(boolean active) {
         if (level == null || level.isClientSide || frying == active) return;
         frying = active;
+        // One gentle sizzle per frying transition; no repeated sound per tick.
+        if (active) level.playSound(null,worldPosition,SoundEvents.CAMPFIRE_CRACKLE,
+                SoundSource.BLOCKS,0.4f,1.15f);
         update();
     }
     public boolean addOil() {

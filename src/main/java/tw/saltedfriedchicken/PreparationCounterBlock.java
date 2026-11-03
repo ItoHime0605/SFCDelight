@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -90,12 +92,14 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
                 return ItemInteractionResult.FAIL;
             }
             if (!player.getAbilities().instabuild) player.setItemInHand(hand, new ItemStack(Items.BUCKET));
+            level.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,0.55f,1.0f);
             return ItemInteractionResult.SUCCESS;
         }
         if (held.is(SaltedFriedChickenDelight.MARINATING_CHICKEN_BOX.get())
                 || held.is(SaltedFriedChickenDelight.MARINATING_COD_BOX.get())) {
             if (level.isClientSide) return ItemInteractionResult.SUCCESS;
             if (!bench.installMarination(held)) return ItemInteractionResult.FAIL;
+            level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,0.55f,1.15f);
             held.shrink(1);
             return ItemInteractionResult.SUCCESS;
         }
@@ -130,6 +134,7 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
             if (player.isShiftKeyDown() && player.hasEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS)) {
                 if (bench.washHands()) {
                     player.removeEffect(SaltedFriedChickenDelight.SLIPPERY_HANDS);
+                    level.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,0.6f,1.35f);
                     player.displayClientMessage(Component.literal("已洗手，手滑效果解除！"), true);
                 } else player.displayClientMessage(Component.literal("洗手台沒有水，請先加入水桶。"), true);
             } else {
@@ -143,6 +148,7 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
             ItemStack ready = bench.completeMarination();
             grant(player,ready);
             grant(player,new ItemStack(SaltedFriedChickenDelight.MARINATION_BOX.get()));
+            level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,0.55f,1.1f);
             player.displayClientMessage(Component.literal("醃製完成，取得食材與空醃製箱。"), true);
             return InteractionResult.SUCCESS;
         }
@@ -156,6 +162,7 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
         }
         if (bench.hasBowl() && bench.hasIngredient() && bench.hasFlour()) {
             ItemStack result = bench.mixBatter();
+            level.playSound(null,pos,SoundEvents.SLIME_BLOCK_HIT,SoundSource.BLOCKS,0.45f,1.3f);
             if (!result.isEmpty()) {
                 grant(player,result);
                 player.addEffect(new MobEffectInstance(

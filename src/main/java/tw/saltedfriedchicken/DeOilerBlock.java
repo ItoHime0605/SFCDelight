@@ -83,9 +83,18 @@ public class DeOilerBlock extends BaseEntityBlock {
         return net.minecraft.world.InteractionResult.SUCCESS;
     }
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean piston) {
-        if (!state.is(next.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof DeOilerBlockEntity machine) {
-            ItemStack food = machine.dropContents();
-            if (!food.isEmpty()) net.minecraft.world.Containers.dropItemStack(level, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, food);
+        if (!state.is(next.getBlock()) && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof DeOilerBlockEntity machine) {
+            ItemStack stored = machine.dropContents();
+            // The empty metal basket was already returned when the hot batch
+            // entered the machine. Dropping another HOT_FOOD_BASKET here would
+            // duplicate the physical basket. Only the remaining fried foods drop.
+            if (!stored.isEmpty()) {
+                for (ItemStack food : FriedBatchData.readAll(stored, level.registryAccess())) {
+                    net.minecraft.world.Containers.dropItemStack(
+                            level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, food);
+                }
+            }
         }
         super.onRemove(state, level, pos, next, piston);
     }

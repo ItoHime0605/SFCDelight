@@ -18,7 +18,9 @@ assert "WhitePepperItem.setWhitePepper(next)" in food
 assert "rightCondiment" in cart and "cart.installChiliJar(held)" in cart
 assert "cart.refillChiliJar()" in cart and "cart.seasonChiliPackage" in cart
 assert "CounterChili" in entity and "counterChili = ItemStack.EMPTY" in entity
-assert "drop(level, anchor, cart.takeChiliJar())" in cart
+assert "ItemStack chili = cart.takeChiliJar();" in cart
+assert "drop(level, anchor, chili);" in cart
+assert "if (drops)" in cart
 blockstates=json.loads((r/"src/main/resources/assets/sfcdelight/blockstates/chili_jar.json").read_text(encoding="utf-8"))
 assert len(blockstates["variants"])==61
 for item in ["empty_seasoning_jar","chili_powder","chili_shaker"]:

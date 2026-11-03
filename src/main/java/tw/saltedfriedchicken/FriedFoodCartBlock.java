@@ -48,16 +48,21 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         ItemContainerContents contents = basket.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
         NonNullList<ItemStack> slots = NonNullList.withSize(5, ItemStack.EMPTY);
         int index = 0;
+        int portions = 0;
         for (ItemStack entry : contents.stream().toList()) {
             // Reject malformed or oversized containers instead of silently discarding food.
             if (entry == null || (!entry.isEmpty() && (entry.getCount() <= 0
-                    || entry.getCount() > entry.getMaxStackSize()))) return false;
+                    || entry.getCount() > entry.getMaxStackSize()
+                    || !entry.is(FriedFoodCartBlockEntity.DISPLAY_INGREDIENTS)))) return false;
+            if (!entry.isEmpty()) portions += entry.getCount();
             if (index >= slots.size()) {
                 if (!entry.isEmpty()) return false;
                 continue;
             }
             slots.set(index++, entry.copy());
         }
+        // Ten total portions per basket, not ten portions of every variety.
+        if (portions >= FryingBasketBlockEntity.MAX_PIECES) return false;
         for (int i = 0; i < slots.size(); i++) {
             ItemStack current = slots.get(i);
             if (!current.isEmpty() && ItemStack.isSameItemSameComponents(current, food)

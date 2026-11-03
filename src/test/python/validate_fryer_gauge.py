@@ -21,9 +21,7 @@ signatures=set()
 for n in range(6):
     p=R/f"src/main/resources/assets/sfcdelight/models/block/frying_station_{n}.json"
     model=json.loads(p.read_text())
-    # Gauge lenses remain the final 6 (empty) or 5 (charged) cubes;
-    # the preceding elements are purely decorative stainless bodywork.
-    lamps=[e["faces"]["north"]["texture"] for e in model["elements"][-(6 if n==0 else 5):]]
+    lamps=[e["faces"]["north"]["texture"] for e in model["elements"][7:]]
     assert len(lamps)==(6 if n==0 else 5)
     signatures.add(tuple(lamps))
 assert len(signatures)==6, signatures

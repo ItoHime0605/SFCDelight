@@ -88,6 +88,11 @@ public class FryingStationBlock extends BaseEntityBlock {
             Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer))
             return net.minecraft.world.InteractionResult.PASS;
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                EquipmentStatusMenu.open(serverPlayer, fryer, pos);
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
         if (!level.isClientSide) player.displayClientMessage(Component.literal(
                 "食用油剩餘：" + fryer.charges() + " / 20 次油炸（每桶可補 2 次）"), true);
         return net.minecraft.world.InteractionResult.SUCCESS;

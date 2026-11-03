@@ -74,6 +74,11 @@ public class DeOilerBlock extends BaseEntityBlock {
     }
     @Override protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof DeOilerBlockEntity machine)) return net.minecraft.world.InteractionResult.PASS;
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                EquipmentStatusMenu.open(serverPlayer, machine, pos);
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
         if (!level.isClientSide) {
             String message = machine.isEmpty() ? "脫油機目前沒有炸物。" :
                 machine.isComplete() ? "脫油完成！請使用不鏽鋼撈勺取出炸物。" :

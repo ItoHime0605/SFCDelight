@@ -14,5 +14,6 @@ public final class ClientPreparationSinkScreens {
     @SubscribeEvent
     public static void register(RegisterMenuScreensEvent event) {
         event.register(SaltedFriedChickenDelight.PREPARATION_SINK_MENU.get(), PreparationSinkScreen::new);
+        event.register(SaltedFriedChickenDelight.EQUIPMENT_STATUS_MENU.get(), EquipmentStatusScreen::new);
     }
 }

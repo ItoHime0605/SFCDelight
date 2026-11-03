@@ -3,45 +3,46 @@ package tw.saltedfriedchicken.client;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import tw.saltedfriedchicken.PreparationSinkMenu;
 
-/** Custom water level display; no server-modifying buttons or inventory slots. */
+/** Read-only sink gauge in the shared night-market palette; server owns the water count. */
 public final class PreparationSinkScreen extends AbstractContainerScreen<PreparationSinkMenu> {
+    private static final ResourceLocation BACKGROUND =
+            ResourceLocation.fromNamespaceAndPath("sfcdelight", "textures/gui/preparation_sink.png");
+
     public PreparationSinkScreen(PreparationSinkMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         imageWidth = 176;
         imageHeight = 126;
+        inventoryLabelY = -1000;
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int x = leftPos, y = topPos;
-        graphics.fill(x, y, x + imageWidth, y + imageHeight, 0xFF25343B);
-        graphics.fill(x + 3, y + 3, x + imageWidth - 3, y + imageHeight - 3, 0xFFD6D8D2);
-        graphics.fill(x + 10, y + 25, x + 166, y + 71, 0xFF53656B);
-        graphics.fill(x + 13, y + 28, x + 163, y + 68, 0xFF1E313A);
-
+        graphics.blit(BACKGROUND, x, y, 0, 0, imageWidth, imageHeight, 256, 256);
         int water = menu.washes();
-        int barWidth = water * 142 / 20;
-        graphics.fill(x + 17, y + 43, x + 159, y + 57, 0xFF102026);
+        int barWidth = water * 136 / 20;
+        graphics.fill(x + 19, y + 62, x + 155, y + 69, 0xFF304B50);
         if (barWidth > 0)
-            graphics.fill(x + 17, y + 43, x + 17 + barWidth, y + 57, 0xFF46B9D6);
-        // Four water-bucket segments, five washes per bucket.
+            graphics.fill(x + 19, y + 62, x + 19 + barWidth, y + 69, 0xFF80C5C9);
         for (int i = 1; i < 4; i++) {
-            int markX = x + 17 + i * 142 / 4;
-            graphics.fill(markX, y + 43, markX + 1, y + 57, 0xFF284B5A);
+            int markX = x + 19 + i * 136 / 4;
+            graphics.fill(markX, y + 61, markX + 1, y + 70, 0xFF28464E);
         }
+        graphics.drawString(font, title, x + 13, y + 22, 0xFFF7E9D0, false);
+        graphics.drawString(font,
+                Component.translatable("gui.sfcdelight.sink_washes", water, 20),
+                x + 17, y + 50, 0xFFF4EED8, false);
+        graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_bucket"),
+                x + 14, y + 86, 0xFF433328, false);
+        graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_use"),
+                x + 14, y + 100, 0xFFF7E4C5, false);
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, 11, 11, 0xFF223037, false);
-        graphics.drawString(font,
-                Component.translatable("gui.sfcdelight.sink_washes", menu.washes(),
-                        20), 17, 31, 0xFFE7F3F6, false);
-        graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_bucket"),
-                12, 80, 0xFF223037, false);
-        graphics.drawString(font, Component.translatable("gui.sfcdelight.sink_use"),
-                12, 97, 0xFF223037, false);
+        // All text is aligned to the custom texture in renderBg.
     }
 
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

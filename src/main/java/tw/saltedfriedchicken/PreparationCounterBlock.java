@@ -153,6 +153,13 @@ public final class PreparationCounterBlock extends BaseEntityBlock {
             }
             return InteractionResult.SUCCESS;
         }
+        // The existing crouch+empty-hand bowl retrieval remains unchanged.
+        // View the preparation status only while no steel bowl is installed.
+        if (player.isShiftKeyDown() && !bench.hasBowl()) {
+            if (!level.isClientSide && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                EquipmentStatusMenu.open(serverPlayer, bench, bench.getBlockPos());
+            return InteractionResult.SUCCESS;
+        }
         if (level.isClientSide) return InteractionResult.SUCCESS;
         if (bench.marinationReady()) {
             ItemStack ready = bench.completeMarination();

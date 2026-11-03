@@ -373,7 +373,13 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         if (player.isShiftKeyDown()) {
             // Recover previously stocked items from six obsolete 6x3 slots.
             ItemStack legacy = cart.reclaimLegacy();
-            if (legacy.isEmpty()) return InteractionResult.PASS;
+            if (legacy.isEmpty()) {
+                // Legacy slot recovery takes precedence; once empty, open the
+                // read-only dashboard without disturbing baskets or seasonings.
+                if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)
+                    EquipmentStatusMenu.open(serverPlayer, cart, cart.getBlockPos());
+                return InteractionResult.SUCCESS;
+            }
             if (!player.getInventory().add(legacy)) player.drop(legacy, false);
             return InteractionResult.SUCCESS;
         }

@@ -1,16 +1,16 @@
 {
   "textures": {
-    "oak": "sfcdelight:block/nightmarket_oak",
-    "wood": "sfcdelight:block/nightmarket_oak",
-    "steel": "sfcdelight:block/nightmarket_steel",
-    "dark": "sfcdelight:block/nightmarket_dark_steel",
+    "oak": "minecraft:block/oak_planks",
+    "wood": "minecraft:block/stripped_oak_wood",
+    "steel": "sfcdelight:block/cart_brushed_steel",
+    "dark": "sfcdelight:block/cart_dark_steel",
     "glass": "sfcdelight:block/cart_glass",
-    "tray": "sfcdelight:block/nightmarket_food_tray",
-    "red": "sfcdelight:block/nightmarket_awning_red",
-    "white": "sfcdelight:block/nightmarket_awning_cream",
-    "awning_red": "sfcdelight:block/nightmarket_awning_red",
+    "tray": "sfcdelight:block/cart_food_tray",
+    "red": "sfcdelight:block/cart_basket_red",
+    "white": "minecraft:block/white_wool",
+    "awning_red": "minecraft:block/red_wool",
     "lamp": "minecraft:block/ochre_froglight",
-    "particle": "sfcdelight:block/nightmarket_oak"
+    "particle": "minecraft:block/oak_planks"
   },
   "elements": [
     {

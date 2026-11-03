@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    "sfcdelight:garlic",
+    "sfcdelight:basil"
+  ],
+  "result": {
+    "id": "sfcdelight:garlic_basil_mix",
+    "count": 1
+  }
+}

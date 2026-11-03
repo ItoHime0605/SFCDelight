@@ -51,6 +51,14 @@ public class SaltedFriedChickenDelight {
                 .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
                     net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "chili_strong_speed"),
                     0.10, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, net.minecraft.world.effect.MobEffect> SATISFACTION =
+            EFFECTS.register("satisfaction", () -> new WorkshopEffect(net.minecraft.world.effect.MobEffectCategory.BENEFICIAL,0xA1C965)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "satisfaction_attack_speed"),
+                    0.20, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.BLOCK_BREAK_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "satisfaction_mining_speed"),
+                    0.20, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(net.minecraft.core.registries.Registries.BLOCK_ENTITY_TYPE, MOD_ID);
     public static final DeferredBlock<Block> PEPPER_JAR_BLOCK = BLOCKS.register("pepper_jar", () -> new PepperJarBlock(Block.Properties.of().strength(0.5f).noOcclusion()));
@@ -85,6 +93,8 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> BASIL = ITEMS.registerSimpleItem("basil", new Item.Properties());
     public static final DeferredItem<Item> GARLIC = ITEMS.registerSimpleItem("garlic", new Item.Properties());
     public static final DeferredItem<Item> GARLIC_CLOVE = ITEMS.register("garlic_clove", () -> new ItemNameBlockItem(GARLIC_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> GARLIC_BASIL_MIX = ITEMS.register("garlic_basil_mix",
+            () -> new GarlicBasilMixItem(new Item.Properties()));
     public static final DeferredItem<BlockItem> PAPER_BAG_ITEM = ITEMS.registerSimpleBlockItem("paper_bag", PAPER_BAG);
     public static final DeferredItem<BlockItem> PAPER_BOX_ITEM = ITEMS.registerSimpleBlockItem("paper_box", PAPER_BOX);
     public static final DeferredItem<Item> OILY_WASTE_PAPER_BAG = ITEMS.registerSimpleItem("oily_waste_paper_bag", new Item.Properties().stacksTo(64));

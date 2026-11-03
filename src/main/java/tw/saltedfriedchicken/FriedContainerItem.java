@@ -43,6 +43,8 @@ public final class FriedContainerItem extends Item {
             tooltip.add(Component.literal("辣度："+names[chili]));
             if (chili>0) tooltip.add(Component.literal(
                     (chili<3 ? "移動速度 +5%" : "移動速度 +10%") + "，30 秒"));
+            if (GarlicBasilMixItem.hasMix(stack))
+                tooltip.add(Component.literal("蒜香九層塔：每份觸發滿足感，攻擊與挖掘速度 +20%，5 分鐘"));
         }
     }
 
@@ -88,6 +90,9 @@ public final class FriedContainerItem extends Item {
                         chili < 3 ? SaltedFriedChickenDelight.CHILI_SPEED_LIGHT
                                   : SaltedFriedChickenDelight.CHILI_SPEED_STRONG, 20 * 30));
             }
+            boolean herbs=GarlicBasilMixItem.hasMix(packageStack);
+            if (herbs) player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    SaltedFriedChickenDelight.SATISFACTION,20 * 60 * 5));
             Item replacement = packageStack.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get())
                     ? SaltedFriedChickenDelight.OILY_WASTE_PAPER_BAG.get()
                     : SaltedFriedChickenDelight.OILY_WASTE_PAPER_BOX.get();
@@ -96,6 +101,7 @@ public final class FriedContainerItem extends Item {
                     : FriedBatchData.wrapMany(packageStack.getItem(), remaining, level.registryAccess());
             if (!remaining.isEmpty() && whitePepper) WhitePepperItem.setWhitePepper(next);
             if (!remaining.isEmpty() && chili > 0) ChiliPowderItem.setLevel(next,chili);
+            if (!remaining.isEmpty() && herbs) GarlicBasilMixItem.mark(next);
             player.setItemInHand(hand, next);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());

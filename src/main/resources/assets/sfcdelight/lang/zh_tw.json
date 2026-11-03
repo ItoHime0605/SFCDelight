@@ -98,5 +98,7 @@
   "item.sfcdelight.empty_seasoning_jar": "空調味罐",
   "item.sfcdelight.chili_powder": "辣椒粉",
   "effect.sfcdelight.chili_speed_light": "辣味刺激",
-  "effect.sfcdelight.chili_speed_strong": "辣味刺激"
+  "effect.sfcdelight.chili_speed_strong": "辣味刺激",
+  "item.sfcdelight.garlic_basil_mix": "蒜香九層塔",
+  "effect.sfcdelight.satisfaction": "滿足感"
 }

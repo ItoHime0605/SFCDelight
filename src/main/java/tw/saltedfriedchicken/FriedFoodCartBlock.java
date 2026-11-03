@@ -43,10 +43,10 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return (2 - Math.min(2, (int)(y * 3))) * 6 + Math.min(5, (int)(x * 6));
     }
 
-    /** Five distinct kinds, with full ItemStack component equality for merging. */
+    /** Up to ten total portions, allowing ten different ingredients in the same plastic basket. */
     private static boolean addToBasket(ItemStack basket, ItemStack food) {
         ItemContainerContents contents = basket.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-        NonNullList<ItemStack> slots = NonNullList.withSize(5, ItemStack.EMPTY);
+        NonNullList<ItemStack> slots = NonNullList.withSize(FryingBasketBlockEntity.MAX_PIECES, ItemStack.EMPTY);
         int index = 0;
         int portions = 0;
         for (ItemStack entry : contents.stream().toList()) {

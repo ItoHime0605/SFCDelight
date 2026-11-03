@@ -8,6 +8,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
@@ -17,7 +19,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
     private final List<ItemStack> ingredients = new ArrayList<>();
     private int progress;
     private int liftTicks;
-    private int loadingTicks;
+    private boolean batchReady; // Only a complete plastic-basket transfer can start the fryer.
     public static final int MAX_PIECES = 10;
     private static final int LIFT_TICKS = 20;
     private static final int COOK_TICKS = 300; // 15 seconds at 20 ticks per second
@@ -29,15 +31,46 @@ public class FryingBasketBlockEntity extends BlockEntity {
         return !ingredients.isEmpty() && ingredients.stream().allMatch(s -> FryingRecipes.output(s) != null);
     }
     /** True only for an unfinished batch, not an already cooked product. */
-    public boolean hasPendingFry() { return isRaw(); }
+    public boolean hasPendingFry() { return batchReady && isRaw(); }
     /** Accepts up to ten portions. Refuses changes after cooking begins. */
     public boolean insert(ItemStack held) {
         if (level == null || level.isClientSide || held == null || held.isEmpty() || FryingRecipes.output(held) == null
+                || getBlockState().getValue(FryingBasketBlock.SUBMERGED)
                 || ingredients.stream().mapToInt(ItemStack::getCount).sum() >= MAX_PIECES
                 || progress > 0 || liftTicks > 0 || !isReadyForMore()) return false;
+        if (FriedBatchData.countDistinctTypes(ingredients) >= 5
+                && ingredients.stream().noneMatch(s -> ItemStack.isSameItemSameComponents(s, held))) return false;
         ingredients.add(held.copyWithCount(1));
         progress = 0;
-        loadingTicks = 40; // Allow two seconds to add more food before frying starts.
+        batchReady = false; // On a table this basket is for preparation, not auto-frying.
+        sync();
+        return true;
+    }
+    /** One atomic transfer of a complete plastic-basket selection (up to ten portions, five kinds). */
+    public boolean transferFromPlastic(ItemStack plastic) {
+        if (level == null || level.isClientSide || plastic == null || plastic.getCount() != 1
+                || !(plastic.getItem() instanceof PlasticFoodBasketItem) || !ingredients.isEmpty()
+                || progress > 0 || liftTicks > 0) return false;
+        // The raised pose on an empty fryer is expected. Lifting means a completed batch.
+        if (getBlockState().getValue(FryingBasketBlock.LIFTING)) return false;
+        ItemContainerContents container = plastic.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        List<ItemStack> batch = container.stream().filter(stack -> !stack.isEmpty()).map(ItemStack::copy).toList();
+        if (batch.isEmpty() || batch.size() > 5
+                || FriedBatchData.countPortions(batch) > MAX_PIECES
+                || FriedBatchData.countDistinctTypes(batch) > 5
+                || batch.stream().anyMatch(stack -> FryingRecipes.output(stack) == null)) return false;
+        // All validations precede changes to either container. Never partially unload a basket.
+        ingredients.addAll(batch);
+        progress = 0;
+        liftTicks = 0;
+        boolean onFryer = getBlockState().getValue(FryingBasketBlock.SUBMERGED)
+                && level.getBlockEntity(worldPosition.below()) instanceof FryingStationBlockEntity;
+        batchReady = onFryer;
+        plastic.set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        if (onFryer) {
+            FryingStationBlockEntity fryer = (FryingStationBlockEntity) level.getBlockEntity(worldPosition.below());
+            setPose(false, fryer.charges() <= 0);
+        }
         sync();
         return true;
     }
@@ -55,7 +88,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
         if (!FryingRecipes.isValidCookedBatch(cooked, MAX_PIECES)) return false;
         ingredients.addAll(cooked.stream().map(ItemStack::copy).toList());
         progress = 0;
-        loadingTicks = 0;
+        batchReady = false;
         liftTicks = 0;
         setPose(true, false);
         sync();
@@ -69,7 +102,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
         ingredients.clear();
         progress = 0;
         liftTicks = 0;
-        loadingTicks = 0;
+        batchReady = false;
         // No blockstate mutation here: extraction may run during block removal.
         sync();
         return out;
@@ -80,7 +113,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
         ItemStack out = ingredients.remove(0).copy();
         progress = 0;
         liftTicks = 0;
-        loadingTicks = 0;
+        batchReady = false;
         sync();
         return out;
     }
@@ -88,9 +121,9 @@ public class FryingBasketBlockEntity extends BlockEntity {
         // The basket can be placed on any block, but only fries when a station is directly below it.
         FryingStationBlockEntity fryer = level.getBlockEntity(pos.below()) instanceof FryingStationBlockEntity f ? f : null;
         if (fryer == null || !state.getValue(FryingBasketBlock.SUBMERGED)) {
-            if (basket.progress != 0 || basket.loadingTicks != 0 || basket.liftTicks != 0) {
+            if (basket.progress != 0 || basket.batchReady || basket.liftTicks != 0) {
                 basket.progress = 0;
-                basket.loadingTicks = 0;
+                basket.batchReady = false;
                 basket.liftTicks = 0;
                 basket.sync(); // Clear stale client progress when the fryer disappears.
             }
@@ -110,7 +143,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
                 && !state.getValue(FryingBasketBlock.RAISED)
                 && FryingRecipes.isValidCookedBatch(basket.ingredients, MAX_PIECES)) {
             basket.progress = 0;
-            basket.loadingTicks = 0;
+            basket.batchReady = false;
             basket.liftTicks = 0;
             fryer.setFrying(false);
             basket.setPose(true, false);
@@ -128,14 +161,16 @@ public class FryingBasketBlockEntity extends BlockEntity {
         }
         if (state.getValue(FryingBasketBlock.RAISED)) {
             fryer.setFrying(false);
-            return; // No repeated frying or extra oil charge while draining.
+            if (basket.batchReady && basket.isRaw() && fryer.charges() > 0)
+                basket.setPose(false, false); // Lower the full batch into the oil.
+            return;
         }
-        boolean active = basket.isRaw() && fryer.charges() > 0;
-        if (!active) { if (basket.progress != 0) { basket.progress = 0; basket.setChanged(); } fryer.setFrying(false); return; }
-        if (basket.loadingTicks > 0) {
-            basket.loadingTicks--;
-            basket.setChanged();
+        boolean active = basket.batchReady && basket.isRaw() && fryer.charges() > 0;
+        if (!active) {
+            if (basket.progress != 0) { basket.progress = 0; basket.setChanged(); }
             fryer.setFrying(false);
+            // An empty or unpowered basket always hangs above the oil.
+            basket.setPose(false, true);
             return;
         }
         fryer.setFrying(true);
@@ -151,6 +186,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
                 if (fryer.consumeFryingCharge()) {
                     basket.ingredients.clear();
                     basket.ingredients.addAll(cooked);
+                    basket.batchReady = false;
                     basket.setPose(true, false);
                     basket.sync();
                 }
@@ -191,7 +227,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
         tag.put("Ingredients", list);
         tag.putInt("Progress", progress);
         tag.putInt("LiftTicks", liftTicks);
-        tag.putInt("LoadingTicks", loadingTicks);
+        tag.putBoolean("BatchReady", batchReady);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
@@ -235,6 +271,7 @@ public class FryingBasketBlockEntity extends BlockEntity {
         if (!rawOnly && !cookedOnly) ingredients.clear();
         progress = rawOnly ? Math.max(0, Math.min(COOK_TICKS - 1, tag.getInt("Progress"))) : 0;
         liftTicks = cookedOnly ? Math.max(0, Math.min(LIFT_TICKS - 1, tag.getInt("LiftTicks"))) : 0;
-        loadingTicks = rawOnly ? Math.max(0, Math.min(40, tag.getInt("LoadingTicks"))) : 0;
+        batchReady = rawOnly && tag.getBoolean("BatchReady");
+        if (!batchReady) progress = 0; // Legacy manually loaded fryer saves may not auto-start.
     }
 }

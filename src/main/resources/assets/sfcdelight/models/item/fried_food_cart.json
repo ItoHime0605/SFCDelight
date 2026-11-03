@@ -2528,5 +2528,6 @@
         0.29
       ]
     }
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

@@ -89,6 +89,29 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
             }
         }
 
+        // The eight physical plastic baskets appear on the left shelf, including
+        // each basket's real dye color. We never invent extra decorative baskets:
+        // the render count exactly matches the inventory, bottom shelf first.
+        for (int basketIndex = 0; basketIndex < cart.basketCount(); basketIndex++) {
+            ItemStack stored = cart.getBasket(basketIndex);
+            if (stored.isEmpty()) continue;
+            int col = basketIndex % 4;
+            int shelf = basketIndex / 4;
+            double offset = (col - 1.5) * 0.215;
+            pose.pushPose();
+            pose.translate(0.5 + right.getStepX() * offset
+                                      - front.getStepX() * 0.19,
+                           1.34 + shelf * 0.25,
+                           0.5 + right.getStepZ() * offset
+                                      - front.getStepZ() * 0.19);
+            pose.mulPose(Axis.YP.rotationDegrees(angle));
+            pose.mulPose(Axis.XP.rotationDegrees(17.5f));
+            pose.scale(0.205f, 0.205f, 0.205f);
+            items.renderStatic(stored, ItemDisplayContext.FIXED, packedLight, packedOverlay,
+                    pose, buffers, cart.getLevel(), 500 + basketIndex);
+            pose.popPose();
+        }
+
         // The customer's seasonings sit on the left counter, not inside a food tray.
         // This renders the real stored pepper shaker, including its item model.
         ItemStack pepper = cart.getPepperJar();

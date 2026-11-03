@@ -65,6 +65,8 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> FILLED_PAPER_BOX = ITEMS.register("filled_paper_box", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<BlockItem> DEOILER_ITEM = ITEMS.registerSimpleBlockItem("de_oiler", DEOILER);
     public static final DeferredItem<Item> HOT_FOOD_BASKET = ITEMS.register("hot_food_basket", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
+    /** Filled raw metal basket lifted off a preparation table; placed as one batch on a fryer. */
+    public static final DeferredItem<Item> LOADED_RAW_BASKET = ITEMS.register("loaded_raw_basket", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> STEEL_SCOOP = ITEMS.registerSimpleItem("steel_scoop", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> LOADED_STEEL_SCOOP = ITEMS.register("loaded_steel_scoop", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PEPPER_SHAKER = ITEMS.register("pepper_shaker", () -> new PepperJarBlockItem(PEPPER_JAR_BLOCK.get(), new Item.Properties().stacksTo(1)));

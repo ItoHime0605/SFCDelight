@@ -30,6 +30,17 @@ public class SaltedFriedChickenDelight {
     public static final String MOD_ID = "sfcdelight";
     public static final DeferredRegister<net.minecraft.world.item.crafting.RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(net.minecraft.core.registries.Registries.RECIPE_SERIALIZER, MOD_ID);
     public static final DeferredHolder<net.minecraft.world.item.crafting.RecipeSerializer<?>, PepperRefillRecipe.Serializer> PEPPER_REFILL_SERIALIZER = RECIPE_SERIALIZERS.register("pepper_refill", PepperRefillRecipe.Serializer::new);
+    public static final DeferredRegister<net.minecraft.world.effect.MobEffect> EFFECTS =
+            DeferredRegister.create(net.minecraft.core.registries.Registries.MOB_EFFECT, MOD_ID);
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, net.minecraft.world.effect.MobEffect> SLIPPERY_HANDS =
+            EFFECTS.register("slippery_hands", () -> new WorkshopEffect(
+                net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xDECC9C)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "slippery_attack_speed"),
+                    -0.2, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                .addAttributeModifier(net.minecraft.world.entity.ai.attributes.Attributes.BLOCK_BREAK_SPEED,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MOD_ID, "slippery_mining_speed"),
+                    -0.2, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(net.minecraft.core.registries.Registries.BLOCK_ENTITY_TYPE, MOD_ID);
     public static final DeferredBlock<Block> PEPPER_JAR_BLOCK = BLOCKS.register("pepper_jar", () -> new PepperJarBlock(Block.Properties.of().strength(0.5f).noOcclusion()));
@@ -42,6 +53,12 @@ public class SaltedFriedChickenDelight {
     public static final DeferredBlock<Block> PAPER_BAG = BLOCKS.register("paper_bag", () -> new FriedPackagingBlock(Block.Properties.of().strength(0.5f).noOcclusion(), 5));
     public static final DeferredBlock<Block> PAPER_BOX = BLOCKS.register("paper_box", () -> new FriedPackagingBlock(Block.Properties.of().strength(0.5f).noOcclusion(), 10));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedPackagingBlockEntity>> PACKAGING_ENTITY = BLOCK_ENTITIES.register("fried_packaging", () -> BlockEntityType.Builder.of(FriedPackagingBlockEntity::new, PAPER_BAG.get(), PAPER_BOX.get()).build(null));
+    public static final DeferredBlock<Block> PREPARATION_COUNTER = BLOCKS.register("preparation_counter",
+            () -> new PreparationCounterBlock(Block.Properties.of().strength(2.5f).noOcclusion()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK)));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PreparationCounterBlockEntity>>
+            PREPARATION_COUNTER_ENTITY = BLOCK_ENTITIES.register("preparation_counter",
+                () -> BlockEntityType.Builder.of(PreparationCounterBlockEntity::new, PREPARATION_COUNTER.get()).build(null));
     public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK).lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) == 4 || state.getValue(FriedFoodCartBlock.PART) == 5 ? 12 : 0)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedFoodCartBlockEntity>> CART_ENTITY = BLOCK_ENTITIES.register("fried_food_cart", () -> BlockEntityType.Builder.of(FriedFoodCartBlockEntity::new, CART.get()).build(null));
     public static final DeferredBlock<Block> BASIL_CROP = BLOCKS.register("basil_crop", () -> new HerbCropBlock(Block.Properties.of().noCollission().randomTicks().instabreak().noOcclusion(), true));
@@ -71,6 +88,16 @@ public class SaltedFriedChickenDelight {
     public static final DeferredItem<Item> LOADED_STEEL_SCOOP = ITEMS.register("loaded_steel_scoop", () -> new FriedContainerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> PEPPER_SHAKER = ITEMS.register("pepper_shaker", () -> new PepperJarBlockItem(PEPPER_JAR_BLOCK.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> WHITE_PEPPER_POWDER = ITEMS.register("white_pepper_powder", () -> new WhitePepperItem(new Item.Properties()));
+    public static final DeferredItem<BlockItem> PREPARATION_COUNTER_ITEM =
+            ITEMS.registerSimpleBlockItem("preparation_counter", PREPARATION_COUNTER);
+    public static final DeferredItem<Item> MARINATION_BOX = ITEMS.registerSimpleItem("marination_box", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> MARINATING_CHICKEN_BOX = ITEMS.registerSimpleItem("marinating_chicken_box", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> MARINATING_COD_BOX = ITEMS.registerSimpleItem("marinating_cod_box", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> MARINATED_CHICKEN_DICE = ITEMS.registerSimpleItem("marinated_chicken_dice", new Item.Properties());
+    public static final DeferredItem<Item> MARINATED_COD_DICE = ITEMS.registerSimpleItem("marinated_cod_dice", new Item.Properties());
+    public static final DeferredItem<Item> BATTERED_CHICKEN_DICE = ITEMS.registerSimpleItem("battered_chicken_dice", new Item.Properties());
+    public static final DeferredItem<Item> BATTERED_COD_DICE = ITEMS.registerSimpleItem("battered_cod_dice", new Item.Properties());
+    public static final DeferredItem<Item> STEEL_BOWL = ITEMS.registerSimpleItem("steel_bowl", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> COOKING_OIL = ITEMS.registerSimpleItem("cooking_oil", new Item.Properties());
     public static final DeferredItem<BlockItem> FRYING_BASKET_ITEM = ITEMS.registerSimpleBlockItem("frying_basket", FRYING_BASKET_BLOCK);
     public static final DeferredItem<BlockItem> FRYER_ITEM = ITEMS.registerSimpleBlockItem("frying_station", FRYER);
@@ -132,6 +159,7 @@ public class SaltedFriedChickenDelight {
 
     public SaltedFriedChickenDelight(IEventBus modBus) {
         RECIPE_SERIALIZERS.register(modBus);
+        EFFECTS.register(modBus);
         BLOCKS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
         ITEMS.register(modBus);

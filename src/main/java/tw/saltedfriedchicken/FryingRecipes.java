@@ -15,6 +15,9 @@ public final class FryingRecipes {
         if (input.is(SaltedFriedChickenDelight.RAW_SQUID_BALL.get())) return SaltedFriedChickenDelight.FRIED_SQUID_BALL.get();
         if (input.is(SaltedFriedChickenDelight.RAW_FRIES.get())) return SaltedFriedChickenDelight.FRIED_FRIES.get();
         if (input.is(SaltedFriedChickenDelight.RAW_SWEET_POTATO_FRIES.get())) return SaltedFriedChickenDelight.FRIED_SWEET_POTATO_FRIES.get();
+        if (input.is(SaltedFriedChickenDelight.BATTERED_CHICKEN_DICE.get())) return SaltedFriedChickenDelight.FRIED_CHICKEN_DICE.get();
+        if (input.is(SaltedFriedChickenDelight.BATTERED_COD_DICE.get())) return SaltedFriedChickenDelight.FRIED_COD_DICE.get();
+        // Preserve early-alpha raw recipes for worlds created before the prep bench.
         if (input.is(SaltedFriedChickenDelight.RAW_CHICKEN_DICE.get())) return SaltedFriedChickenDelight.FRIED_CHICKEN_DICE.get();
         if (input.is(SaltedFriedChickenDelight.RAW_COD_DICE.get())) return SaltedFriedChickenDelight.FRIED_COD_DICE.get();
         if (input.is(SaltedFriedChickenDelight.DRIED_TOFU.get())) return SaltedFriedChickenDelight.FRIED_DRIED_TOFU.get();

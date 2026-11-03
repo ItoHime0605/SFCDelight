@@ -1,6 +1,8 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -47,6 +49,13 @@ public class FryingStationBlock extends BaseEntityBlock {
         // The oil surface remains visually full even when no frying charges remain.
         // The active flag is read from the synchronized block entity, not inferred from oil level.
         boolean frying = level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer && fryer.isFrying();
+        // Occasional gentle oil sizzle, only for an active fryer. animateTick
+        // runs locally on the client: no extra server ticks or sound packets.
+        if (frying && random.nextInt(60) == 0) {
+            level.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.85, pos.getZ() + 0.5,
+                    SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.16f,
+                    1.30f + random.nextFloat() * 0.18f, true);
+        }
         if (!frying && random.nextInt(12) != 0) return;
         int count = frying ? 2 + random.nextInt(3) : 1;
         for (int i = 0; i < count; i++) {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -205,6 +207,10 @@ public class FryingBasketBlockEntity extends BlockEntity {
                     basket.ingredients.addAll(cooked);
                     basket.batchReady = false;
                     basket.setPose(true, false);
+                    // One tray-lifting cue after a successful 15-second cook.
+                    // Aborted batches and reloaded cooked baskets never replay it.
+                    level.playSound(null, pos, SoundEvents.IRON_TRAPDOOR_OPEN,
+                            SoundSource.BLOCKS, 0.48f, 1.25f);
                     basket.sync();
                 }
             }

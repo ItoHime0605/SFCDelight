@@ -70,6 +70,10 @@ assert "return row * 4 + column;" in block
 assert "public static final int DISPLAY_SLOTS = 12" in entity
 assert "row < 3" in renderer and "column < 4" in renderer
 assert "cart.getBasket(basketIndex)" in renderer and "basketIndex < cart.basketCount()" in renderer
+assert "double rimHeight = 1.15 + basketIndex * 0.080;" in renderer
+assert "int shelf = basketIndex / 4" not in renderer
+assert "int col = basketIndex % 4" not in renderer
+assert "pose.scale(0.31f, 0.31f, 0.31f);" in renderer
 assert "cart.getPepperJar()" in renderer
 assert "LevelRenderer.getLightColor" in renderer and "1 + column / 2" in renderer
 assert "foodLight" in renderer and "counterLight" in renderer

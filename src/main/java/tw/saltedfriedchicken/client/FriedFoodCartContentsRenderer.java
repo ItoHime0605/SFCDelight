@@ -97,24 +97,25 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
 
         int counterLight = cart.getLevel() == null ? packedLight
                 : LevelRenderer.getLightColor(cart.getLevel(), cart.getBlockPos().above());
-        // The eight physical plastic baskets appear on the left shelf, including
-        // each basket's real dye color. We never invent extra decorative baskets:
-        // the render count exactly matches the inventory, bottom shelf first.
+        // One real, dye-colored basket per saved cart record. Display them as a
+        // single nested stack (1..8) on the rear left rack rather than an
+        // artificial four-column grid. The inventory is the only source of truth.
+        // No extra baskets or temporary item entities are ever created.
         for (int basketIndex = 0; basketIndex < cart.basketCount(); basketIndex++) {
             ItemStack stored = cart.getBasket(basketIndex);
             if (stored.isEmpty()) continue;
-            int col = basketIndex % 4;
-            int shelf = basketIndex / 4;
-            double offset = (col - 1.5) * 0.215;
+            // A basket's rim stays exposed above its neighbor. All eight fit
+            // below the top of the two-block cart's bounding box.
+            double rimHeight = 1.15 + basketIndex * 0.080;
+            double stagger = (basketIndex % 2 == 0 ? -0.006 : 0.006);
             pose.pushPose();
-            pose.translate(0.5 + right.getStepX() * offset
-                                      - front.getStepX() * 0.19,
-                           1.34 + shelf * 0.25,
-                           0.5 + right.getStepZ() * offset
-                                      - front.getStepZ() * 0.19);
-            pose.mulPose(Axis.YP.rotationDegrees(angle));
-            pose.mulPose(Axis.XP.rotationDegrees(17.5f));
-            pose.scale(0.205f, 0.205f, 0.205f);
+            pose.translate(0.5 + right.getStepX() * stagger
+                                      - front.getStepX() * 0.22,
+                           rimHeight,
+                           0.5 + right.getStepZ() * stagger
+                                      - front.getStepZ() * 0.22);
+            pose.mulPose(Axis.YP.rotationDegrees(angle + (basketIndex % 2 == 0 ? -3.0f : 3.0f)));
+            pose.scale(0.31f, 0.31f, 0.31f);
             items.renderStatic(stored, ItemDisplayContext.FIXED, counterLight, packedOverlay,
                     pose, buffers, cart.getLevel(), 500 + basketIndex);
             pose.popPose();

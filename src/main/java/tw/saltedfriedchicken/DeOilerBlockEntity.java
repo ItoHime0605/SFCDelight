@@ -1,6 +1,8 @@
 package tw.saltedfriedchicken;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -42,6 +44,12 @@ public class DeOilerBlockEntity extends BlockEntity {
     public static void tick(Level level, BlockPos pos, BlockState state, DeOilerBlockEntity entity) {
         if (level.isClientSide || entity.food.isEmpty() || entity.elapsed >= CYCLE_TICKS) return;
         entity.elapsed++;
+        // Exactly one quiet completion cue per 8-second cycle. No repeating
+        // machine sound on every server tick, even with many running machines.
+        if (entity.elapsed == CYCLE_TICKS) {
+            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP,
+                    SoundSource.BLOCKS, 0.45f, 1.15f);
+        }
         // Update the visible progress once a second, not every server tick.
         if (entity.elapsed % 20 == 0 || entity.elapsed == CYCLE_TICKS) entity.sync();
         else entity.setChanged();

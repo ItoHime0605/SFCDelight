@@ -23,6 +23,11 @@ basket=read("FryingBasketBlock.java")
 deoiler=read("DeOilerBlock.java")
 fryer=read("FryingStationBlock.java")
 assert "container.suppressEquipmentDrop();" in package
+assert "int moved = container.putPortions(foods, capacity);" in package
+assert "FriedBatchData.countPortions(" in package
+assert "player.isShiftKeyDown()" in package
+assert "FoodContentsTooltip.summarize(stored, true)" in package
+assert "if (container.isEmpty())" in package
 assert "SaltedFriedChickenDelight.PAPER_BAG_ITEM.get()" in package
 assert "SaltedFriedChickenDelight.PAPER_BOX_ITEM.get()" in package
 assert "FriedBatchData.transfer(stored" in package

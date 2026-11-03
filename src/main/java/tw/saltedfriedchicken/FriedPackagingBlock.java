@@ -48,6 +48,10 @@ public class FriedPackagingBlock extends BaseEntityBlock {
         if (!level.isClientSide) {
             int moved = container.putPortions(foods, capacity);
             if (moved <= 0) return ItemInteractionResult.FAIL;
+            int current = FriedBatchData.countPortions(
+                    FriedBatchData.readAll(container.getContents(), level.registryAccess()));
+            player.displayClientMessage(Component.literal(
+                    "已裝入 " + moved + " 份炸物；目前 " + current + " / " + capacity + " 份。"), true);
             java.util.ArrayList<ItemStack> remaining = new java.util.ArrayList<>();
             int consumed = moved;
             for (ItemStack food : foods) {
@@ -68,7 +72,29 @@ public class FriedPackagingBlock extends BaseEntityBlock {
         return ItemInteractionResult.SUCCESS;
     }
     @Override protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!(level.getBlockEntity(pos) instanceof FriedPackagingBlockEntity container) || container.isEmpty()) return InteractionResult.PASS;
+        if (!(level.getBlockEntity(pos) instanceof FriedPackagingBlockEntity container))
+            return InteractionResult.PASS;
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide) {
+                java.util.List<ItemStack> stored = FriedBatchData.readAll(
+                        container.getContents(), level.registryAccess());
+                int portions = container.isEmpty() ? 0 : FriedBatchData.countPortions(stored);
+                if (!container.isEmpty() && !FryingRecipes.isValidCookedBatch(stored, capacity)) {
+                    player.displayClientMessage(Component.literal("包裝內容資料異常，無法取出成品。"), true);
+                } else {
+                    player.displayClientMessage(Component.literal(
+                            "紙" + (capacity == 5 ? "袋" : "盒") + "目前 " + portions
+                            + " / " + capacity + " 份。"
+                            + (stored.isEmpty() ? "" : " " + FoodContentsTooltip.summarize(stored, true).getString())), true);
+                }
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (container.isEmpty()) {
+            if (!level.isClientSide) player.displayClientMessage(Component.literal(
+                    "紙" + (capacity == 5 ? "袋" : "盒") + "目前是空的，請使用裝有炸物的撈勺加入食材。"), true);
+            return InteractionResult.SUCCESS;
+        }
         // Never convert a corrupted saved scoop into a takeaway package. Doing so
         // would hide invalid food data behind a seemingly usable food item.
         if (!container.getContents().is(SaltedFriedChickenDelight.LOADED_STEEL_SCOOP.get())

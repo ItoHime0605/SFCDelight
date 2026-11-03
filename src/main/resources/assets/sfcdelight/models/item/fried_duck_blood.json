@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sfcdelight:item/coagulated_duck_blood"
+    "layer0": "sfcdelight:item/fried_duck_blood"
   }
 }

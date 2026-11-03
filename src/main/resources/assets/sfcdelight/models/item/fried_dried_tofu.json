@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sfcdelight:item/dried_tofu"
+    "layer0": "sfcdelight:item/fried_dried_tofu"
   }
 }

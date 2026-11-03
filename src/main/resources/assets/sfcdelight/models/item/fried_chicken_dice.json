@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sfcdelight:item/fried_tempura_fish_cake"
+    "layer0": "sfcdelight:item/fried_chicken_dice"
   }
 }

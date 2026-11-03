@@ -18,7 +18,7 @@ source=root/"src/main/java/tw/saltedfriedchicken"
 def read(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
-def check_model(path, allow_item_extent=False):
+def check_model(path, allow_item_extent=False, animated_basket=False):
     obj=read(path)
     assert obj.get("elements"), path
     textures=obj.get("textures",{})
@@ -26,10 +26,14 @@ def check_model(path, allow_item_extent=False):
     for part in obj["elements"]:
         frm=part["from"];to=part["to"]
         assert len(frm)==3 and len(to)==3, path
-        for a,b in zip(frm,to):
+        for axis,(a,b) in enumerate(zip(frm,to)):
             assert isinstance(a,(float,int)) and isinstance(b,(float,int)),path
             assert math.isfinite(a) and math.isfinite(b) and a<b,path
-            assert (-16 if allow_item_extent else 0)<=a<=b<=(32 if allow_item_extent else 16),path
+            if animated_basket and axis==1:
+                # Animated basket crosses the block boundary on purpose; never clamp its lift.
+                assert -10<=a<b<=22,path
+            else:
+                assert (-16 if allow_item_extent else 0)<=a<=b<=(32 if allow_item_extent else 16),path
         for face in part["faces"].values():
             token=face["texture"]
             assert token.startswith("#"),(path,token)
@@ -106,7 +110,7 @@ for n in range(6):
 for n in range(5):
     check_model(block/(f"fryer_oil_level_{n}.json"))
 for mode in ("frying_basket","frying_basket_raised","frying_basket_lifting","frying_basket_submerged"):
-    m=check_model(block/(mode+".json"))
+    m=check_model(block/(mode+".json"),animated_basket=True)
     assert m["textures"]["metal"]=="sfcdelight:block/nightmarket_steel"
 
 de=check_model(block/"de_oiler.json")

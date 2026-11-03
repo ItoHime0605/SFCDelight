@@ -42,6 +42,12 @@ public class PreparationCounterBlockEntity extends BlockEntity {
         else bench.setChanged();
     }
 
+    // Client renderers receive defensive copies and never mutate bench inventory.
+    public ItemStack displayedMarination() { return marination.copy(); }
+    public ItemStack displayedBowl() { return bowl.copy(); }
+    public ItemStack displayedIngredient() { return ingredient.copy(); }
+    public boolean displayedFlour() { return flour > 0; }
+
     public int washes() { return waterUses; }
     public int marinationSeconds() { return marinateTicks / 20; }
     public boolean marinating() { return !marination.isEmpty(); }

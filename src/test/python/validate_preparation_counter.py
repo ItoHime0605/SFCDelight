@@ -10,6 +10,8 @@ entity=(src/"PreparationCounterBlockEntity.java").read_text(encoding="utf-8")
 mod=(src/"SaltedFriedChickenDelight.java").read_text(encoding="utf-8")
 recipes=(src/"FryingRecipes.java").read_text(encoding="utf-8")
 assert "MARINATE_TICKS = 20 * 180" in entity
+assert "displayedMarination()" in entity and "displayedBowl()" in entity
+assert "displayedIngredient()" in entity and "displayedFlour()" in entity
 assert "MAX_WASHES = 20" in entity and "WASHES_PER_BUCKET = 5" in entity
 assert "waterUses > MAX_WASHES - WASHES_PER_BUCKET" in entity
 assert "waterUses += WASHES_PER_BUCKET;" in entity and "waterUses--" in entity
@@ -51,4 +53,14 @@ assert "RegisterMenuScreensEvent" in client and "PreparationSinkScreen::new" in 
 assert "gui.sfcdelight.sink_washes" in screen and "water * 142 / 20" in screen
 assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["menu.sfcdelight.preparation_sink"] == "不鏽鋼洗手台"
 assert j("src/main/resources/assets/sfcdelight/lang/zh_tw.json")["gui.sfcdelight.sink_bucket"] == "每桶水補充 5 次，最多可儲存 20 次"
-print("PASS: 2x1 workstation, 3-minute marinade, 3 manual batter clicks, 4 buckets x 5 washes = 20 washes")
+prep_renderer=(src/"client/PreparationCounterContentsRenderer.java").read_text(encoding="utf-8")
+prep_reg=(src/"client/ClientBlockEntityRenderers.java").read_text(encoding="utf-8")
+assert "PreparationCounterContentsRenderer::new" in prep_reg
+assert "PREPARATION_COUNTER_ENTITY.get()" in prep_reg
+assert "displayedMarination()" in prep_renderer and "displayedBowl()" in prep_renderer
+assert "displayedIngredient()" in prep_renderer and "displayedFlour()" in prep_renderer
+assert "pose.pushPose()" in prep_renderer and "pose.popPose()" in prep_renderer
+steel_bowl = j("src/main/resources/assets/sfcdelight/models/item/steel_bowl.json")
+assert len(steel_bowl["elements"]) >= 8
+assert steel_bowl["textures"]["particle"] == "minecraft:block/iron_block"
+print("PASS: live prep contents (real box/bowl/ingredient/flour), 3D bowl, 3-minute marinade, 4 buckets x 5 washes")

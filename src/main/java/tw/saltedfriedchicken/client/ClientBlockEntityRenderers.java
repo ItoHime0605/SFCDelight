@@ -19,5 +19,7 @@ public final class ClientBlockEntityRenderers {
                 FriedFoodCartContentsRenderer::new);
         event.registerBlockEntityRenderer(SaltedFriedChickenDelight.DEOILER_ENTITY.get(),
                 DeOilerContentsRenderer::new);
+        event.registerBlockEntityRenderer(SaltedFriedChickenDelight.PREPARATION_COUNTER_ENTITY.get(),
+                PreparationCounterContentsRenderer::new);
     }
 }

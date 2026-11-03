@@ -35,14 +35,17 @@ public class FryingBasketBlock extends BaseEntityBlock {
         builder.add(SUBMERGED, LIFTING, RAISED);
     }
     @Override public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(SUBMERGED,
-            context.getLevel().getBlockState(context.getClickedPos().below()).getBlock() instanceof FryingStationBlock);
+        boolean onFryer = context.getLevel().getBlockState(context.getClickedPos().below()).getBlock() instanceof FryingStationBlock;
+        // A fryer holds its empty basket above the oil until a valid batch is transferred.
+        return defaultBlockState().setValue(SUBMERGED, onFryer).setValue(RAISED, onFryer);
     }
     @Override protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
             LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (direction == Direction.DOWN) {
             boolean onFryer = neighborState.getBlock() instanceof FryingStationBlock;
-            return state.setValue(SUBMERGED, onFryer).setValue(LIFTING, onFryer && state.getValue(LIFTING)).setValue(RAISED, onFryer && state.getValue(RAISED));
+            return state.setValue(SUBMERGED, onFryer)
+                    .setValue(LIFTING, onFryer && state.getValue(LIFTING))
+                    .setValue(RAISED, onFryer && (state.getValue(RAISED) || !state.getValue(SUBMERGED)));
         }
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
@@ -53,20 +56,26 @@ public class FryingBasketBlock extends BaseEntityBlock {
     }
     @Override protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND || !(level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        if (FryingRecipes.output(held) == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        // The client predicts the interaction, but the server alone changes inventories.
-        if (level.isClientSide) {
-            return basket.isEmpty() || (basket.hasPendingFry()
-                    && !state.getValue(LIFTING) && !state.getValue(RAISED))
-                    ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+        // Main-hand plastic basket, or iron tongs in main hand with plastic basket offhand.
+        ItemStack plastic = held.getItem() instanceof PlasticFoodBasketItem ? held
+                : held.is(SaltedFriedChickenDelight.IRON_TONGS.get())
+                    && player.getOffhandItem().getItem() instanceof PlasticFoodBasketItem
+                    ? player.getOffhandItem() : ItemStack.EMPTY;
+        if (!plastic.isEmpty()) {
+            if (level.isClientSide) return ItemInteractionResult.SUCCESS;
+            return basket.transferFromPlastic(plastic) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
         }
+        // On the fryer, loose ingredients must NOT bypass the plastic basket batch step.
+        if (FryingRecipes.output(held) == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (state.getValue(SUBMERGED)) return ItemInteractionResult.FAIL;
+        if (level.isClientSide) return ItemInteractionResult.SUCCESS;
         if (!basket.insert(held)) return ItemInteractionResult.FAIL;
         if (!player.getAbilities().instabuild) held.shrink(1);
         return ItemInteractionResult.SUCCESS;
     }
     @Override protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) || basket.ingredient().isEmpty()) return net.minecraft.world.InteractionResult.PASS;
-        if (state.getValue(RAISED)) {
+        if (state.getValue(RAISED) && FryingRecipes.isValidCookedBatch(basket.ingredients(), FryingBasketBlockEntity.MAX_PIECES)) {
             // Build the portable basket before mutating the block entity. A failed
             // component serialization must not consume the player's cooked food.
             java.util.List<ItemStack> cooked = basket.ingredients();
@@ -82,6 +91,8 @@ public class FryingBasketBlock extends BaseEntityBlock {
             }
             return net.minecraft.world.InteractionResult.SUCCESS;
         }
+        // Do not allow bare-handed extraction from submerged hot oil during frying.
+        if (state.getValue(SUBMERGED) && !state.getValue(RAISED)) return net.minecraft.world.InteractionResult.FAIL;
         if (!level.isClientSide) {
             for (ItemStack out : basket.extractAll()) {
                 if (!player.getInventory().add(out)) player.drop(out, false);

@@ -78,5 +78,7 @@
   "item.sfcdelight.fried_dried_tofu": "炸豆干",
   "item.sfcdelight.fried_hundred_layer_tofu": "炸百頁豆腐",
   "item.sfcdelight.fried_rice_blood_cake": "炸米血糕",
-  "item.sfcdelight.fried_duck_blood": "炸鴨血"
+  "item.sfcdelight.fried_duck_blood": "炸鴨血",
+  "message.sfcdelight.display_frame_required": "請先在展示位放入塑膠框，再擺放食材。",
+  "message.sfcdelight.display_frame_has_food": "請先取走展示位上的食材，才能收起塑膠框。"
 }

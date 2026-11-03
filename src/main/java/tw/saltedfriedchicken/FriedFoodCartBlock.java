@@ -28,9 +28,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A single cart item places a TWO-wide, TWO-deep, TWO-tall multiblock.
- * Twelve tilted plastic frames are arranged 4 across the width and 3 front-to-back.
- * Only the bottom-front master (part 0) owns the inventory block entity.
+ * One placed cart occupies three blocks across, one deep, two high.
+ * Left: one-block seasoning counter; right: two-block 4x3 tilted food display.
+ * Only the lower left master (part 0) owns the inventory block entity.
+ * Part values 6 and 7 remain registered for alpha-world compatibility.
  */
 public class FriedFoodCartBlock extends BaseEntityBlock {
     public static final MapCodec<FriedFoodCartBlock> CODEC = simpleCodec(FriedFoodCartBlock::new);
@@ -52,31 +53,37 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         builder.add(FACING, PART);
     }
 
-    // Index order per layer: 0 front-left, 1 front-right, 2 rear-left, 3 rear-right.
-    // The next four parts are directly above those four positions.
+    /** Six new cart segments: bottom [0,1,2], top [3,4,5] from left to right. */
     private static BlockPos root(BlockPos segment, BlockState state) {
-        int index = state.getValue(PART);
-        Direction forward = state.getValue(FACING);
-        Direction right = forward.getClockWise();
-        return segment.relative(right.getOpposite(), index % 2)
-                .relative(forward, (index % 4) / 2)
-                .below(index / 4);
+        int part = state.getValue(PART);
+        Direction right = state.getValue(FACING).getClockWise();
+        return segment.relative(right.getOpposite(), part % 3).below(part / 3);
     }
 
     private static BlockPos segmentPos(BlockPos anchor, BlockState anchorState, int part) {
-        Direction forward = anchorState.getValue(FACING);
-        return anchor.relative(forward.getClockWise(), part % 2)
-                .relative(forward.getOpposite(), (part % 4) / 2)
-                .above(part / 4);
+        return anchor.relative(anchorState.getValue(FACING).getClockWise(), part % 3)
+                .above(part / 3);
     }
 
-    /** Legacy 1x4x2 cart coordinates, for safe teardown of old alpha installations. */
-    private static BlockPos legacyRoot(BlockPos segment, BlockState state) {
+    /** Previous 2x2x2 alpha layout, retained for dismantling installed old carts. */
+    private static BlockPos oldSquareRoot(BlockPos segment, BlockState state) {
+        int part = state.getValue(PART);
+        return segment.relative(state.getValue(FACING).getClockWise().getOpposite(), part % 2)
+                .relative(state.getValue(FACING), (part % 4) / 2).below(part / 4);
+    }
+
+    private static BlockPos oldSquareSegmentPos(BlockPos anchor, BlockState state, int part) {
+        return anchor.relative(state.getValue(FACING).getClockWise(), part % 2)
+                .relative(state.getValue(FACING).getOpposite(), (part % 4) / 2).above(part / 4);
+    }
+
+    /** Previous 1x4x2 alpha layout, retained for dismantling installed old carts. */
+    private static BlockPos oldLongRoot(BlockPos segment, BlockState state) {
         int part = state.getValue(PART);
         return segment.relative(state.getValue(FACING), part % 4).below(part / 4);
     }
 
-    private static BlockPos legacySegmentPos(BlockPos anchor, BlockState state, int part) {
+    private static BlockPos oldLongSegmentPos(BlockPos anchor, BlockState state, int part) {
         return anchor.relative(state.getValue(FACING).getOpposite(), part % 4).above(part / 4);
     }
 
@@ -87,23 +94,27 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
     }
 
     private static BlockPos locateRoot(Level level, BlockPos segment, BlockState state) {
-        BlockPos modern = root(segment, state);
-        if (isMaster(level, modern, state.getValue(FACING))) return modern;
-        BlockPos previous = legacyRoot(segment, state);
-        if (isMaster(level, previous, state.getValue(FACING))) return previous;
-        return modern;
+        BlockPos current = root(segment, state);
+        if (isMaster(level, current, state.getValue(FACING))) return current;
+        BlockPos oldSquare = oldSquareRoot(segment, state);
+        if (isMaster(level, oldSquare, state.getValue(FACING))) return oldSquare;
+        BlockPos oldLong = oldLongRoot(segment, state);
+        if (isMaster(level, oldLong, state.getValue(FACING))) return oldLong;
+        return current;
     }
 
-    /** Detect obsolete four-deep placement so any part can dismantle it safely. */
-    private static boolean hasLegacyGeometry(Level level, BlockPos anchor, Direction front) {
-        Direction back = front.getOpposite();
-        for (int part = 1; part < 4; part++) {
-            BlockState candidate = level.getBlockState(anchor.relative(back, part));
-            if (candidate.getBlock() instanceof FriedFoodCartBlock
-                    && candidate.getValue(FACING) == front && candidate.getValue(PART) == part)
-                return true;
-        }
-        return false;
+    private static boolean matchingPart(Level level, BlockPos pos, Direction facing, int part) {
+        BlockState check = level.getBlockState(pos);
+        return check.getBlock() instanceof FriedFoodCartBlock
+                && check.getValue(PART) == part && check.getValue(FACING) == facing;
+    }
+
+    /** All six new segments or eight old ones must be removed as one logical cart. */
+    private static int layout(Level level, BlockPos anchor, BlockState anchorState) {
+        Direction facing = anchorState.getValue(FACING);
+        if (matchingPart(level, oldLongSegmentPos(anchor, anchorState, 7), facing, 7)) return 2;
+        if (matchingPart(level, oldSquareSegmentPos(anchor, anchorState, 7), facing, 7)) return 1;
+        return 0;
     }
 
     private static FriedFoodCartBlockEntity cartAt(Level level, BlockPos segment, BlockState segmentState) {
@@ -117,7 +128,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         Direction facing = context.getHorizontalDirection().getOpposite();
         BlockState anchorState = defaultBlockState().setValue(FACING, facing);
         BlockPos origin = context.getClickedPos();
-        for (int part = 1; part < 8; part++) {
+        for (int part = 1; part < 6; part++) {
             BlockPos at = segmentPos(origin, anchorState, part);
             if (!context.getLevel().getWorldBorder().isWithinBounds(at)
                     || context.getLevel().isOutsideBuildHeight(at)
@@ -131,7 +142,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                             @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (level.isClientSide || state.getValue(PART) != 0) return;
-        for (int part = 1; part < 8; part++) {
+        for (int part = 1; part < 6; part++) {
             level.setBlock(segmentPos(pos, state, part), state.setValue(PART, part), 3);
         }
     }
@@ -144,7 +155,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
 
     @Override protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,
                                              BlockPos pos, CollisionContext context) {
-        return state.getValue(PART) >= 4 ? UPPER_SHAPE : LOWER_SHAPE;
+        return state.getValue(PART) >= 3 ? UPPER_SHAPE : LOWER_SHAPE;
     }
 
     @Override protected VoxelShape getCollisionShape(BlockState state, net.minecraft.world.level.BlockGetter level,
@@ -152,28 +163,24 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return getShape(state, level, pos, context);
     }
 
-    /** Four display columns across TWO blocks, three rows from front to back across TWO blocks. */
+    /** Display is on the FRONT glass of the two rightmost upper cart blocks.
+     * Four columns across the two-block width; three rows top to bottom.
+     * The left upper segment is the condiment counter, never a food display.
+     */
     private static int displaySlot(BlockPos pos, BlockState state, BlockHitResult hit) {
-        // The cart stands two blocks high. A player at ground level cannot easily
-        // reach the top face, so allow picking a tray from visible side faces too.
-        if (state.getValue(PART) < 4 || hit.getDirection() == Direction.DOWN) return -1;
-        int localPart = state.getValue(PART) - 4;
-        Direction front = state.getValue(FACING);
-        Direction right = front.getClockWise();
-        Direction back = front.getOpposite();
+        int part = state.getValue(PART);
+        if ((part != 4 && part != 5) || hit.getDirection() != state.getValue(FACING))
+            return -1;
+        Direction right = state.getValue(FACING).getClockWise();
         double dx = hit.getLocation().x - (pos.getX() + 0.5);
         double dz = hit.getLocation().z - (pos.getZ() + 0.5);
-        double width = (localPart % 2) + 0.5
-                + dx * right.getStepX() + dz * right.getStepZ();
-        double depth = (localPart / 2) + 0.5
-                + dx * back.getStepX() + dz * back.getStepZ();
-        if (width < -0.001 || width > 2.001 || depth < -0.001 || depth > 2.001) return -1;
-        // Clicks on the far exterior faces may land exactly at 2.0; keep them
-        // mapped to the last frame rather than dropping the interaction.
-        width = Math.max(0.0, Math.min(1.999999, width));
-        depth = Math.max(0.0, Math.min(1.999999, depth));
+        double width = (part - 4) + 0.5 + dx * right.getStepX() + dz * right.getStepZ();
+        double y = hit.getLocation().y - pos.getY();
+        if (width < -0.001 || width > 2.001 || y < -0.001 || y > 1.001) return -1;
+        width = Math.max(0, Math.min(1.999999, width));
+        y = Math.max(0, Math.min(0.999999, y));
         int column = Math.min(3, (int) Math.floor(width * 2.0));
-        int row = Math.min(2, (int) Math.floor(depth * 1.5));
+        int row = Math.min(2, (int) Math.floor((1.0 - y) * 3.0));
         return row * 4 + column;
     }
 
@@ -324,14 +331,16 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return super.playerWillDestroy(level, pos, state, player);
     }
 
-    /** Break any of the eight physical sections to dismantle the cart once, without cloning contents. */
+    /** Break any section to dismantle the entire structure once, preserving all inventories. */
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean moved) {
         if (!state.is(nextState.getBlock()) && !level.isClientSide && !DISMANTLING.get()) {
             DISMANTLING.set(true);
             try {
                 BlockPos anchor = locateRoot(level, pos, state);
-                boolean legacyLayout = hasLegacyGeometry(level, anchor, state.getValue(FACING));
+                BlockState masterState = level.getBlockState(anchor);
+                int structure = layout(level, anchor, masterState.getBlock() == this
+                        ? masterState : state.setValue(PART, 0));
                 // For the master currently being removed, its block entity still exists here.
                 FriedFoodCartBlockEntity cart = level.getBlockEntity(anchor) instanceof FriedFoodCartBlockEntity c ? c : null;
                 if (cart != null) {
@@ -344,8 +353,9 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                         drop(level, anchor, new ItemStack(SaltedFriedChickenDelight.CART_ITEM.get()));
                 }
                 BlockState template = state.setValue(PART, 0);
-                for (int part = 0; part < 8; part++) {
-                    BlockPos other = legacyLayout ? legacySegmentPos(anchor, template, part)
+                for (int part = 0; part < (structure == 0 ? 6 : 8); part++) {
+                    BlockPos other = structure == 2 ? oldLongSegmentPos(anchor, template, part)
+                            : structure == 1 ? oldSquareSegmentPos(anchor, template, part)
                             : segmentPos(anchor, template, part);
                     if (other.equals(pos)) continue;
                     BlockState otherState = level.getBlockState(other);

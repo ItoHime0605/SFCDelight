@@ -1,7 +1,7 @@
 {
   "textures": {
-    "oil": "sfcdelight:block/fryer_oil_original",
-    "particle": "sfcdelight:block/fryer_oil_original"
+    "oil": "sfcdelight:block/nightmarket_oil",
+    "particle": "sfcdelight:block/nightmarket_oil"
   },
   "elements": [
     {

@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** First playable interaction slice: one physical stack of up to eight baskets. */
+/** Six by three tilted plastic-frame displays and a rack of eight empty plastic baskets. */
 public class FriedFoodCartBlock extends BaseEntityBlock {
     public static final MapCodec<FriedFoodCartBlock> CODEC = simpleCodec(FriedFoodCartBlock::new);
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
@@ -106,6 +106,12 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         }
         int slot = displaySlot(pos, hit);
         if (slot < 0) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (held.is(SaltedFriedChickenDelight.PLASTIC_FRAME.get())) {
+            if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
+            if (!cart.installFrame(slot, held)) return ItemInteractionResult.FAIL;
+            if (!player.getAbilities().instabuild) held.shrink(1);
+            return ItemInteractionResult.SUCCESS;
+        }
         if (held.is(SaltedFriedChickenDelight.IRON_TONGS.get())) {
             ItemStack basket = player.getOffhandItem();
             if (basket.getCount() != 1 || !basket.is(net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sfcdelight", "plastic_baskets")))) return ItemInteractionResult.FAIL;
@@ -130,6 +136,11 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         if (held.isEmpty() || held.is(net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sfcdelight", "plastic_baskets"))))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
+        if (!cart.hasFrame(slot)) {
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "message.sfcdelight.display_frame_required"), true);
+            return ItemInteractionResult.FAIL;
+        }
         int inserted = cart.insertDisplay(slot, held, 1);
         if (inserted == 0) return ItemInteractionResult.FAIL;
         if (!player.getAbilities().instabuild) held.shrink(inserted);
@@ -154,6 +165,9 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         if (!state.is(nextState.getBlock()) && !level.isClientSide() && level.getBlockEntity(pos) instanceof FriedFoodCartBlockEntity cart) {
             for (ItemStack stack : cart.drainDisplay()) {
                 net.minecraft.world.Containers.dropItemStack(level, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, stack);
+            }
+            for (ItemStack frame : cart.drainFrames()) {
+                net.minecraft.world.Containers.dropItemStack(level, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, frame);
             }
             ItemStack basket;
             while (!(basket = cart.popBasket()).isEmpty()) {

@@ -78,6 +78,25 @@ public class FryingBasketBlockEntity extends BlockEntity {
         return !state.getValue(FryingBasketBlock.LIFTING) && !state.getValue(FryingBasketBlock.RAISED)
                 && (ingredients.isEmpty() || isRaw());
     }
+    /** Place one already-filled metal basket above one fryer. This reuses the real
+     * raw contents prepared on a worktable and starts exactly one fifteen-second batch.
+     * Empty-oil fryers retain the raised basket until fuel is added.
+     */
+    public boolean restoreRaw(List<ItemStack> raw) {
+        if (level == null || level.isClientSide || !ingredients.isEmpty()
+                || !(level.getBlockEntity(worldPosition.below()) instanceof FryingStationBlockEntity)
+                || !getBlockState().getValue(FryingBasketBlock.SUBMERGED)
+                || !FryingRecipes.isValidRawBatch(raw, MAX_PIECES)) return false;
+        ingredients.addAll(raw.stream().map(ItemStack::copy).toList());
+        progress = 0;
+        liftTicks = 0;
+        batchReady = true;
+        FryingStationBlockEntity fryer = (FryingStationBlockEntity) level.getBlockEntity(worldPosition.below());
+        setPose(false, fryer.charges() <= 0);
+        sync();
+        return true;
+    }
+
     /** Reinsert an already cooked hot basket: raise it again, without frying or oil usage. */
     public boolean restoreCooked(List<ItemStack> cooked) {
         if (!ingredients.isEmpty() || cooked == null || cooked.isEmpty() || level == null || level.isClientSide

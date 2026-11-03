@@ -22,15 +22,39 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     public static final int MAX_BASKETS = 8;
     private final NonNullList<ItemStack> baskets = NonNullList.withSize(MAX_BASKETS, ItemStack.EMPTY);
     private int count = 0;
-    /** Six columns by three rows, each slot limited to ten portions. */
+    /** Four sections along the cart, three display frames across: twelve individual slots. */
     /** Data-driven allowlist: other mods may add compatible ingredients via this tag. */
     public static final TagKey<Item> DISPLAY_INGREDIENTS = TagKey.create(
             Registries.ITEM, ResourceLocation.fromNamespaceAndPath("sfcdelight", "display_ingredients"));
-    public static final int DISPLAY_SLOTS = 18;
+    public static final int DISPLAY_SLOTS = 12;
+    private static final int OLD_DISPLAY_SLOTS = 18;
+    private static final int LEGACY_SLOTS = OLD_DISPLAY_SLOTS - DISPLAY_SLOTS;
     public static final int MAX_DISPLAY_PORTIONS = 10;
     private final NonNullList<ItemStack> display = NonNullList.withSize(DISPLAY_SLOTS, ItemStack.EMPTY);
     /** One reusable plastic frame is installed beneath each stocked display slot. */
     private final NonNullList<ItemStack> displayFrames = NonNullList.withSize(DISPLAY_SLOTS, ItemStack.EMPTY);
+    // Old 6x3 installations must not silently lose the six slots removed by resizing.
+    private final NonNullList<ItemStack> legacyFood = NonNullList.withSize(LEGACY_SLOTS, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> legacyFrames = NonNullList.withSize(LEGACY_SLOTS, ItemStack.EMPTY);
+    private boolean suppressCartDrop;
+
+    public void suppressCartDrop() { suppressCartDrop = true; }
+    public boolean shouldDropCart() { return !suppressCartDrop; }
+
+    public ItemStack reclaimLegacy() {
+        if (level == null || level.isClientSide()) return ItemStack.EMPTY;
+        for (NonNullList<ItemStack> list : java.util.List.of(legacyFood, legacyFrames)) {
+            for (int i = 0; i < list.size(); i++) {
+                ItemStack old = list.get(i);
+                if (!old.isEmpty()) {
+                    list.set(i, ItemStack.EMPTY);
+                    setChanged();
+                    return old.copy();
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
     public boolean hasFrame(int slot) {
         return slot >= 0 && slot < DISPLAY_SLOTS && !displayFrames.get(slot).isEmpty();
@@ -62,6 +86,10 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         for (int slot = 0; slot < DISPLAY_SLOTS; slot++) {
             if (!displayFrames.get(slot).isEmpty()) drops.add(displayFrames.get(slot).copy());
             displayFrames.set(slot, ItemStack.EMPTY);
+        }
+        for (int i = 0; i < LEGACY_SLOTS; i++) {
+            if (!legacyFrames.get(i).isEmpty()) drops.add(legacyFrames.get(i).copy());
+            legacyFrames.set(i, ItemStack.EMPTY);
         }
         setChanged();
         return drops;
@@ -104,8 +132,23 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
             if (!stack.isEmpty()) drops.add(stack.copy());
             display.set(slot, ItemStack.EMPTY);
         }
+        for (int i = 0; i < LEGACY_SLOTS; i++) {
+            if (!legacyFood.get(i).isEmpty()) drops.add(legacyFood.get(i).copy());
+            legacyFood.set(i, ItemStack.EMPTY);
+        }
         setChanged();
         return drops;
+    }
+
+    @Override
+    public net.minecraft.world.phys.AABB getRenderBoundingBox() {
+        net.minecraft.core.Direction back = getBlockState().getValue(FriedFoodCartBlock.FACING).getOpposite();
+        net.minecraft.core.BlockPos far = worldPosition.relative(back, 3);
+        return new net.minecraft.world.phys.AABB(
+                Math.min(worldPosition.getX(), far.getX()), worldPosition.getY(),
+                Math.min(worldPosition.getZ(), far.getZ()),
+                Math.max(worldPosition.getX(), far.getX()) + 1, worldPosition.getY() + 2,
+                Math.max(worldPosition.getZ(), far.getZ()) + 1).inflate(0.5);
     }
 
     public FriedFoodCartBlockEntity(BlockPos pos, BlockState state) {
@@ -168,6 +211,12 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
         CompoundTag framesTag = new CompoundTag();
         ContainerHelper.saveAllItems(framesTag, displayFrames, registries);
         tag.put("DisplayFrames", framesTag);
+        CompoundTag olderFood = new CompoundTag();
+        ContainerHelper.saveAllItems(olderFood, legacyFood, registries);
+        tag.put("LegacyFood", olderFood);
+        CompoundTag olderFrames = new CompoundTag();
+        ContainerHelper.saveAllItems(olderFrames, legacyFrames, registries);
+        tag.put("LegacyFrames", olderFrames);
     }
 
     @Override
@@ -180,17 +229,33 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
             display.set(i, ItemStack.EMPTY);
             displayFrames.set(i, ItemStack.EMPTY);
         }
-        if (tag.contains("Display")) ContainerHelper.loadAllItems(tag.getCompound("Display"), display, registries);
-        if (tag.contains("DisplayFrames")) {
-            ContainerHelper.loadAllItems(tag.getCompound("DisplayFrames"), displayFrames, registries);
-        } else {
-            // Legacy stocked carts had implicit built-in frames. Preserve their stored food
-            // instead of making the existing display inaccessible after upgrading.
-            for (int i = 0; i < DISPLAY_SLOTS; i++) {
-                if (!display.get(i).isEmpty())
-                    displayFrames.set(i, new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()));
+        for (int i = 0; i < LEGACY_SLOTS; i++) {
+            legacyFood.set(i, ItemStack.EMPTY);
+            legacyFrames.set(i, ItemStack.EMPTY);
+        }
+        // Read old 18-slot storage into an intermediate inventory. Keeping only
+        // the first twelve would otherwise silently destroy the last six food stacks.
+        NonNullList<ItemStack> savedFood = NonNullList.withSize(OLD_DISPLAY_SLOTS, ItemStack.EMPTY);
+        NonNullList<ItemStack> savedFrames = NonNullList.withSize(OLD_DISPLAY_SLOTS, ItemStack.EMPTY);
+        if (tag.contains("Display")) ContainerHelper.loadAllItems(tag.getCompound("Display"), savedFood, registries);
+        if (tag.contains("DisplayFrames"))
+            ContainerHelper.loadAllItems(tag.getCompound("DisplayFrames"), savedFrames, registries);
+        else {
+            for (int i = 0; i < OLD_DISPLAY_SLOTS; i++) {
+                if (!savedFood.get(i).isEmpty())
+                    savedFrames.set(i, new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()));
             }
         }
+        for (int i = 0; i < DISPLAY_SLOTS; i++) {
+            display.set(i, savedFood.get(i));
+            displayFrames.set(i, savedFrames.get(i));
+        }
+        for (int i = 0; i < LEGACY_SLOTS; i++) {
+            legacyFood.set(i, savedFood.get(DISPLAY_SLOTS + i));
+            legacyFrames.set(i, savedFrames.get(DISPLAY_SLOTS + i));
+        }
+        if (tag.contains("LegacyFood")) ContainerHelper.loadAllItems(tag.getCompound("LegacyFood"), legacyFood, registries);
+        if (tag.contains("LegacyFrames")) ContainerHelper.loadAllItems(tag.getCompound("LegacyFrames"), legacyFrames, registries);
         for (int i = 0; i < DISPLAY_SLOTS; i++) {
             ItemStack stack = display.get(i);
             if (stack.getCount() > MAX_DISPLAY_PORTIONS) stack.setCount(MAX_DISPLAY_PORTIONS);

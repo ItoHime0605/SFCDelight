@@ -111,7 +111,8 @@ public class FryingStationBlock extends BaseEntityBlock {
                 level.removeBlock(basketPos, false);
                 return ItemInteractionResult.FAIL;
             }
-            if (!player.getAbilities().instabuild) held.shrink(1);
+            // A filled hot basket is also a physical transfer, not an item copy.
+            held.shrink(1);
             return ItemInteractionResult.SUCCESS;
         }
         if (!held.is(SaltedFriedChickenDelight.COOKING_OIL.get()) || !player.isShiftKeyDown()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

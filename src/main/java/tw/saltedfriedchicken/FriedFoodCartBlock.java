@@ -184,6 +184,13 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return row * 4 + column;
     }
 
+    /** Left/right halves of the service counter select white pepper/chili respectively. */
+    private static boolean rightCondiment(BlockPos pos, BlockState state, BlockHitResult hit) {
+        Direction right=state.getValue(FACING).getClockWise();
+        return (hit.getLocation().x-pos.getX()-0.5)*right.getStepX()
+                +(hit.getLocation().z-pos.getZ()-0.5)*right.getStepZ() >= 0;
+    }
+
     /** Up to ten total portions, allowing ten different ingredients in the same plastic basket. */
     private static boolean addToBasket(ItemStack basket, ItemStack food) {
         ItemContainerContents contents = basket.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
@@ -232,24 +239,30 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         FriedFoodCartBlockEntity cart = cartAt(level, pos, state);
         if (cart == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        // Left-hand counter: a real pepper shaker with saved charges, not a decoration.
+        // Left half: white pepper. Right half: chili powder. Both are real items.
         if (state.getValue(PART) == 3 && hit.getDirection() == state.getValue(FACING)) {
-            if (held.is(SaltedFriedChickenDelight.PEPPER_SHAKER.get())) {
+            boolean chili=rightCondiment(pos,state,hit);
+            if (held.is(chili ? SaltedFriedChickenDelight.CHILI_SHAKER.get()
+                              : SaltedFriedChickenDelight.PEPPER_SHAKER.get())) {
                 if (level.isClientSide) return ItemInteractionResult.SUCCESS;
-                if (!cart.installPepperJar(held)) return ItemInteractionResult.FAIL;
-                held.shrink(1); // Transfer the actual item even in creative mode.
+                boolean installed=chili ? cart.installChiliJar(held) : cart.installPepperJar(held);
+                if (!installed) return ItemInteractionResult.FAIL;
+                held.shrink(1);
                 return ItemInteractionResult.SUCCESS;
             }
-            if (held.is(SaltedFriedChickenDelight.WHITE_PEPPER_POWDER.get())) {
+            if (held.is(chili ? SaltedFriedChickenDelight.CHILI_POWDER.get()
+                              : SaltedFriedChickenDelight.WHITE_PEPPER_POWDER.get())) {
                 if (level.isClientSide) return ItemInteractionResult.SUCCESS;
-                if (!cart.refillPepperJar()) return ItemInteractionResult.FAIL;
+                boolean refilled=chili ? cart.refillChiliJar() : cart.refillPepperJar();
+                if (!refilled) return ItemInteractionResult.FAIL;
                 if (!player.getAbilities().instabuild) held.shrink(1);
                 return ItemInteractionResult.SUCCESS;
             }
             if (WhitePepperItem.isPackage(held)) {
                 if (level.isClientSide) return ItemInteractionResult.SUCCESS;
-                return cart.seasonPackage(held, player.getAbilities().instabuild)
-                        ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+                boolean seasoned=chili ? cart.seasonChiliPackage(held,player.getAbilities().instabuild)
+                                      : cart.seasonPackage(held,player.getAbilities().instabuild);
+                return seasoned ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
             }
         }
 
@@ -315,22 +328,26 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         FriedFoodCartBlockEntity cart = cartAt(level, pos, state);
         if (cart == null) return InteractionResult.PASS;
         if (state.getValue(PART) == 3 && hit.getDirection() == state.getValue(FACING)) {
-            ItemStack other = player.getOffhandItem();
+            boolean chili=rightCondiment(pos,state,hit);
+            ItemStack other=player.getOffhandItem();
             if (WhitePepperItem.isPackage(other)) {
                 if (level.isClientSide) return InteractionResult.SUCCESS;
-                return cart.seasonPackage(other, player.getAbilities().instabuild)
-                        ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+                boolean seasoned=chili ? cart.seasonChiliPackage(other,player.getAbilities().instabuild)
+                                      : cart.seasonPackage(other,player.getAbilities().instabuild);
+                return seasoned ? InteractionResult.SUCCESS : InteractionResult.FAIL;
             }
             if (!other.isEmpty()) return InteractionResult.PASS;
-            if (!cart.hasPepperJar()) return InteractionResult.PASS;
+            if (chili ? !cart.hasChiliJar() : !cart.hasPepperJar()) return InteractionResult.PASS;
             if (level.isClientSide) return InteractionResult.SUCCESS;
             if (player.isShiftKeyDown()) {
-                ItemStack jar = cart.takePepperJar();
+                ItemStack jar=chili ? cart.takeChiliJar() : cart.takePepperJar();
                 if (jar.isEmpty()) return InteractionResult.PASS;
-                if (!player.getInventory().add(jar)) player.drop(jar, false);
+                if (!player.getInventory().add(jar)) player.drop(jar,false);
             } else {
+                ItemStack jar=chili ? cart.getChiliJar() : cart.getPepperJar();
                 player.displayClientMessage(net.minecraft.network.chat.Component.literal(
-                    "白胡椒粉剩餘次數：" + PepperShakerItem.charges(cart.getPepperJar()) + " / 60"), true);
+                        (chili ? "辣椒粉" : "白胡椒粉") + "剩餘次數："
+                        + PepperShakerItem.charges(jar) + " / 60"),true);
             }
             return InteractionResult.SUCCESS;
         }
@@ -391,6 +408,7 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
                     for (ItemStack item : cart.drainDisplay()) drop(level, anchor, item);
                     for (ItemStack item : cart.drainFrames()) drop(level, anchor, item);
                     drop(level, anchor, cart.takePepperJar());
+                    drop(level, anchor, cart.takeChiliJar());
                     ItemStack basket;
                     while (!(basket = cart.popBasket()).isEmpty()) drop(level, anchor, basket);
                     if (!moved && cart.shouldDropCart()

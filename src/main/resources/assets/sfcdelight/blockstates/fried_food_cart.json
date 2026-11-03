@@ -1,22 +1,22 @@
 {
   "variants": {
     "facing=north,part=0": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_left"
+      "model": "sfcdelight:block/fried_food_cart_base_counter"
     },
     "facing=north,part=1": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_right"
+      "model": "sfcdelight:block/fried_food_cart_base_display_left"
     },
     "facing=north,part=2": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_left"
+      "model": "sfcdelight:block/fried_food_cart_base_display_right"
     },
     "facing=north,part=3": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_right"
+      "model": "sfcdelight:block/fried_food_cart_upper_counter"
     },
     "facing=north,part=4": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_left"
+      "model": "sfcdelight:block/fried_food_cart_upper_display_left"
     },
     "facing=north,part=5": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_right"
+      "model": "sfcdelight:block/fried_food_cart_upper_display_right"
     },
     "facing=north,part=6": {
       "model": "sfcdelight:block/fried_food_cart_display_rear_left"
@@ -25,27 +25,27 @@
       "model": "sfcdelight:block/fried_food_cart_display_rear_right"
     },
     "facing=east,part=0": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_left",
+      "model": "sfcdelight:block/fried_food_cart_base_counter",
       "y": 90
     },
     "facing=east,part=1": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_right",
+      "model": "sfcdelight:block/fried_food_cart_base_display_left",
       "y": 90
     },
     "facing=east,part=2": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_left",
+      "model": "sfcdelight:block/fried_food_cart_base_display_right",
       "y": 90
     },
     "facing=east,part=3": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_counter",
       "y": 90
     },
     "facing=east,part=4": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_left",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_left",
       "y": 90
     },
     "facing=east,part=5": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_right",
       "y": 90
     },
     "facing=east,part=6": {
@@ -57,27 +57,27 @@
       "y": 90
     },
     "facing=south,part=0": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_left",
+      "model": "sfcdelight:block/fried_food_cart_base_counter",
       "y": 180
     },
     "facing=south,part=1": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_right",
+      "model": "sfcdelight:block/fried_food_cart_base_display_left",
       "y": 180
     },
     "facing=south,part=2": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_left",
+      "model": "sfcdelight:block/fried_food_cart_base_display_right",
       "y": 180
     },
     "facing=south,part=3": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_counter",
       "y": 180
     },
     "facing=south,part=4": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_left",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_left",
       "y": 180
     },
     "facing=south,part=5": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_right",
       "y": 180
     },
     "facing=south,part=6": {
@@ -89,27 +89,27 @@
       "y": 180
     },
     "facing=west,part=0": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_left",
+      "model": "sfcdelight:block/fried_food_cart_base_counter",
       "y": 270
     },
     "facing=west,part=1": {
-      "model": "sfcdelight:block/fried_food_cart_base_front_right",
+      "model": "sfcdelight:block/fried_food_cart_base_display_left",
       "y": 270
     },
     "facing=west,part=2": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_left",
+      "model": "sfcdelight:block/fried_food_cart_base_display_right",
       "y": 270
     },
     "facing=west,part=3": {
-      "model": "sfcdelight:block/fried_food_cart_base_rear_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_counter",
       "y": 270
     },
     "facing=west,part=4": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_left",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_left",
       "y": 270
     },
     "facing=west,part=5": {
-      "model": "sfcdelight:block/fried_food_cart_display_front_right",
+      "model": "sfcdelight:block/fried_food_cart_upper_display_right",
       "y": 270
     },
     "facing=west,part=6": {

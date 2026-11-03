@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "sfcdelight:item/paper_box"
-  }
+  "parent": "sfcdelight:block/paper_box"
 }

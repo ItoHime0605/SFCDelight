@@ -1,8 +1,8 @@
 {
   "textures": {
-    "metal": "sfcdelight:block/basket_wire",
-    "handle": "sfcdelight:block/basket_handle",
-    "particle": "sfcdelight:block/basket_wire"
+    "metal": "sfcdelight:block/nightmarket_steel",
+    "handle": "sfcdelight:block/nightmarket_oak_dark",
+    "particle": "sfcdelight:block/nightmarket_steel"
   },
   "elements": [
     {

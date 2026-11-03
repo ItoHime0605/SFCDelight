@@ -69,10 +69,16 @@ assert "part % 3" in block and "part / 3" in block
 assert "return row * 4 + column;" in block
 assert "public static final int DISPLAY_SLOTS = 12" in entity
 assert "row < 3" in renderer and "column < 4" in renderer
+assert "cart.getBasket(basketIndex)" in renderer and "basketIndex < cart.basketCount()" in renderer
+assert "cart.getPepperJar()" in renderer
+assert "LevelRenderer.getLightColor" in renderer and "1 + column / 2" in renderer
+assert "foodLight" in renderer and "counterLight" in renderer
 assert "relative(right, 2)" in renderer
 assert "getRenderBoundingBox" in renderer
 assert "installPepperJar" in entity and "refillPepperJar" in entity and "seasonPackage" in entity
 assert "CounterPepper" in entity and "takePepperJar" in block
+assert "held.shrink(inserted)" in block and "held.shrink(1)" in block
+assert "MAX_BASKETS = 8" in entity and "basketCount()" in entity
 assert "OLD_DISPLAY_SLOTS = 18" in entity and "LegacyFood" in entity and "LegacyFrames" in entity
 assert "lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) == 4" in registration
 assert "? 12 : 0" in registration

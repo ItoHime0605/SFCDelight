@@ -24,7 +24,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     private int count = 0;
     /** A real, refillable white-pepper shaker stored on the left serving counter. */
     private ItemStack counterPepper = ItemStack.EMPTY;
-    /** Four display columns across the 2-block width, three rows along the 2-block depth. */
+    /** Four front-facing columns over the two display blocks, three vertical rows (twelve trays). */
     /** Data-driven allowlist: other mods may add compatible ingredients via this tag. */
     public static final TagKey<Item> DISPLAY_INGREDIENTS = TagKey.create(
             Registries.ITEM, ResourceLocation.fromNamespaceAndPath("sfcdelight", "display_ingredients"));

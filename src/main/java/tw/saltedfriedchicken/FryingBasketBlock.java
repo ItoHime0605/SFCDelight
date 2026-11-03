@@ -75,6 +75,23 @@ public class FryingBasketBlock extends BaseEntityBlock {
     }
     @Override protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof FryingBasketBlockEntity basket) || basket.ingredient().isEmpty()) return net.minecraft.world.InteractionResult.PASS;
+        // On a preparation table, crouch and lift the complete raw metal basket
+        // into your inventory. The same basket can then be placed on the fryer;
+        // it is not a second basket and its ten portions remain intact.
+        if (!state.getValue(SUBMERGED) && player.isShiftKeyDown()
+                && FryingRecipes.isValidRawBatch(basket.ingredients(), FryingBasketBlockEntity.MAX_PIECES)) {
+            if (!level.isClientSide) {
+                java.util.List<ItemStack> raw = basket.ingredients();
+                ItemStack loaded = FriedBatchData.wrapMany(
+                        SaltedFriedChickenDelight.LOADED_RAW_BASKET.get(),
+                        raw, level.registryAccess());
+                if (loaded.isEmpty()) return net.minecraft.world.InteractionResult.FAIL;
+                basket.extractAll();
+                level.removeBlock(pos, false);
+                if (!player.getInventory().add(loaded)) player.drop(loaded, false);
+            }
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
         if (state.getValue(RAISED) && FryingRecipes.isValidCookedBatch(basket.ingredients(), FryingBasketBlockEntity.MAX_PIECES)) {
             // Build the portable basket before mutating the block entity. A failed
             // component serialization must not consume the player's cooked food.

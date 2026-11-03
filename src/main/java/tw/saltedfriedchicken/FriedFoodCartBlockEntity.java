@@ -22,6 +22,8 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     public static final int MAX_BASKETS = 8;
     private final NonNullList<ItemStack> baskets = NonNullList.withSize(MAX_BASKETS, ItemStack.EMPTY);
     private int count = 0;
+    /** A real, refillable white-pepper shaker stored on the left serving counter. */
+    private ItemStack counterPepper = ItemStack.EMPTY;
     /** Four display columns across the 2-block width, three rows along the 2-block depth. */
     /** Data-driven allowlist: other mods may add compatible ingredients via this tag. */
     public static final TagKey<Item> DISPLAY_INGREDIENTS = TagKey.create(
@@ -54,6 +56,52 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public ItemStack getPepperJar() { return counterPepper.copy(); }
+    public boolean hasPepperJar() { return !counterPepper.isEmpty(); }
+
+    /** Store exactly one physical shaker and preserve its current charge component. */
+    public boolean installPepperJar(ItemStack held) {
+        if (level == null || level.isClientSide() || hasPepperJar() || held == null
+                || !held.is(SaltedFriedChickenDelight.PEPPER_SHAKER.get())
+                || held.getCount() != 1) return false;
+        counterPepper = held.copyWithCount(1);
+        setChanged();
+        return true;
+    }
+
+    /** Return the stored jar with its remaining pepper, never a newly generated refill. */
+    public ItemStack takePepperJar() {
+        if (level == null || level.isClientSide() || !hasPepperJar()) return ItemStack.EMPTY;
+        ItemStack out = counterPepper.copy();
+        counterPepper = ItemStack.EMPTY;
+        setChanged();
+        return out;
+    }
+
+    public boolean refillPepperJar() {
+        if (level == null || level.isClientSide() || !hasPepperJar()) return false;
+        int charges = PepperShakerItem.charges(counterPepper);
+        if (charges > PepperShakerItem.CAPACITY - 10) return false;
+        PepperShakerItem.setCharges(counterPepper, charges + 10);
+        setChanged();
+        return true;
+    }
+
+    /** Click the counter with a packed fried-food bag/box to season it in place. */
+    public boolean seasonPackage(ItemStack food, boolean creative) {
+        if (level == null || level.isClientSide() || !hasPepperJar()
+                || food == null || !WhitePepperItem.isPackage(food)
+                || PepperShakerItem.charges(counterPepper) <= 0
+                || WhitePepperItem.spiceLevel(food) >= 4) return false;
+        int capacity = food.is(SaltedFriedChickenDelight.FILLED_PAPER_BAG.get()) ? 5 : 10;
+        if (!FryingRecipes.isValidCookedBatch(
+                FriedBatchData.readAll(food, level.registryAccess()), capacity)) return false;
+        WhitePepperItem.setSpiceLevel(food, WhitePepperItem.spiceLevel(food) + 1);
+        if (!creative) PepperShakerItem.setCharges(counterPepper, PepperShakerItem.charges(counterPepper) - 1);
+        setChanged();
+        return true;
     }
 
     public boolean hasFrame(int slot) {
@@ -191,6 +239,7 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("BasketCount", count);
+        if (!counterPepper.isEmpty()) tag.put("CounterPepper", counterPepper.save(registries));
         CompoundTag basketTag = new CompoundTag();
         ContainerHelper.saveAllItems(basketTag, baskets, registries);
         tag.put("Baskets", basketTag);
@@ -211,6 +260,10 @@ public class FriedFoodCartBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        counterPepper = tag.contains("CounterPepper", 10)
+                ? ItemStack.parseOptional(registries, tag.getCompound("CounterPepper")) : ItemStack.EMPTY;
+        if (!counterPepper.is(SaltedFriedChickenDelight.PEPPER_SHAKER.get())
+                || counterPepper.getCount() != 1) counterPepper = ItemStack.EMPTY;
         for (int i = 0; i < MAX_BASKETS; i++) baskets.set(i, ItemStack.EMPTY);
         if (tag.contains("Baskets")) ContainerHelper.loadAllItems(tag.getCompound("Baskets"), baskets, registries);
         else ContainerHelper.loadAllItems(tag, baskets, registries); // migration from 0.1.5-alpha

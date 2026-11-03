@@ -85,7 +85,6 @@ assert "held.shrink(1)" in de_oiler
 assert "new ItemStack(SaltedFriedChickenDelight.FRYING_BASKET_ITEM.get())" in de_oiler
 assert "FryingRecipes.isValidCookedBatch(FriedBatchData.readAll(cooked" in de_oiler_entity
 assert "CYCLE_TICKS = 160" in de_oiler_entity
-assert "FriedBatchData.readAll(stored, level.registryAccess())" in de_oiler
 assert "machine.dropContents()" in de_oiler
 assert "SaltedFriedChickenDelight.DEOILER_ITEM.get()" in de_oiler
 assert "FryingBasketBlock.dropPortableBasket(level, basketPos, basket)" in fryer

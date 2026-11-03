@@ -19,7 +19,7 @@
       "model": "sfcdelight:block/frying_station_5"
     },
     "indicator=6": {
-      "model": "sfcdelight:block/frying_station_6"
+      "model": "sfcdelight:block/frying_station_5"
     }
   }
 }

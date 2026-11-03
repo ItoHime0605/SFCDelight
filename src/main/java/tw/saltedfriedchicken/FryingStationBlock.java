@@ -29,15 +29,17 @@ public class FryingStationBlock extends BaseEntityBlock {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(INDICATOR, 0));
     }
-    /** Six lamps; zero charges is a red warning, one charge is red only. */
+    /** Five colored oil levels, plus a separate empty-oil red warning.
+     * Each oil item gives two frying charges, ten items = twenty batches.
+     * The old indicator=6 state stays registered for alpha-world migration.
+     */
     public static int stageForCharges(int charges) {
         if (charges <= 0) return 0;
-        if (charges == 1) return 1;
-        if (charges <= 5) return 2;
-        if (charges <= 9) return 3;
-        if (charges <= 13) return 4;
-        if (charges <= 17) return 5;
-        return 6;
+        if (charges <= 4) return 1;
+        if (charges <= 8) return 2;
+        if (charges <= 12) return 3;
+        if (charges <= 16) return 4;
+        return 5;
     }
     /** Client-only visual particles: no server-side particle broadcast or per-tick inventory scan. */
     @Override public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
@@ -72,6 +74,16 @@ public class FryingStationBlock extends BaseEntityBlock {
         }
     }
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
+    /** Empty hand shows exact remaining batches, not just the coarse five-stage gauge. */
+    @Override protected net.minecraft.world.InteractionResult useWithoutItem(BlockState state,
+            Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!(level.getBlockEntity(pos) instanceof FryingStationBlockEntity fryer))
+            return net.minecraft.world.InteractionResult.PASS;
+        if (!level.isClientSide) player.displayClientMessage(Component.literal(
+                "食用油剩餘：" + fryer.charges() + " / 20 次油炸（每桶可補 2 次）"), true);
+        return net.minecraft.world.InteractionResult.SUCCESS;
+    }
+
     @Override protected ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         // One fryer accepts exactly one prepared raw metal basket. Restore its

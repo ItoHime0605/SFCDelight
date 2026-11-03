@@ -35,6 +35,30 @@ public final class FoodContentsTooltip {
         return Component.literal("內含：" + String.join("、", entries));
     }
 
+    /** The held metal frying basket carries every portion as ONE item.
+     * Show each ingredient on its own line so ten distinct foods remain legible.
+     */
+    public static void appendMetalBasketContents(List<Component> tooltip,
+                                                   Iterable<ItemStack> foodStacks,
+                                                   boolean cooked) {
+        java.util.Map<String, Integer> amounts = new java.util.LinkedHashMap<>();
+        int total = 0;
+        for (ItemStack food : foodStacks) {
+            if (food == null || food.isEmpty()) continue;
+            amounts.merge(food.getHoverName().getString(), food.getCount(), Integer::sum);
+            total += food.getCount();
+        }
+        tooltip.add(Component.literal(cooked ? "狀態：已油炸・待脫油" : "狀態：未油炸"));
+        tooltip.add(Component.literal("食材份數：" + total + " / "
+                + FryingBasketBlockEntity.MAX_PIECES));
+        if (amounts.isEmpty()) {
+            tooltip.add(Component.literal("內含：無"));
+            return;
+        }
+        tooltip.add(Component.literal("內含食材："));
+        amounts.forEach((name, count) -> tooltip.add(Component.literal("  " + name + " ×" + count)));
+    }
+
     public static Component fromContainer(ItemStack container, boolean cooked) {
         if (container == null || container.isEmpty()) return Component.literal("內含：無");
         ItemContainerContents contents = container.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);

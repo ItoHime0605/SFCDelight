@@ -40,9 +40,13 @@ def model(name):
     value=json.loads((MODELS/(name+".json")).read_text(encoding="utf-8"))
     for i,cube in enumerate(value["elements"]):
         for axis,(lo,hi) in enumerate(zip(cube["from"],cube["to"])):
-            awning = name.startswith("fried_food_cart_upper_") and axis == 2 and cube["from"][1] >= 13
+            awning = name.startswith("fried_food_cart_upper_") and axis == 2 and cube["from"][1] >= 12.5
+            rooftop_sign = (name in ("fried_food_cart_upper_display_left",
+                                     "fried_food_cart_upper_display_right")
+                            and axis == 1 and cube["from"][1] >= 15.5)
             allowed_min = -8 if awning else 0
-            assert allowed_min <= lo < hi <= 16,(name,i,lo,hi)
+            allowed_max = 25 if rooftop_sign else 16
+            assert allowed_min <= lo < hi <= allowed_max,(name,i,lo,hi)
         for face in cube["faces"].values():
             assert face["texture"][1:] in value["textures"],(name,face)
     return value

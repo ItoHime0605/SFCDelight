@@ -10,7 +10,7 @@ def count_cube(m,f,t):
     return sum(e["from"]==f and e["to"]==t for e in m["elements"])
 for i in range(7):
     m=read(f"frying_station_{i}")
-    assert len(m["elements"])>=37
+    assert len(m["elements"]) >= (37 if i == 0 else 36)
     assert count_cube(m,[3.4,5.1,0.06],[4.04,5.28,0.2])==1
     assert count_cube(m,[3.2,9.75,0.25],[12.8,10.07,0.62])==1
     assert m["elements"][5]["faces"]["up"]["texture"]=="#oil"

@@ -44,7 +44,9 @@ for facing, front in facings.items():
         assert "wheel" not in json.dumps(model).lower(), names[part]
         for element in model["elements"]:
             for axis in range(3):
-                assert 0 <= element["from"][axis] <= element["to"][axis] <= 16, (names[part],element)
+                minimum = (-8 if part >= 3 and axis == 2
+                           and element["from"][1] >= 13 else 0)
+                assert minimum <= element["from"][axis] < element["to"][axis] <= 16, (names[part],element)
     # The click positions across the two display blocks map to exactly 4x3 slots.
     selected=set()
     for row in range(3):

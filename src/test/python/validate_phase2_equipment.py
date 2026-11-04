@@ -36,9 +36,12 @@ def check_model(path, allow_item_extent=False, animated_basket=False):
                 # Only the open cart awning can project 8px (half a block)
                 # toward customers; no body, tray or other equipment may.
                 canopy = (path.name.startswith("fried_food_cart_upper_")
-                          and axis == 2 and part["from"][1] >= 13)
+                          and axis == 2 and part["from"][1] >= 12.5)
                 min_coord = -16 if allow_item_extent else (-8 if canopy else 0)
-                max_coord = 32 if allow_item_extent else 16
+                sign = (path.name in ("fried_food_cart_upper_display_left.json",
+                                      "fried_food_cart_upper_display_right.json")
+                        and axis == 1 and part["from"][1] >= 15.5)
+                max_coord = 32 if allow_item_extent else (25 if sign else 16)
                 assert min_coord <= a < b <= max_coord, (path, part)
         for face in part["faces"].values():
             token=face["texture"]

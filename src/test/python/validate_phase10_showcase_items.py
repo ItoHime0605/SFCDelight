@@ -18,7 +18,8 @@ for side in ("left","right"):
     assert present(m,[1.05,7.61,0.7],[14.95,8.04,15.3],"tray")
     assert present(m,[1.05,7.95,0.7],[14.95,8.52,1.13],"steel")
     assert all(0<=lo<hi<=16 or
-               (axis==2 and e["from"][1]>=13 and -8<=lo<hi<=16)
+               (axis==2 and e["from"][1]>=12.5 and -8<=lo<hi<=16) or
+               (axis==1 and e["from"][1]>=15.5 and 0<=lo<hi<=25)
                for e in m["elements"]
                for axis,(lo,hi) in enumerate(zip(e["from"],e["to"])))
 frame=model(Path("item/plastic_frame.json"))

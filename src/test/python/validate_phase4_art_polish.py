@@ -53,15 +53,10 @@ assert 'case EquipmentStatusMenu.PREPARATION -> ICON_PREPARATION' in screen
 png16(ASSETS / "textures/block/nightmarket_sign.png")
 cart_block = j(ASSETS / "models/block/fried_food_cart_upper_counter.json")
 assert cart_block["textures"]["brand"] == "sfcdelight:block/nightmarket_sign"
-branded = [e for e in cart_block["elements"] if
-           e["faces"]["north"]["texture"] == "#brand"]
-assert len(branded) == 1
-sign = branded[0]
-assert sign["from"] == [4.95, 8.8, 0.6]
-assert sign["to"] == [11.05, 11.75, 0.82]
+assert not any(e["faces"]["north"]["texture"] == "#brand" for e in cart_block["elements"])
 for element in cart_block["elements"]:
     for axis,(lo,hi) in enumerate(zip(element["from"],element["to"])):
-        allowed_min = -8 if axis == 2 and element["from"][1] >= 13 else 0
+        allowed_min = -8 if axis == 2 and element["from"][1] >= 12.5 else 0
         assert allowed_min <= lo < hi <= 16, element
 assert len(cart_block["elements"]) >= 25
 

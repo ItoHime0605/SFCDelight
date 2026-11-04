@@ -86,7 +86,7 @@ public class SaltedFriedChickenDelight {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PreparationCounterBlockEntity>>
             PREPARATION_COUNTER_ENTITY = BLOCK_ENTITIES.register("preparation_counter",
                 () -> BlockEntityType.Builder.of(PreparationCounterBlockEntity::new, PREPARATION_COUNTER.get()).build(null));
-    public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK).lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) == 4 || state.getValue(FriedFoodCartBlock.PART) == 5 ? 12 : 0)));
+    public static final DeferredBlock<Block> CART = BLOCKS.register("fried_food_cart", () -> new FriedFoodCartBlock(Block.Properties.of().strength(2.5f).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK).lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) >= 3 && state.getValue(FriedFoodCartBlock.PART) <= 5 ? 12 : 0)));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FriedFoodCartBlockEntity>> CART_ENTITY = BLOCK_ENTITIES.register("fried_food_cart", () -> BlockEntityType.Builder.of(FriedFoodCartBlockEntity::new, CART.get()).build(null));
     public static final DeferredBlock<Block> BASIL_CROP = BLOCKS.register("basil_crop", () -> new HerbCropBlock(Block.Properties.of().noCollission().randomTicks().instabreak().noOcclusion(), true));
     public static final DeferredBlock<Block> GARLIC_CROP = BLOCKS.register("garlic_crop", () -> new HerbCropBlock(Block.Properties.of().noCollission().randomTicks().instabreak().noOcclusion(), false));

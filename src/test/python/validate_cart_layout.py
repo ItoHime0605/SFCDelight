@@ -45,8 +45,10 @@ for facing, front in facings.items():
         for element in model["elements"]:
             for axis in range(3):
                 minimum = (-8 if part >= 3 and axis == 2
-                           and element["from"][1] >= 13 else 0)
-                assert minimum <= element["from"][axis] < element["to"][axis] <= 16, (names[part],element)
+                           and element["from"][1] >= 12.5 else 0)
+                maximum = (25 if part in (4, 5) and axis == 1
+                           and element["from"][1] >= 15.5 else 16)
+                assert minimum <= element["from"][axis] < element["to"][axis] <= maximum, (names[part],element)
     # The click positions across the two display blocks map to exactly 4x3 slots.
     selected=set()
     for row in range(3):
@@ -88,7 +90,7 @@ assert "drop(level, anchor, pepper);" in block and "drop(level, anchor, chili);"
 assert "held.shrink(inserted)" in block and "held.shrink(1)" in block
 assert "MAX_BASKETS = 8" in entity and "basketCount()" in entity
 assert "OLD_DISPLAY_SLOTS = 18" in entity and "LegacyFood" in entity and "LegacyFrames" in entity
-assert "lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) == 4" in registration
+assert "lightLevel(state -> state.getValue(FriedFoodCartBlock.PART) >= 3" in registration
 assert "? 12 : 0" in registration
 item=load(RES/"models/item/fried_food_cart.json")
 assert len(item["elements"]) >= 12

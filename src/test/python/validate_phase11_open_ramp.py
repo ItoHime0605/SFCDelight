@@ -65,7 +65,7 @@ assert "for (int row = 0; row < 3; row++)" in render
 assert "for (int column = 0; column < 4; column++)" in render
 assert "if (!cart.hasFrame(slot)) continue;" in render
 assert "cart.getDisplayStack(slot)" in render
-assert 'PART) == 4 || state.getValue(FriedFoodCartBlock.PART) == 5 ? 12 : 0' in registration
+assert 'PART) >= 3 && state.getValue(FriedFoodCartBlock.PART) <= 5 ? 12 : 0' in registration
 # Click target vs actual rendered centers: 12 slots in ALL four orientations.
 cardinals=[(0,-1),(1,0),(0,1),(-1,0)]
 for fx,fz in cardinals:

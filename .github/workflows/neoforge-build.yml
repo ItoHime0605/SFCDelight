@@ -140,8 +140,8 @@ jobs:
           path: gradle-build.log
           if-no-files-found: warn
 
-      - name: Upload mod JAR (manual final validation only)
-        if: success() && github.event_name == 'workflow_dispatch'
+      - name: Upload mod JAR (in-game cart acceptance build)
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: sfcdelight-neoforge-1.21.1

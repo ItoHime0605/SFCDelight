@@ -61,7 +61,7 @@ def check_png(p):
         pos+=count+12
         if kind==b"IEND":break
     assert pos==len(data),p
-    assert struct.unpack(">IIBBBBB",parts[b"IHDR"])==(16,16,8,6,0,0,0),p
+    assert struct.unpack(">IIBBBBB",parts[b"IHDR"])==(128,128,8,6,0,0,0),p
     return parts
 
 materials="oak oak_dark steel dark_steel brass porcelain awning_red awning_cream enamel water plastic food_tray oil".split()
@@ -138,4 +138,4 @@ frame=check_model(models/"item/plastic_frame.json")
 assert len(frame["elements"])>=14
 assert frame["textures"]["plastic"]=="sfcdelight:block/nightmarket_plastic"
 assert "fixed" in frame["display"]
-print("PASS: 13 original textures; cart (6), fryer (7), oil & basket states, open de-oiler, dual prep bench, 3D showcase tray")
+print("PASS: 13 enhanced 128x128 textures; cart (6), fryer (7), oil & basket states, open de-oiler, dual prep bench, 3D showcase tray")

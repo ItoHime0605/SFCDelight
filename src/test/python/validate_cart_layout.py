@@ -96,7 +96,12 @@ assert "wheel" not in json.dumps(item).lower()
 xs=[e["from"][0] for e in item["elements"]]+[e["to"][0] for e in item["elements"]]
 ys=[e["from"][1] for e in item["elements"]]+[e["to"][1] for e in item["elements"]]
 zs=[e["from"][2] for e in item["elements"]]+[e["to"][2] for e in item["elements"]]
-assert max(xs)-min(xs) > 2*(max(zs)-min(zs))
+# The overhanging canopy increases the total model depth by half a block.
+# Compare cart CABINET footprint (still 3x1) instead of roof dimensions.
+body=[e for e in item["elements"] if e["from"][1]<12]
+body_xs=[e["from"][0] for e in body]+[e["to"][0] for e in body]
+body_zs=[e["from"][2] for e in body]+[e["to"][2] for e in body]
+assert max(body_xs)-min(body_xs) > 2*(max(body_zs)-min(body_zs))
 assert max(ys)-min(ys) > (max(zs)-min(zs))
 for e in item["elements"]:
     for axis in range(3):

@@ -40,6 +40,31 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
     private static final ThreadLocal<Boolean> DISMANTLING = ThreadLocal.withInitial(() -> false);
     private static final VoxelShape LOWER_SHAPE = box(0, 0, 0, 16, 16, 16);
     private static final VoxelShape UPPER_SHAPE = box(0, 0, 0, 16, 16, 16);
+    // Keep the inclined 4 x 3 food showcase selectable: a full upper cube would
+    // intercept the cursor before it ever reaches the trays behind the front row.
+    private static final VoxelShape DISPLAY_NORTH = angledDisplayShape(Direction.NORTH);
+    private static final VoxelShape DISPLAY_EAST = angledDisplayShape(Direction.EAST);
+    private static final VoxelShape DISPLAY_SOUTH = angledDisplayShape(Direction.SOUTH);
+    private static final VoxelShape DISPLAY_WEST = angledDisplayShape(Direction.WEST);
+
+    private static VoxelShape angledDisplayShape(Direction front) {
+        VoxelShape result = net.minecraft.world.phys.shapes.Shapes.empty();
+        for (int row = 0; row < 3; row++) {
+            // Three unobstructed click bands underneath ONE continuous sloping top.
+            double near = 16.0 * row / 3.0;
+            double far = 16.0 * (row + 1) / 3.0;
+            double height = 5.4 + 4.45 * row;
+            VoxelShape part = switch (front) {
+                case NORTH -> box(0, 0, near, 16, height, far);
+                case SOUTH -> box(0, 0, 16 - far, 16, height, 16 - near);
+                case EAST -> box(16 - far, 0, 0, 16 - near, height, 16);
+                case WEST -> box(near, 0, 0, far, height, 16);
+                default -> box(0, 0, near, 16, height, far);
+            };
+            result = net.minecraft.world.phys.shapes.Shapes.or(result, part);
+        }
+        return result.optimize();
+    }
 
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
@@ -155,7 +180,17 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
 
     @Override protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,
                                              BlockPos pos, CollisionContext context) {
-        return state.getValue(PART) >= 3 ? UPPER_SHAPE : LOWER_SHAPE;
+        int segment = state.getValue(PART);
+        if (segment == 4 || segment == 5) {
+            return switch (state.getValue(FACING)) {
+                case NORTH -> DISPLAY_NORTH;
+                case EAST -> DISPLAY_EAST;
+                case SOUTH -> DISPLAY_SOUTH;
+                case WEST -> DISPLAY_WEST;
+                default -> DISPLAY_NORTH;
+            };
+        }
+        return segment >= 3 ? UPPER_SHAPE : LOWER_SHAPE;
     }
 
     @Override protected VoxelShape getCollisionShape(BlockState state, net.minecraft.world.level.BlockGetter level,
@@ -163,24 +198,27 @@ public class FriedFoodCartBlock extends BaseEntityBlock {
         return getShape(state, level, pos, context);
     }
 
-    /** Display is on the FRONT glass of the two rightmost upper cart blocks.
-     * Four columns across the two-block width; three rows top to bottom.
-     * The left upper segment is the condiment counter, never a food display.
+    /** Open incline: the two right upper segments are one continuous front-low,
+     * rear-high surface. Four columns are across the cart; three rows are
+     * selected by depth, not by vertical front-glass height.
+     * Clicking either an exposed upward band or the front edge is supported.
      */
     private static int displaySlot(BlockPos pos, BlockState state, BlockHitResult hit) {
         int part = state.getValue(PART);
-        if ((part != 4 && part != 5) || hit.getDirection() != state.getValue(FACING))
+        Direction front = state.getValue(FACING);
+        if ((part != 4 && part != 5)
+                || (hit.getDirection() != front && hit.getDirection() != Direction.UP))
             return -1;
-        Direction right = state.getValue(FACING).getClockWise();
+        Direction right = front.getClockWise();
         double dx = hit.getLocation().x - (pos.getX() + 0.5);
         double dz = hit.getLocation().z - (pos.getZ() + 0.5);
         double width = (part - 4) + 0.5 + dx * right.getStepX() + dz * right.getStepZ();
-        double y = hit.getLocation().y - pos.getY();
-        if (width < -0.001 || width > 2.001 || y < -0.001 || y > 1.001) return -1;
+        double depth = 0.5 - dx * front.getStepX() - dz * front.getStepZ();
+        if (width < -0.001 || width > 2.001 || depth < -0.001 || depth > 1.001) return -1;
         width = Math.max(0, Math.min(1.999999, width));
-        y = Math.max(0, Math.min(0.999999, y));
+        depth = Math.max(0, Math.min(0.999999, depth));
         int column = Math.min(3, (int) Math.floor(width * 2.0));
-        int row = Math.min(2, (int) Math.floor((1.0 - y) * 3.0));
+        int row = Math.min(2, (int) Math.floor(depth * 3.0));
         return row * 4 + column;
     }
 

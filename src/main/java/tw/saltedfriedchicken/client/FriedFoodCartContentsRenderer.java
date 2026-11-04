@@ -16,7 +16,7 @@ import tw.saltedfriedchicken.FriedFoodCartBlock;
 import tw.saltedfriedchicken.FriedFoodCartBlockEntity;
 import tw.saltedfriedchicken.SaltedFriedChickenDelight;
 
-/** Counter left, front-facing 4x3 tilted food display across the two blocks on the right. */
+/** Left counter and one open front-low/rear-high 4x3 display across two right blocks. */
 public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<FriedFoodCartBlockEntity> {
     private final ItemRenderer items;
 
@@ -58,17 +58,21 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                 int foodLight = cart.getLevel() == null ? packedLight
                         : LevelRenderer.getLightColor(cart.getLevel(),
                               cart.getBlockPos().relative(right, 1 + column / 2).above());
-                // The counter is the first block; the showcase spans the next two.
+                // The counter occupies segment 0. All twelve frames sit on the
+                // SAME inclined plane, rather than three shelves at one depth.
+                // row 0 is front/low, row 2 is rear/high; map click depth exactly.
                 double across = 0.5 + (column + 0.5) * 0.5;
-                double x = 0.5 + right.getStepX() * across + front.getStepX() * 0.27;
-                double z = 0.5 + right.getStepZ() * across + front.getStepZ() * 0.27;
-                double y = 1.78 - row * 0.27;
+                double depth = (row + 0.5) / 3.0;
+                double frontOffset = 0.5 - depth;
+                double x = 0.5 + right.getStepX() * across + front.getStepX() * frontOffset;
+                double z = 0.5 + right.getStepZ() * across + front.getStepZ() * frontOffset;
+                double y = 1.25 + depth * 0.65;
 
                 // One installed plastic display frame per slot, even when its food is empty.
                 pose.pushPose();
                 pose.translate(x, y, z);
                 pose.mulPose(Axis.YP.rotationDegrees(angle));
-                pose.mulPose(Axis.XP.rotationDegrees(-19.0f));
+                pose.mulPose(Axis.XP.rotationDegrees(-45.0f));
                 pose.scale(0.36f, 0.31f, 0.18f);
                 items.renderStatic(new ItemStack(SaltedFriedChickenDelight.PLASTIC_FRAME.get()),
                         ItemDisplayContext.FIXED, foodLight, packedOverlay,
@@ -82,10 +86,10 @@ public final class FriedFoodCartContentsRenderer implements BlockEntityRenderer<
                 for (int n = 0; n < visible; n++) {
                     pose.pushPose();
                     pose.translate(x + right.getStepX() * (n - 1.5) * 0.045,
-                                   y + 0.035 + (n % 2) * 0.027,
+                                   y + 0.085 + (n % 2) * 0.027,
                                    z + right.getStepZ() * (n - 1.5) * 0.045);
                     pose.mulPose(Axis.YP.rotationDegrees(angle));
-                    pose.mulPose(Axis.XP.rotationDegrees(17.0f));
+                    pose.mulPose(Axis.XP.rotationDegrees(-32.0f));
                     pose.mulPose(Axis.ZP.rotationDegrees((n % 3 - 1) * 11.0f));
                     pose.scale(0.22f, 0.22f, 0.22f);
                     items.renderStatic(one, ItemDisplayContext.FIXED, foodLight, packedOverlay,

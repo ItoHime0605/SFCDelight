@@ -60,8 +60,9 @@ sign = branded[0]
 assert sign["from"] == [4.95, 8.8, 0.6]
 assert sign["to"] == [11.05, 11.75, 0.82]
 for element in cart_block["elements"]:
-    for x,y in zip(element["from"], element["to"]):
-        assert 0 <= x < y <= 16, element
+    for axis,(lo,hi) in enumerate(zip(element["from"],element["to"])):
+        allowed_min = -8 if axis == 2 and element["from"][1] >= 13 else 0
+        assert allowed_min <= lo < hi <= 16, element
 assert len(cart_block["elements"]) >= 25
 
 for item_id, block_id in (("frying_station","frying_station_0"),

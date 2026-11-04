@@ -33,7 +33,13 @@ def check_model(path, allow_item_extent=False, animated_basket=False):
                 # Animated basket crosses the block boundary on purpose; never clamp its lift.
                 assert -10<=a<b<=22,path
             else:
-                assert (-16 if allow_item_extent else 0)<=a<=b<=(32 if allow_item_extent else 16),path
+                # Only the open cart awning can project 8px (half a block)
+                # toward customers; no body, tray or other equipment may.
+                canopy = (path.name.startswith("fried_food_cart_upper_")
+                          and axis == 2 and part["from"][1] >= 13)
+                min_coord = -16 if allow_item_extent else (-8 if canopy else 0)
+                max_coord = 32 if allow_item_extent else 16
+                assert min_coord <= a < b <= max_coord, (path, part)
         for face in part["faces"].values():
             token=face["texture"]
             assert token.startswith("#"),(path,token)
@@ -85,7 +91,7 @@ for part,id in enumerate(cart_models):
     assert any(e["faces"]["north"]["texture"]=="#brass" for e in m["elements"]),id
     assert m["textures"]["brass"]=="sfcdelight:block/nightmarket_brass",id
     if part in (4,5):
-        assert any(e.get("rotation",{}).get("angle")==-22.5 for e in m["elements"]),id
+        assert sum(e.get("rotation",{}).get("angle")==-45 for e in m["elements"] if e["faces"]["up"]["texture"]=="#tray")==1,id
     if part<=2:
         assert any(e["faces"]["north"]["texture"]=="#wood" for e in m["elements"]),id
 
@@ -138,4 +144,4 @@ frame=check_model(models/"item/plastic_frame.json")
 assert len(frame["elements"])>=14
 assert frame["textures"]["plastic"]=="sfcdelight:block/nightmarket_plastic"
 assert "fixed" in frame["display"]
-print("PASS: 13 enhanced 128x128 textures; cart (6), fryer (7), oil & basket states, open de-oiler, dual prep bench, 3D showcase tray")
+print("PASS: 13 enhanced 128x128 textures; cart (6), fryer (7), oil & basket states, open de-oiler, dual prep bench, single open sloped cart display")

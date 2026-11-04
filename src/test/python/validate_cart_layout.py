@@ -50,11 +50,11 @@ for facing, front in facings.items():
     for row in range(3):
         for col in range(4):
             width=(col+0.5)*0.5
-            y=1-(row+0.5)/3
+            depth=(row+0.5)/3
             part=4+int(width)
             localWidth=width-(part-4)
             clickedCol=int(math.floor(((part-4)+localWidth)*2))
-            clickedRow=int(math.floor((1-y)*3))
+            clickedRow=int(math.floor(depth*3))
             actual=clickedRow*4+clickedCol
             assert actual == row*4+col,(facing,row,col,actual)
             selected.add(actual)

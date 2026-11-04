@@ -2,7 +2,6 @@
   "textures": {
     "steel": "sfcdelight:block/cart_brushed_steel",
     "dark": "sfcdelight:block/cart_dark_steel",
-    "glass": "sfcdelight:block/cart_glass",
     "tray": "sfcdelight:block/cart_food_tray",
     "red": "sfcdelight:block/cart_basket_red",
     "wheel": "sfcdelight:block/cart_wheel",
@@ -107,38 +106,6 @@
     },
     {
       "from": [
-        0,
-        5.6,
-        15.2
-      ],
-      "to": [
-        16,
-        9.4,
-        16
-      ],
-      "faces": {
-        "north": {
-          "texture": "#glass"
-        },
-        "south": {
-          "texture": "#glass"
-        },
-        "east": {
-          "texture": "#glass"
-        },
-        "west": {
-          "texture": "#glass"
-        },
-        "up": {
-          "texture": "#glass"
-        },
-        "down": {
-          "texture": "#glass"
-        }
-      }
-    },
-    {
-      "from": [
         15,
         1,
         15
@@ -169,6 +136,5 @@
         }
       }
     }
-  ],
-  "render_type": "minecraft:cutout"
+  ]
 }

@@ -39,8 +39,10 @@ for material in materials:
 def model(name):
     value=json.loads((MODELS/(name+".json")).read_text(encoding="utf-8"))
     for i,cube in enumerate(value["elements"]):
-        for lo,hi in zip(cube["from"],cube["to"]):
-            assert 0<=lo<hi<=16,(name,i,lo,hi)
+        for axis,(lo,hi) in enumerate(zip(cube["from"],cube["to"])):
+            awning = name.startswith("fried_food_cart_upper_") and axis == 2 and cube["from"][1] >= 13
+            allowed_min = -8 if awning else 0
+            assert allowed_min <= lo < hi <= 16,(name,i,lo,hi)
         for face in cube["faces"].values():
             assert face["texture"][1:] in value["textures"],(name,face)
     return value
@@ -79,8 +81,9 @@ states=json.loads((ASSETS/"blockstates/fried_food_cart.json").read_text(encoding
 assert len(states["variants"])==32
 fryer_states=json.loads((ASSETS/"blockstates/frying_station.json").read_text(encoding="utf-8"))
 assert len(fryer_states["variants"])==7
-# Transparent glass is the original cutout texture, not overpainted by an opaque 128px material.
-glass_model=model("fried_food_cart_upper_display_left")
-assert glass_model["render_type"]=="minecraft:cutout"
-assert glass_model["textures"]["glass"]=="sfcdelight:block/cart_glass"
-print("PASS: 13 distinct 128x128 equipment materials, 3D relief on cart/fryer/deoiler/prep, state & glass preserved")
+# The user explicitly chose an OPEN inclined display with NO glass canopy.
+showcase=model("fried_food_cart_upper_display_left")
+assert "glass" not in showcase["textures"]
+assert len([e for e in showcase["elements"] if e.get("rotation",{}).get("angle")==-45
+            and e["faces"]["up"]["texture"]=="#tray"])==1
+print("PASS: 13 distinct 128x128 equipment materials, one open cart incline, equipment states intact")

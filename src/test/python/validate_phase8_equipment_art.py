@@ -60,8 +60,13 @@ for stage in range(7):
     assert fryer["elements"][5]["faces"]["up"]["texture"]=="#oil"
     assert fryer["elements"][6]["faces"]["up"]["texture"]=="#oil"
     assert any(e["from"]==[2.2,12.15,0.35] for e in fryer["elements"]),(stage,"missing raised front lip")
-    assert not any(2.4<e["from"][0]<13 and 2<e["from"][2]<14 and e["to"][1]>13.1
-                   for e in fryer["elements"][-7:]),(stage,"oil basin obstructed")
+    # Decorative brackets are strictly outside the open basin; gauges remain last.
+    lip=next(e for e in fryer["elements"] if e["from"]==[2.2,12.15,0.35])
+    assert lip["to"][2]<=0.65 and lip["to"][1]<=12.6,(stage,"open oil basin")
+    tail=6 if stage==0 else 5
+    assert all(e["faces"]["north"]["texture"] in
+               {"#off","#lamp_0","#lamp_1","#lamp_2","#lamp_3","#lamp_4","#lamp_5"}
+               for e in fryer["elements"][-tail:]),(stage,"original gauge order")
 oiler=model("de_oiler")
 assert len(oiler["elements"])>=30
 assert max(cube["to"][1] for cube in oiler["elements"])<=12.2
